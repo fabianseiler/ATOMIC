@@ -170,6 +170,7 @@ class Simulator:
                     # Save the energy consumption of the exact case
                     if R_on == '10k' and R_off == '1000k':
                         energy.append(self.read_energy() * self.sim_time * 1e-6)
+            # If the simulation is done without any deviation
             elif dev == 0:
                 R_on, R_off = "10k", "1000k"
                 param_values = ([f"{name[0] * 3}n", f"{name[1] * 3}n", f"{name[2] * 3}n"]
@@ -184,7 +185,8 @@ class Simulator:
             with open(f"./outputs/deviation_results/dev_{dev}", 'wb') as fp:
                 pickle.dump(valid_res, fp)
 
-        # TODO: Check energy consumption at SS and SP
+        # FIXME: Energy consumption is wrong
+        # TODO: Check energy consumption at S, SS, and SP
         avg_energy = sum(energy)/len(energy)
         if dev == 0:
             print(f"Average energy consumption: {avg_energy}")
