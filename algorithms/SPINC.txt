@@ -1,0 +1,6 @@
+NOP  | F2   | NOP
+F3   | F4   | NOP
+I0,3 | I1,4 | NOP
+NOP  | NOP  | I3,1
+NOP  | NOP  | I0,4
+NOP  | I4,2 | NOP

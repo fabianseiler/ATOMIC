@@ -1,0 +1,17 @@
+F3   | F4   | NOP
+I0,3 | I1,4 | NOP
+NOP  | NOP  | I3,1
+NOP  | NOP  | I0,4
+F0   | NOP  | NOP
+NOP  | NOP  | I1,0
+NOP  | NOP  | I4,0
+F3   | NOP  | NOP
+NOP  | NOP  | I2,3
+I0,3 | I4,2 | NOP
+F0   | F4   | NOP
+I3,0 | I2,4 | NOP
+NOP  | I1,4 | NOP
+NOP  | I1,2 | NOP
+NOP  | NOP  | I2,0
+NOP  | F2   | NOP
+NOP  | NOP  | I4,2

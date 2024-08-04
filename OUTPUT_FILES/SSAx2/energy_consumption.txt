@@ -1,0 +1,1 @@
+Average Energy consumption: 1.4801816249999998e-09
