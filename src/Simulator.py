@@ -3,9 +3,11 @@ created by Fabian Seiler at 12.06.2024
 """
 import json
 import pickle
+import os
+import shutil
 import numpy as np
 from PyLTSpice import SpiceEditor, RawRead, LTspice, SimCommander
-from src.util import *
+from src.util import open_csv, extract_energy_from_log, resistance_comb9
 from tqdm import tqdm
 
 
@@ -41,19 +43,6 @@ class Simulator:
         # Set stop time for transient analysis
         self.netlist.set_parameter("tstop", f"{self.sim_time}u")
 
-        # TODO: write all PWM files, even not active ones
-        # Load PWMs for the Voltage applied to the memristors
-        """
-        for i, mem in enumerate(self.memristors):
-            self.netlist.set_component_value(device=f'{self.voltages_mem[i]}',
-                                             value=open_csv(f"./Structures/{self.topology}/{mem}.csv"))
-
-        # Load PWMs for the Voltage controlled switches
-        for j, switch in enumerate(self.switches):
-            self.netlist.set_component_value(device=f'{self.voltages_sw[j]}',
-                                             value=open_csv(f"./Structures/{self.topology}/{switch}.csv"))
-        """
-        # TODO: check other topologies
         with open(f"./Structures/{self.topology}.json") as f:
             topology_data = json.load(f)
 
@@ -170,6 +159,7 @@ class Simulator:
                     # Save the energy consumption of the exact case
                     if R_on == '10k' and R_off == '1000k':
                         energy.append(self.read_energy() * self.sim_time * 1e-6)
+
             # If the simulation is done without any deviation
             elif dev == 0:
                 R_on, R_off = "10k", "1000k"
@@ -177,6 +167,11 @@ class Simulator:
                                 + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
                 self.run_simulation(param_values)
                 energy.append(self.read_energy() * self.sim_time * 1e-6)
+
+                # Save waveforms
+                if save:
+                    os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
+                    comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
 
             valid_res.append(comb)
 

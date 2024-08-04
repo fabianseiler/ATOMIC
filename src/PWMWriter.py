@@ -37,8 +37,9 @@ class PWMWriter:
                     self.output_sw.append(self.create_empty_csv(f"{self.output_path}{memristor}_sw2.csv"))
 
         elif self.topology == "Semi-Parallel":
-            self.output_sw = [self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv")
-                              for memristor in self.memristors] + [self.create_empty_csv(f"{self.output_path}S{j}.csv") for j in range(3)]
+            self.output_sw = ([self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv")
+                              for memristor in self.memristors]
+                              + [self.create_empty_csv(f"{self.output_path}S{j+1}.csv") for j in range(3)])
 
         # Create lists with command content
         self.pwm_mem = [["0u,0"] for _ in self.output_mem]
@@ -132,7 +133,7 @@ class PWMWriter:
             switches_sec = ["S1", "S2", "S3"]
             for j, sw in enumerate(self.pwm_sw[-3:]):
                 with open(f"{self.output_path}{switches_sec[j]}.csv", "a") as f:
-                    for line in self.pwm_sw[j]:
+                    for line in sw:
                         f.write(line + '\n')
 
         print("Files written successfully")
@@ -288,28 +289,28 @@ class PWMWriter:
 
             if mem_used:
                 for section in range(len(digits)):
-                    if i in digits[section]:  # Check if memristor is used
+                    if i in digits[section]:  # Check if memristor is used in this section
                         if cmd[section][0] == 'F':  # if false operation
                             self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,-1")
-                            self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                             self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,-1")
+                            self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                             self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                         elif cmd[section][0] == 'I':
                             if i == digits[section][0]:
                                 self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,900m")
-                                self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,900m")
+                                self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                             else:
                                 self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,1")
-                                self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,1")
+                                self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
             else:
                 # If memristor is unused
                 self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
-                self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,-100")
                 self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
+                self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,-100")
                 self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,-100")
 
         # Check the switch position of S1,S2,S3
@@ -331,12 +332,13 @@ class PWMWriter:
             self.pwm_sw[-2].append(f"{self.step_size * self.count + 0.001}u,100")
             self.pwm_sw[-2].append(f"{self.step_size * (self.count + 1)}u,100")
 
-            res_switch = -3 if 0 in digits else -1
+            res_switch = -3 if 0 in digits[-1] else -1
             self.pwm_sw[res_switch].append(f"{self.step_size * self.count + 0.001}u,100")
             self.pwm_sw[res_switch].append(f"{self.step_size * (self.count + 1)}u,100")
             other_switch = -3 if res_switch == -1 else -1
-            self.pwm_sw[other_switch].append(f"{self.step_size * self.count + 0.001}u,100")
-            self.pwm_sw[other_switch].append(f"{self.step_size * (self.count + 1)}u,100")
+            self.pwm_sw[other_switch].append(f"{self.step_size * self.count + 0.001}u,-100")
+            self.pwm_sw[other_switch].append(f"{self.step_size * (self.count + 1)}u,-100")
+        # FIXME: Die scheiss SP topology geht nicht
 
     def write_timestep(self, cmd: str) -> None:
         """
