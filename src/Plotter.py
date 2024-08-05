@@ -139,7 +139,7 @@ class Plotter:
 
         plt.tight_layout()
         plt.savefig(f"./outputs/Images/Comb_{comb}_{dev}.pdf", bbox_inches='tight', pad_inches=0.01, format='pdf')
-        plt.show()
+        #plt.show()
 
     def plot_deviation_scatter(self, max_dev: int = 50, recompute: bool = False) -> None:
         """
@@ -186,7 +186,7 @@ class Plotter:
 
         plt.tight_layout()
         plt.savefig(f"./outputs/Images/OutputDeviation_Scatter.pdf", bbox_inches='tight', pad_inches=0.01, format='pdf')
-        plt.show()
+        #plt.show()
 
     def plot_deviation_range(self, max_dev: int = 50, recompute: bool = False) -> None:
         """
@@ -267,7 +267,7 @@ class Plotter:
 
         plt.tight_layout()
         plt.savefig('./outputs/Images/StateDeviations.pdf', bbox_inches='tight', pad_inches=0.1, format='pdf')
-        plt.show()
+        #plt.show()
 
     @staticmethod
     def get_dev_list(max_dev: int = 50) -> [int]:

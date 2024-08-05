@@ -125,7 +125,11 @@ class Simulator:
             raise Exception("Error: Energy could not be calculated!")
         return float(energy)
 
-    def calculate_energy(self):
+    def calculate_energy(self) -> ([float], float):
+        """
+        Calculates the average energy consumption of the current simulation.
+        :return: List of energy consumption per combination, and average energy consumption.
+        """
         # Calculate the energy consumption
         print("Calculating energy consumption:")
         energy = []
@@ -137,6 +141,9 @@ class Simulator:
                             + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
             self.run_simulation(param_values)
             energy.append(self.read_energy() * self.sim_time * 1e-6)
+
+        print(f"Average Energy consumption: {energy}")
+        print(f"Energy over Combination: {sum(energy)/len(energy)}")
         return energy, sum(energy)/len(energy)
 
     def evaluate_deviation(self, dev: int = 20, save: bool = True) -> None:
@@ -173,7 +180,7 @@ class Simulator:
             # If the simulation is done without any deviation
             elif dev == 0:
                 R_on, R_off = "10k", "1000k"
-                param_values = ([f"{name[0] * 3}n", f"{name[1] * 3}n", f"{name[2] * 3}n"]
+                param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
                                 + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
                 self.run_simulation(param_values)
 
