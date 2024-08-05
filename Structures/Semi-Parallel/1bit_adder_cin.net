@@ -9,12 +9,12 @@ XX8 a N003 N006 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off}
 XX1 b N010 N014 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off}
 R3 N005 0 {R_g}
 R4 N013 0 {R_g}
-Sw1 N006 N005 S1 0 MYSW
-V11 S1 0 PWL file=S1.csv
-Sw3 N014 N013 S3 0 MYSW
-V13 S3 0 PWL file=S3.csv
-Sw2 N014 N006 S2 0 MYSW
-V12 S2 0 PWL file=S2.csv
+Sw0 N006 N005 S0 0 MYSW
+V11 S0 0 PWL file=S0.csv
+Sw2 N014 N013 S2 0 MYSW
+V13 S2 0 PWL file=S2.csv
+Sw1 N014 N006 S1 0 MYSW
+V12 S1 0 PWL file=S1.csv
 V7 N002 0 PWL file=w1.csv
 S6 N004 N002 w1_sw 0 MYSW
 V8 w1_sw 0 PWL file=w1_sw.csv

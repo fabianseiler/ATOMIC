@@ -125,14 +125,27 @@ class Simulator:
             raise Exception("Error: Energy could not be calculated!")
         return float(energy)
 
-    def evaluate_deviation(self, dev: int = 20, save: bool = True):
+    def calculate_energy(self):
+        # Calculate the energy consumption
+        print("Calculating energy consumption:")
+        energy = []
+        R_on, R_off = "10k", "1000k"
+        for inputs in tqdm(range(8)):
+            name = bin(inputs)[2:].zfill(3)
+
+            param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
+                            + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+            self.run_simulation(param_values)
+            energy.append(self.read_energy() * self.sim_time * 1e-6)
+        return energy, sum(energy)/len(energy)
+
+    def evaluate_deviation(self, dev: int = 20, save: bool = True) -> None:
         """
         Evaluates the deviation of the current simulation.
         :param dev: deviation to be evaluated
         :param save: If the results should be saved
         :return: Average energy consumption of the current algorithm
         """
-        energy = []
         valid_res = []
         print(f"Calculating deviation {dev}:")
 
@@ -156,9 +169,6 @@ class Simulator:
                     if save:
                         os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
                         comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
-                    # Save the energy consumption of the exact case
-                    if R_on == '10k' and R_off == '1000k':
-                        energy.append(self.read_energy() * self.sim_time * 1e-6)
 
             # If the simulation is done without any deviation
             elif dev == 0:
@@ -166,7 +176,6 @@ class Simulator:
                 param_values = ([f"{name[0] * 3}n", f"{name[1] * 3}n", f"{name[2] * 3}n"]
                                 + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
                 self.run_simulation(param_values)
-                energy.append(self.read_energy() * self.sim_time * 1e-6)
 
                 # Save waveforms
                 if save:
@@ -179,13 +188,5 @@ class Simulator:
             os.makedirs(f"./outputs/deviation_results/", exist_ok=True)
             with open(f"./outputs/deviation_results/dev_{dev}", 'wb') as fp:
                 pickle.dump(valid_res, fp)
-
-        # FIXME: Energy consumption is wrong
-        # TODO: Check energy consumption at S, SS, and SP
-        avg_energy = sum(energy)/len(energy)
-        if dev == 0:
-            print(f"Average energy consumption: {avg_energy}")
-            print(f"Energy Consumption over combination: {[[i, e] for i, e in enumerate(energy)]}")
-        return avg_energy
 
 

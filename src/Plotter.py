@@ -28,7 +28,7 @@ class Plotter:
         for i, out in enumerate(config["outputs"]):
             self.expected_logic[out] = states[i]
 
-        self.energy = -1000
+        self.energy = self.Simulator.calculate_energy()
 
     def plot_waveforms_with_deviation(self, comb: str, dev: int, recompute: bool = False) -> None:
         """
@@ -42,7 +42,7 @@ class Plotter:
                 shutil.rmtree("./outputs/Waveforms/")
             if os.path.exists("./outputs/deviation_results/"):
                 shutil.rmtree("./outputs/deviation_results/")
-            self.energy = self.Simulator.evaluate_deviation(dev, save=True)
+            self.Simulator.evaluate_deviation(dev, save=True)
 
         waveforms = [[] for _ in range(len(self.Simulator.memristors)+1)]
 
@@ -152,7 +152,7 @@ class Plotter:
         # If the results are recomputed
         if recompute:
             for d, dev in enumerate(self.get_dev_list(max_dev)):
-                self.energy = self.Simulator.evaluate_deviation(dev, True)
+                self.Simulator.evaluate_deviation(dev, True)
 
         # Iterate over the deviations configure above
         for d, dev in enumerate(self.get_dev_list(max_dev)):
@@ -199,7 +199,7 @@ class Plotter:
         # If the results are recomputed
         if recompute:
             for d, dev in enumerate(self.get_dev_list(max_dev)):
-                self.energy = self.Simulator.evaluate_deviation(dev, True)
+                self.Simulator.evaluate_deviation(dev, True)
 
         range_logic1 = [[], []]
         range_logic0 = [[], []]
@@ -269,7 +269,8 @@ class Plotter:
         plt.savefig('./outputs/Images/StateDeviations.pdf', bbox_inches='tight', pad_inches=0.1, format='pdf')
         plt.show()
 
-    def get_dev_list(self, max_dev: int = 50) -> [int]:
+    @staticmethod
+    def get_dev_list(max_dev: int = 50) -> [int]:
         """
         Customized function that returns a list of specific deviation values
         :param max_dev: maximum deviation
@@ -321,10 +322,11 @@ class Plotter:
         shutil.copytree("./outputs/Images", f"./OUTPUT_FILES/{name}/Images")
 
         with open(f"./OUTPUT_FILES/{name}/energy_consumption.txt", "w") as f:
-            if self.energy == -1000:
+            if not self.energy:
                 f.write(f"Energy consumption calculation failed for {name}")
             else:
-                f.write(f"Average Energy consumption: {self.energy}")
+                f.write(f"Average Energy consumption: {self.energy[1]}\n "
+                        f"Energy over Combination: {self.energy[0]}")
 
         print(f"Files for {name} were saved successfully!")
 

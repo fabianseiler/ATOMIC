@@ -61,12 +61,12 @@ R2 Vp N002 1µ
 .tran {tstop}
 .param w_a=111n
 .param w_b=111n
-.param w_c=000n
+.param w_c=111n
 .param w_w1=0n
 .param w_w2=0n
 .param w_w3=0n
-.param R_on=10k
-.param R_off=1000k
+.param R_on=15k
+.param R_off=1500k
 .meas sum AVG -V(n001)*I(V1) -V(n002)*I(V3) -V(n003)*I(V5) -V(n004)*I(V7) -V(n005)*I(V9) -V(n006)*I(V11)
 .param tstop=240u
 .meas w2 AVG -V(n005)*I(V9)
