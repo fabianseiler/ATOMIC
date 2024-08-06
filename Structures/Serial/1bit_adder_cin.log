@@ -15,34 +15,34 @@ v8: Removing PWL point (0.00018,-100)
 v5: Removing PWL point (1e-09,0)
 v6: Removing PWL point (1e-09,-100)
 v6: Removing PWL point (0.00015,100)
-WARNING: Less than two connections to node b.  This node is used by e:x1:1.
-WARNING: Less than two connections to node w1.  This node is used by e:x2:1.
-WARNING: Less than two connections to node a.  This node is used by e:x4:1.
-WARNING: Less than two connections to node w2.  This node is used by e:x3:1.
-WARNING: Less than two connections to node c.  This node is used by e:x5:1.
-WARNING: Less than two connections to node w3.  This node is used by e:x6:1.
+WARNING: Less than two connections to node b.  This node is used by e:xb:1.
+WARNING: Less than two connections to node w1.  This node is used by e:xw1:1.
+WARNING: Less than two connections to node a.  This node is used by e:xa:1.
+WARNING: Less than two connections to node w2.  This node is used by e:xw2:1.
+WARNING: Less than two connections to node c.  This node is used by e:xc:1.
+WARNING: Less than two connections to node w3.  This node is used by e:xw3:1.
 Direct Newton iteration for .op point succeeded.
 
-sum: AVG(-v(n001)*i(v1) -v(n002)*i(v3) -v(n003)*i(v5) -v(n004)*i(v7) -v(n005)*i(v9) -v(n006)*i(v11))=1.51125e-06 FROM 0 TO 0.0006
-w2: AVG(-v(n005)*i(v9))=0 FROM 0 TO 0.0006
-w3: AVG(-v(n006)*i(v11))=0 FROM 0 TO 0.0006
+sum: AVG(-v(n001)*i(v1) -v(n002)*i(v3) -v(n003)*i(v5) -v(n004)*i(v7) -v(n005)*i(v9) -v(n006)*i(v11))=3.77802e-06 FROM 0 TO 0.00024
+w2: AVG(-v(n005)*i(v9))=0 FROM 0 TO 0.00024
+w3: AVG(-v(n006)*i(v11))=0 FROM 0 TO 0.00024
 
 
-Date: Sun Aug  4 15:02:13 2024
-Total elapsed time: 0.078 seconds.
+Date: Mon Aug  5 19:35:32 2024
+Total elapsed time: 0.105 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 2623
-traniter = 2620
-tranpoints = 1262
-accept = 1238
+totiter = 2511
+traniter = 2508
+tranpoints = 1229
+accept = 1205
 rejected = 24
 matrix size = 91
 fillins = 18
 solver = Normal
-Avg thread counts: 2.1/3.3/3.3/2.1
-Matrix Compiler1:     210 opcodes  0.5/[0.3]/0.4
-Matrix Compiler2: 5.74 KB object code size  0.2/0.3/[0.2]
+Avg thread counts: 2.2/3.4/3.4/2.2
+Matrix Compiler1: 3.36 KB object code size  0.4/0.2/[0.3]
+Matrix Compiler2: 5.74 KB object code size  0.3/0.4/[0.3]
 

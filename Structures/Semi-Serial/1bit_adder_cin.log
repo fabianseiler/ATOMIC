@@ -1,49 +1,56 @@
 Circuit: * C:\Users\Shype\Desktop\Paper in work\[In Work] MASAM\Structures\Semi-Serial\1bit_adder_cin.asc
 
 v1: Removing PWL point (1e-09,0)
-v11: Removing PWL point (6e-05,1)
+v1: Removing PWL point (9e-05,0)
+v11: Removing PWL point (0.00012,0)
 v3: Removing PWL point (1e-09,0)
-v3: Removing PWL point (9e-05,0)
+v3: Removing PWL point (0.00015,0)
 v8: Removing PWL point (1e-09,0)
 v2: Removing PWL point (1e-09,-100)
-v2: Removing PWL point (9e-05,100)
+v2: Removing PWL point (9e-05,-100)
+v2: Removing PWL point (0.00015,100)
 v4: Removing PWL point (1e-09,-100)
-v4: Removing PWL point (9e-05,-100)
+v4: Removing PWL point (9e-05,100)
+v4: Removing PWL point (0.00015,-100)
 v10: Removing PWL point (1e-09,-100)
-v10: Removing PWL point (0.00015,-100)
-v13: Removing PWL point (3e-05,100)
-v13: Removing PWL point (0.00012,100)
+v10: Removing PWL point (9e-05,-100)
+v10: Removing PWL point (0.00018,-100)
+v13: Removing PWL point (0.00012,-100)
 v12: Removing PWL point (1e-09,-100)
-v12: Removing PWL point (0.00012,-100)
+v12: Removing PWL point (9e-05,-100)
+v15: Removing PWL point (1e-09,-100)
+v16: Removing PWL point (3e-05,100)
+v16: Removing PWL point (0.00012,100)
 v9: Removing PWL point (1e-09,-100)
-WARNING: Less than two connections to node a.  This node is used by e:x8:1.
-WARNING: Less than two connections to node b.  This node is used by e:x1:1.
-WARNING: Less than two connections to node c.  This node is used by e:x2:1.
-WARNING: Less than two connections to node w1.  This node is used by e:x3:1.
-WARNING: Less than two connections to node w2.  This node is used by e:x4:1.
-WARNING: Less than two connections to node w3.  This node is used by e:x5:1.
-WARNING: Less than two connections to node w4.  This node is used by e:x6:1.
-WARNING: Less than two connections to node cin.  This node is used by e:x7:1.
+v9: Removing PWL point (0.00012,-100)
+WARNING: Less than two connections to node a.  This node is used by e:xa:1.
+WARNING: Less than two connections to node b.  This node is used by e:xb:1.
+WARNING: Less than two connections to node c.  This node is used by e:xc:1.
+WARNING: Less than two connections to node w1.  This node is used by e:xw1:1.
+WARNING: Less than two connections to node w2.  This node is used by e:xw2:1.
+WARNING: Less than two connections to node w3.  This node is used by e:xw3:1.
+WARNING: Less than two connections to node w4.  This node is used by e:xw4:1.
+WARNING: Less than two connections to node cin.  This node is used by e:xcin:1.
 Direct Newton iteration for .op point succeeded.
 
-sum: AVG(-v(n001)*i(v1) -v(n010)*i(v3) -v(n004)*i(v5) -v(n005)*i(v8) -v(n006)*i(v11) -v(n007)*i(v14) -v(n008)*i(v17) -v(n009)*i(v20))=1.20883e-06 FROM 0 TO 0.0006
+sum: AVG(-v(n001)*i(v1) -v(n010)*i(v3) -v(n004)*i(v5) -v(n005)*i(v8) -v(n006)*i(v11) -v(n007)*i(v14) -v(n008)*i(v17) -v(n009)*i(v20))=1.85306e-06 FROM 0 TO 0.0006
 
 
-Date: Sun Aug  4 13:03:47 2024
-Total elapsed time: 0.134 seconds.
+Date: Mon Aug  5 19:54:45 2024
+Total elapsed time: 0.099 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 2548
-traniter = 2545
-tranpoints = 1192
-accept = 1170
-rejected = 22
+totiter = 2696
+traniter = 2693
+tranpoints = 1257
+accept = 1218
+rejected = 39
 matrix size = 134
 fillins = 14
 solver = Normal
-Avg thread counts: 2.2/3.5/3.5/2.2
-Matrix Compiler1: 4.65 KB object code size  0.7/0.3/[0.3]
-Matrix Compiler2: off  [0.4]/0.6/0.6
+Avg thread counts: 2.1/3.3/3.3/2.1
+Matrix Compiler1:     290 opcodes  0.5/[0.3]/0.3
+Matrix Compiler2: 8.17 KB object code size  0.4/0.4/[0.3]
 

@@ -6,9 +6,9 @@ R2 N018 0 {R_g}
 V3 N010 0 PWL file=b.csv
 V14 N007 0 PWL file=w2.csv
 V8 N005 0 PWL file=c.csv
-S3 N002 N001 a_sw 0 MYSW
+S1 N002 N001 a_sw 0 MYSW
 V2 a_sw 0 PWL file=a_sw.csv
-S5 N017 N010 b_sw 0 MYSW
+S2 N017 N010 b_sw 0 MYSW
 V4 b_sw 0 PWL file=b_sw.csv
 V17 N008 0 PWL file=w3.csv
 V10 c_sw2 0 PWL file=c_sw2.csv
@@ -20,31 +20,31 @@ V19 w3_sw2 0 PWL file=w3_sw2.csv
 V18 w3_sw1 0 PWL file=w3_sw1.csv
 V21 w4_sw1 0 PWL file=w4_sw1.csv
 V22 w4_sw2 0 PWL file=w4_sw2.csv
-S2 N018 N012 c_sw2 0 MYSW
-S4 N013 N003 w1_sw1 0 MYSW
-S6 N018 N013 w1_sw2 0 MYSW
-S7 N014 N003 w2_sw1 0 MYSW
-S8 N018 N014 w2_sw2 0 MYSW
-S9 N015 N003 w3_sw1 0 MYSW
-S10 N018 N015 w3_sw2 0 MYSW
-S11 N016 N003 w4_sw1 0 MYSW
-S12 N018 N016 w4_sw2 0 MYSW
+S6 N018 N012 c_sw2 0 MYSW
+S7 N013 N003 w1_sw1 0 MYSW
+S8 N018 N013 w1_sw2 0 MYSW
+S9 N014 N003 w2_sw1 0 MYSW
+S10 N018 N014 w2_sw2 0 MYSW
+S11 N015 N003 w3_sw1 0 MYSW
+S12 N018 N015 w3_sw2 0 MYSW
+S13 N016 N003 w4_sw1 0 MYSW
+S14 N018 N016 w4_sw2 0 MYSW
 V20 N009 0 PWL file=w4.csv
 V9 c_sw1 0 PWL file=c_sw1.csv
-S1 N012 N003 c_sw1 0 MYSW
-XX8 a N002 N003 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off}
-XX1 b N017 N018 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off}
-XX2 c N005 N012 vteam_knowm params: w_init={w_c} R_on={R_on} R_off={R_off}
-XX3 w1 N006 N013 vteam_knowm params: w_init={w_w1} R_on={R_on} R_off={R_off}
-XX4 w2 N007 N014 vteam_knowm params: w_init={w_w2} R_on={R_on} R_off={R_off}
-XX5 w3 N008 N015 vteam_knowm params: w_init={w_w3} R_on={R_on} R_off={R_off}
-XX6 w4 N009 N016 vteam_knowm params: w_init={w_w4} R_on={R_on} R_off={R_off}
+S5 N012 N003 c_sw1 0 MYSW
+XXa a N002 N003 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off}
+XXb b N017 N018 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off}
+XXc c N005 N012 vteam_knowm params: w_init={w_c} R_on={R_on} R_off={R_off}
+XXw1 w1 N006 N013 vteam_knowm params: w_init={w_w1} R_on={R_on} R_off={R_off}
+XXw2 w2 N007 N014 vteam_knowm params: w_init={w_w2} R_on={R_on} R_off={R_off}
+XXw3 w3 N008 N015 vteam_knowm params: w_init={w_w3} R_on={R_on} R_off={R_off}
+XXw4 w4 N009 N016 vteam_knowm params: w_init={w_w4} R_on={R_on} R_off={R_off}
 V5 N004 0 PWL file=cin.csv
 V7 cin_sw2 0 PWL file=cin_sw2.csv
-S13 N018 N011 cin_sw2 0 MYSW
+S4 N018 N011 cin_sw2 0 MYSW
 V6 cin_sw1 0 PWL file=cin_sw1.csv
-S14 N011 N003 cin_sw1 0 MYSW
-XX7 cin N004 N011 vteam_knowm params: w_init={w_cin} R_on={R_on} R_off={R_off}
+S3 N011 N003 cin_sw1 0 MYSW
+XXcin cin N004 N011 vteam_knowm params: w_init={w_cin} R_on={R_on} R_off={R_off}
 
 * block symbol definitions
 .subckt vteam_knowm s Vp Vn

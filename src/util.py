@@ -4,6 +4,7 @@ Created by Fabian Seiler at 23.07.24
 Consists of useful utility functions
 """
 
+import logging
 import csv
 import re
 import os
@@ -116,4 +117,36 @@ def copy_pwm_files(config: dict) -> None:
                         f.write(f"0,-100\n {config["cycle_time"] * (config["steps"] + 1)},-100")
                     else:
                         f.write(f"0,0\n {config["cycle_time"] * (config["steps"] + 1)},0")
+
+
+class Logger:
+    """
+    Singleton Logging class to efficiently log messages of multiple classes
+    """
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialize_logger()
+        return cls._instance
+
+    def _initialize_logger(self):
+        self.L = logging.getLogger('Simulation')
+        if not self.L.hasHandlers():
+            self.L.setLevel(logging.DEBUG)
+            # Create console handler with a higher log level
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.DEBUG)
+            # Create file handler which logs even debug messages
+            fh = logging.FileHandler('Simulation.log')
+            fh.setLevel(logging.DEBUG)
+            # Create formatter and add it to the handlers
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            ch.setFormatter(formatter)
+            fh.setFormatter(formatter)
+            # Add the handlers to the logger
+            self.L.addHandler(ch)
+            self.L.addHandler(fh)
+
 

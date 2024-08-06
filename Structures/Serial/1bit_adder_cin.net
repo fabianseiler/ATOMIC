@@ -2,28 +2,28 @@
 R1 N013 0 {R_g}
 V1 N001 0 PWL file=a.csv
 V3 N002 0 PWL file=b.csv
-S3 N012 N001 a_sw 0 MYSW
+S1 N012 N001 a_sw 0 MYSW
 V2 a_sw 0 PWL file=a_sw.csv
-S5 N007 N002 b_sw 0 MYSW
+S2 N007 N002 b_sw 0 MYSW
 V4 b_sw 0 PWL file=b_sw.csv
-XX1 b N007 N013 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off}
+XXb b N007 N013 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off}
 V7 N004 0 PWL file=w1.csv
-S1 N009 N004 w1_sw 0 MYSW
+S4 N009 N004 w1_sw 0 MYSW
 V8 w1_sw 0 PWL file=w1_sw.csv
-XX2 w1 N009 N013 vteam_knowm params: w_init={w_w1} R_on={R_on} R_off={R_off}
-XX4 a N012 N013 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off}
+XXw1 w1 N009 N013 vteam_knowm params: w_init={w_w1} R_on={R_on} R_off={R_off}
+XXa a N012 N013 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off}
 V9 N005 0 PWL file=w2.csv
-S2 N010 N005 w2_sw 0 MYSW
+S5 N010 N005 w2_sw 0 MYSW
 V10 w2_sw 0 PWL file=w2_sw.csv
-XX3 w2 N010 N013 vteam_knowm params: w_init={w_w2} R_on={R_on} R_off={R_off}
+XXw2 w2 N010 N013 vteam_knowm params: w_init={w_w2} R_on={R_on} R_off={R_off}
 V5 N003 0 PWL file=c.csv
-S4 N008 N003 c_sw 0 MYSW
+S3 N008 N003 c_sw 0 MYSW
 V6 c_sw 0 PWL file=c_sw.csv
-XX5 c N008 N013 vteam_knowm params: w_init={w_c} R_on={R_on} R_off={R_off}
+XXc c N008 N013 vteam_knowm params: w_init={w_c} R_on={R_on} R_off={R_off}
 V11 N006 0 PWL file=w3.csv
 S6 N011 N006 w3_sw 0 MYSW
 V12 w3_sw 0 PWL file=w3_sw.csv
-XX6 w3 N011 N013 vteam_knowm params: w_init={w_w3} R_on={R_on} R_off={R_off}
+XXw3 w3 N011 N013 vteam_knowm params: w_init={w_w3} R_on={R_on} R_off={R_off}
 
 * block symbol definitions
 .subckt vteam_knowm s Vp Vn
@@ -68,7 +68,7 @@ R2 Vp N002 1µ
 .param R_on=10k
 .param R_off=1000k
 .meas sum AVG -V(n001)*I(V1) -V(n002)*I(V3) -V(n003)*I(V5) -V(n004)*I(V7) -V(n005)*I(V9) -V(n006)*I(V11)
-.param tstop=600u
+.param tstop=240u
 .meas w2 AVG -V(n005)*I(V9)
 .meas w3 AVG -V(n006)*I(V11)
 .backanno

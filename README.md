@@ -18,3 +18,7 @@ In the case of problems, try to first run: ```pip install --upgrade pip setuptoo
 1) Create Pseudocode in algorithms
 2) Create and fill config file
 3) ```python  Pipeline.py --config_file=CONFIG_FILENAME.json```
+
+## How to Evaluate State of the Art (SoA) algorithms
+To evaluate all previously configured algorithms, run the command
+```python evaluate_soa.py```

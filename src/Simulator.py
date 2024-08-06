@@ -7,13 +7,16 @@ import os
 import shutil
 import numpy as np
 from PyLTSpice import SpiceEditor, RawRead, LTspice, SimCommander
-from src.util import open_csv, extract_energy_from_log, resistance_comb9
+from src.util import open_csv, extract_energy_from_log, resistance_comb9, Logger
 from tqdm import tqdm
 
 
 class Simulator:
 
     def __init__(self, config):
+
+        self.logger = Logger()
+        self.logger.L.info(f'Initializing {self.__class__.__name__}')
 
         self.topology = config["topology"]
         self.memristors = config["memristors"]
@@ -22,7 +25,11 @@ class Simulator:
         self.voltages_sw = config["voltages_sw"]
 
         # Open SPICE editor
-        self.netlist = SpiceEditor(f"./Structures/{self.topology}/1bit_adder_cin.net")
+        try:
+            self.netlist = SpiceEditor(f"./Structures/{self.topology}/1bit_adder_cin.net")
+        except Exception as e:
+            self.logger.L.error(f'Could not create SpiceEditor due to: {e}')
+
         self.netlist_path = None
 
         # Set number of cycles for algorithm and the cycle time
@@ -64,21 +71,29 @@ class Simulator:
         self.netlist.write_netlist(netlist_path)
         self.netlist_path = netlist_path
 
-    def run_simulation(self, param_values: list) -> None:
+    def run_simulation(self, param_values: list, energy_sim: bool = False) -> None:
         """
         This function runs the simulations of the SpiceEditor with given parameter values.
-        :param param_values:
+        :param param_values: List of parameter values [memristor values, R_on, R_off]
+        :param energy_sim: Should be set True to remove components that might interfere with the energy calculation
         """
 
         # Set the parameter values and check if netlist have been created
         self.set_parameters(param_values)
         if self.netlist_path is None:
+            self.logger.L.error('No netlist file has been created')
             raise Exception("Error: No netlist has been created!")
 
+        if energy_sim:
+            self.prepare_energy_calculation()
+
         # Run the Simulation
-        runner = SimCommander(netlist_file=self.netlist_path, simulator=LTspice)
-        runner.run()
-        runner.wait_completion()
+        try:
+            runner = SimCommander(netlist_file=self.netlist_path, simulator=LTspice)
+            runner.run()
+            runner.wait_completion()
+        except Exception as e:
+            self.logger.L.error(f'Simulation failed with parameters={param_values} due to: {e}')
 
     def read_raw(self) -> ([str], [np.ndarray]):
         """
@@ -86,16 +101,20 @@ class Simulator:
         :return: Header and output array with simulated data.
         """
 
-        LTR = RawRead(f"./temp/netlist_1.raw")
-        steps = LTR.get_steps()
+        try:
+            LTR = RawRead(f"./temp/netlist_1.raw")
+            steps = LTR.get_steps()
 
-        outputs = [(LTR.get_trace('time')).get_wave(step)*1e6 for step in steps]
-        for mem in self.memristors:
-            outputs.append([LTR.get_trace(f'V({mem})').get_wave(step) for step in steps][0])
+            outputs = [(LTR.get_trace('time')).get_wave(step)*1e6 for step in steps]
+            for mem in self.memristors:
+                outputs.append([LTR.get_trace(f'V({mem})').get_wave(step) for step in steps][0])
+            outputs_array = np.array(outputs)
+            outputs_array[:, 0] = np.zeros(shape=(len(outputs),))     # To fix bug of LTSPICE
+            header = ['time'] + [f'{mem}' for mem in self.memristors]
 
-        outputs_array = np.array(outputs)
-        outputs_array[:, 0] = np.zeros(shape=(len(outputs),))     # To fix bug of LTSPICE
-        header = ['time'] + [f'{mem}' for mem in self.memristors]
+        except Exception as e:
+            self.logger.L.error(f'Raw files could not be read due to: {e}')
+            raise Exception(f'Raw files could not be read due to: {e}')
 
         return header, outputs_array
 
@@ -114,16 +133,25 @@ class Simulator:
         # Return the last row for further evaluation
         return outputs[1:, -1]
 
-    @staticmethod
-    def read_energy():
+    def read_energy(self):
         """
         Extracts the energy consumption from the .log file.
         :return: Energy consumption of the current simulation.
         """
         energy = extract_energy_from_log("./temp/netlist_1.log")
         if energy is None:
+            self.logger.L.warning("No energy consumption could be extracted from the .log file.")
             raise Exception("Error: Energy could not be calculated!")
         return float(energy)
+
+    def prepare_energy_calculation(self) -> None:
+        """
+        Prepares the energy calculation of the current simulation by removing unused components that can lead to
+        interference problems.
+        """
+        for component in self.netlist.get_components():
+            if component[:2] == 'XX' and (component[2:] not in self.memristors):
+                self.netlist.remove_component(component)
 
     def calculate_energy(self) -> ([float], float):
         """
@@ -132,6 +160,7 @@ class Simulator:
         """
         # Calculate the energy consumption
         print("Calculating energy consumption:")
+        self.logger.L.info('Started calculating energy consumption')
         energy = []
         R_on, R_off = "10k", "1000k"
         for inputs in tqdm(range(8)):
@@ -139,11 +168,13 @@ class Simulator:
 
             param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
                             + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
-            self.run_simulation(param_values)
+            self.run_simulation(param_values, energy_sim=True)
             energy.append(self.read_energy() * self.sim_time * 1e-6)
 
         print(f"Average Energy consumption: {energy}")
         print(f"Energy over Combination: {sum(energy)/len(energy)}")
+        self.logger.L.info(f'Average Energy consumption: {sum(energy)/len(energy)}')
+        self.logger.L.info(f'Energy over Combinations: {energy}')
         return energy, sum(energy)/len(energy)
 
     def evaluate_deviation(self, dev: int = 20, save: bool = True) -> None:
@@ -155,6 +186,7 @@ class Simulator:
         """
         valid_res = []
         print(f"Calculating deviation {dev}:")
+        self.logger.L.info(f'Started calculating deviation: {dev}')
 
         # Iterate over the input combinations
         for inputs in tqdm(range(8)):
@@ -195,5 +227,6 @@ class Simulator:
             os.makedirs(f"./outputs/deviation_results/", exist_ok=True)
             with open(f"./outputs/deviation_results/dev_{dev}", 'wb') as fp:
                 pickle.dump(valid_res, fp)
+            self.logger.L.info(f'Results of experiments with deviation: {dev} saved in \"outputs/deviation_results/dev_{dev}\"')
 
 

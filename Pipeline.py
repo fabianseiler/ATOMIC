@@ -14,7 +14,7 @@ from src.util import copy_pwm_files
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Run the pipeline and evaluate the IMPLY algorithm')
-    parser.add_argument('--config_file', type=str, default='./configs/SPINC.json', help='Configuration file')
+    parser.add_argument('--config_file', type=str, default='./configs/SIAFA1.json', help='Configuration file')
 
     args = parser.parse_args()
 

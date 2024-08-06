@@ -3,6 +3,7 @@ Created by Fabian Seiler @ 22.07.24
 """
 import shutil
 import os
+from src.util import Logger
 
 
 class PWMWriter:
@@ -12,6 +13,9 @@ class PWMWriter:
 
     def __init__(self, config: dict):
 
+        self.logger = Logger()
+        self.logger.L.info(f"Initializing PWM Writer")
+
         self.algo = config["algorithm"]
         self.step_size = config["cycle_time"]
         self.memristors = config["memristors"]
@@ -20,30 +24,34 @@ class PWMWriter:
         self.output_path = f"./outputs/PWM_output/"
 
         # Create save files
-        self.output_mem = [self.create_empty_csv(f"{self.output_path}{memristor}.csv")
-                           for memristor in self.memristors]
+        try:
+            self.output_mem = [self.create_empty_csv(f"{self.output_path}{memristor}.csv")
+                               for memristor in self.memristors]
 
-        if self.topology == "Serial":
-            self.output_sw = [self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv")
-                              for memristor in self.memristors]
+            if self.topology == "Serial":
+                self.output_sw = [self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv")
+                                  for memristor in self.memristors]
 
-        elif self.topology == "Semi-Serial":
-            self.output_sw = []
-            for j, memristor in enumerate(self.memristors):
-                if j < 2:
-                    self.output_sw.append(self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv"))
-                else:
-                    self.output_sw.append(self.create_empty_csv(f"{self.output_path}{memristor}_sw1.csv"))
-                    self.output_sw.append(self.create_empty_csv(f"{self.output_path}{memristor}_sw2.csv"))
+            elif self.topology == "Semi-Serial":
+                self.output_sw = []
+                for j, memristor in enumerate(self.memristors):
+                    if j < 2:
+                        self.output_sw.append(self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv"))
+                    else:
+                        self.output_sw.append(self.create_empty_csv(f"{self.output_path}{memristor}_sw1.csv"))
+                        self.output_sw.append(self.create_empty_csv(f"{self.output_path}{memristor}_sw2.csv"))
 
-        elif self.topology == "Semi-Parallel":
-            self.output_sw = ([self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv")
-                              for memristor in self.memristors]
-                              + [self.create_empty_csv(f"{self.output_path}S{j+1}.csv") for j in range(3)])
+            elif self.topology == "Semi-Parallel":
+                self.output_sw = ([self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv")
+                                  for memristor in self.memristors]
+                                  + [self.create_empty_csv(f"{self.output_path}S{j+1}.csv") for j in range(3)])
 
-        # Create lists with command content
-        self.pwm_mem = [["0u,0"] for _ in self.output_mem]
-        self.pwm_sw = [["0u,-100"] for _ in self.output_sw]
+            # Create lists with command content
+            self.pwm_mem = [["0u,0"] for _ in self.output_mem]
+            self.pwm_sw = [["0u,-100"] for _ in self.output_sw]
+
+        except Exception as e:
+            self.logger.L.error(f"Creation of PWM files failed at {self.__class__.__name__} due to: {e}")
 
     def read_algo(self) -> [[str]]:
         """
@@ -59,7 +67,8 @@ class PWMWriter:
                 lines_sectioned = [line.split("|") for line in lines]
                 lines_clean = [[cmd.strip() for cmd in line] for line in lines_sectioned]
             else:
-                raise NotImplementedError
+                self.logger.L.error(f"Invalid topology found: {self.topology}")
+                raise NotImplementedError(f"Invalid topology {self.topology}")
 
             return lines_clean
 
@@ -74,69 +83,76 @@ class PWMWriter:
         self.count = 0
 
         # Load in the algorithm and iterate
-        cmds = self.read_algo()
-        for cmd in cmds:
-            self.write_timestep(cmd)
+        try:
+            cmds = self.read_algo()
+            for cmd in cmds:
+                self.write_timestep(cmd)
+        except Exception as e:
+            self.logger.L.error(f"Failed to evaluate PWM outputs at {self.__class__.__name__} due to: {e}")
 
-        if self.topology == "Serial":
-            # Add final lines to zero out the simulation after the steps
-            for i, _ in enumerate(self.pwm_mem):
-                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
-                self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,-100")
-                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
-                self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,-100")
+        try:
+            if self.topology == "Serial":
+                # Add final lines to zero out the simulation after the steps
+                for i, _ in enumerate(self.pwm_mem):
+                    self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
+                    self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,-100")
+                    self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
+                    self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,-100")
 
-            # Write the content in each memristor + switches files
-            for i, mem in enumerate(self.memristors):
-                with open(f"{self.output_path}{mem}.csv", "a") as f:
-                    for line in self.pwm_mem[i]:
-                        f.write(line + '\n')
-                with open(f"{self.output_path}{mem}_sw.csv", "a") as f:
-                    for line in self.pwm_sw[i]:
-                        f.write(line + '\n')
+                # Write the content in each memristor + switches files
+                for i, mem in enumerate(self.memristors):
+                    with open(f"{self.output_path}{mem}.csv", "a") as f:
+                        for line in self.pwm_mem[i]:
+                            f.write(line + '\n')
+                    with open(f"{self.output_path}{mem}_sw.csv", "a") as f:
+                        for line in self.pwm_sw[i]:
+                            f.write(line + '\n')
 
-        elif self.topology == "Semi-Serial":
-            for i, _ in enumerate(self.pwm_mem):
-                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
-                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
-            for j, _ in enumerate(self.pwm_sw):
-                self.pwm_sw[j].append(f"{self.step_size * self.count + 0.001}u,-100")
-                self.pwm_sw[j].append(f"{self.step_size * (self.count + 1)}u,-100")
+            elif self.topology == "Semi-Serial":
+                for i, _ in enumerate(self.pwm_mem):
+                    self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
+                    self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
+                for j, _ in enumerate(self.pwm_sw):
+                    self.pwm_sw[j].append(f"{self.step_size * self.count + 0.001}u,-100")
+                    self.pwm_sw[j].append(f"{self.step_size * (self.count + 1)}u,-100")
 
-            for i, mem in enumerate(self.memristors):
-                with open(f"{self.output_path}{mem}.csv", "a") as f:
-                    for line in self.pwm_mem[i]:
-                        f.write(line + '\n')
-            for j, sw in enumerate(self.output_sw):
-                sw = sw.split('/')[-1].split('.')[0]
-                with open(f"{self.output_path}{sw}.csv", "a") as f:
-                    for line in self.pwm_sw[j]:
-                        f.write(line + '\n')
+                for i, mem in enumerate(self.memristors):
+                    with open(f"{self.output_path}{mem}.csv", "a") as f:
+                        for line in self.pwm_mem[i]:
+                            f.write(line + '\n')
+                for j, sw in enumerate(self.output_sw):
+                    sw = sw.split('/')[-1].split('.')[0]
+                    with open(f"{self.output_path}{sw}.csv", "a") as f:
+                        for line in self.pwm_sw[j]:
+                            f.write(line + '\n')
 
-        elif self.topology == "Semi-Parallel":
-            # Add final lines to zero out the simulation after the steps
-            for i, _ in enumerate(self.pwm_mem):
-                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
-                self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,-100")
-                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
-                self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,-100")
+            elif self.topology == "Semi-Parallel":
+                # Add final lines to zero out the simulation after the steps
+                for i, _ in enumerate(self.pwm_mem):
+                    self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
+                    self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,-100")
+                    self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
+                    self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,-100")
 
-            # Write the content in each memristor + switches files
-            for i, mem in enumerate(self.memristors):
-                with open(f"{self.output_path}{mem}.csv", "a") as f:
-                    for line in self.pwm_mem[i]:
-                        f.write(line + '\n')
-                with open(f"{self.output_path}{mem}_sw.csv", "a") as f:
-                    for line in self.pwm_sw[i]:
-                        f.write(line + '\n')
+                # Write the content in each memristor + switches files
+                for i, mem in enumerate(self.memristors):
+                    with open(f"{self.output_path}{mem}.csv", "a") as f:
+                        for line in self.pwm_mem[i]:
+                            f.write(line + '\n')
+                    with open(f"{self.output_path}{mem}_sw.csv", "a") as f:
+                        for line in self.pwm_sw[i]:
+                            f.write(line + '\n')
 
-            switches_sec = ["S1", "S2", "S3"]
-            for j, sw in enumerate(self.pwm_sw[-3:]):
-                with open(f"{self.output_path}{switches_sec[j]}.csv", "a") as f:
-                    for line in sw:
-                        f.write(line + '\n')
+                switches_sec = ["S1", "S2", "S3"]
+                for j, sw in enumerate(self.pwm_sw[-3:]):
+                    with open(f"{self.output_path}{switches_sec[j]}.csv", "a") as f:
+                        for line in sw:
+                            f.write(line + '\n')
+        except Exception as e:
+            self.logger.L.error(f"Writing PWM outputs to files failed at {self.__class__.__name__} due to: {e}")
 
-        print("Files written successfully")
+        print("PWM Files written successfully")
+        self.logger.L.info(f"PWM outputs written to files successfully")
 
     def write_timestep_serial(self, cmd: str) -> None:
         """
@@ -338,7 +354,6 @@ class PWMWriter:
             other_switch = -3 if res_switch == -1 else -1
             self.pwm_sw[other_switch].append(f"{self.step_size * self.count + 0.001}u,-100")
             self.pwm_sw[other_switch].append(f"{self.step_size * (self.count + 1)}u,-100")
-        # FIXME: Die scheiss SP topology geht nicht
 
     def write_timestep(self, cmd: str) -> None:
         """
@@ -357,8 +372,7 @@ class PWMWriter:
 
         self.count = self.count + 1
 
-    @staticmethod
-    def create_empty_csv(name: str) -> str:
+    def create_empty_csv(self, name: str) -> str:
         """
         Creates a new empty csv file
         :param name: name of the file
@@ -366,5 +380,6 @@ class PWMWriter:
         """
         with open(name, "w"):
             print(f"File {name} created!")
+            self.logger.L.info(f"File {name} created!")
             return name
 

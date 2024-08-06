@@ -1,4 +1,9 @@
 .idea/
 __pycache__/
 OUTPUT_FILES/*
+!OUTPUT_FILES/
 temp/*
+!temp/
+outputs/*
+!outputs/
+Simulation.log

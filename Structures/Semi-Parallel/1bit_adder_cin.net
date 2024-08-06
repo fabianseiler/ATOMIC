@@ -1,32 +1,32 @@
 * C:\Users\Shype\Desktop\Paper in work\[In Work] MASAM\Structures\Semi-Parallel\1bit_adder_cin.asc
 V1 N001 0 PWL file=a.csv
 V3 N009 0 PWL file=b.csv
-S3 N003 N001 a_sw 0 MYSW
+S_a N003 N001 a_sw 0 MYSW
 V2 a_sw 0 PWL file=a_sw.csv
-S5 N010 N009 b_sw 0 MYSW
+S_b N010 N009 b_sw 0 MYSW
 V4 b_sw 0 PWL file=b_sw.csv
-XX8 a N003 N006 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off}
-XX1 b N010 N014 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off}
+XXa a N003 N006 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off}
+XXb b N010 N014 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off}
 R3 N005 0 {R_g}
 R4 N013 0 {R_g}
-Sw0 N006 N005 S0 0 MYSW
-V11 S0 0 PWL file=S0.csv
-Sw2 N014 N013 S2 0 MYSW
-V13 S2 0 PWL file=S2.csv
-Sw1 N014 N006 S1 0 MYSW
-V12 S1 0 PWL file=S1.csv
+Sw1 N006 N005 S1 0 MYSW
+V11 S1 0 PWL file=S1.csv
+Sw3 N014 N013 S3 0 MYSW
+V13 S3 0 PWL file=S3.csv
+Sw2 N014 N006 S2 0 MYSW
+V12 S2 0 PWL file=S2.csv
 V7 N002 0 PWL file=w1.csv
-S6 N004 N002 w1_sw 0 MYSW
+S_w1 N004 N002 w1_sw 0 MYSW
 V8 w1_sw 0 PWL file=w1_sw.csv
-XX2 w1 N004 N006 vteam_knowm params: w_init={w_w1} R_on={R_on} R_off={R_off}
+XXw1 w1 N004 N006 vteam_knowm params: w_init={w_w1} R_on={R_on} R_off={R_off}
 V9 N007 0 PWL file=w2.csv
-S7 N011 N007 w2_sw 0 MYSW
+S_w2 N011 N007 w2_sw 0 MYSW
 V10 w2_sw 0 PWL file=w2_sw.csv
-XX3 w2 N011 N014 vteam_knowm params: w_init={w_w2} R_on={R_on} R_off={R_off}
+XXw2 w2 N011 N014 vteam_knowm params: w_init={w_w2} R_on={R_on} R_off={R_off}
 V5 N008 0 PWL file=c.csv
-S8 N012 N008 c_sw 0 MYSW
+S_c N012 N008 c_sw 0 MYSW
 V6 c_sw 0 PWL file=c_sw.csv
-XX4 c N012 N014 vteam_knowm params: w_init={w_c} R_on={R_on} R_off={R_off}
+XXc c N012 N014 vteam_knowm params: w_init={w_c} R_on={R_on} R_off={R_off}
 
 * block symbol definitions
 .subckt vteam_knowm s Vp Vn
