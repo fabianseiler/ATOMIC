@@ -31,26 +31,26 @@ if __name__ == '__main__':
     # Check if the algorithm is valid and the resulting states are correct
     LS = LogicState(config)
     LS.calc_algorithm(plot_tt=True)
-    print("\n\n--------------- Logic States verified! ---------------\n")
+    print("\n--------------- Logic States verified! ---------------\n")
 
     # Automatically create PWM signals and store them in "PWM_output"
     PWM = PWMWriter(config)
     PWM.eval_algo()
-    print("\n\n--------------- PWM Signals created! ---------------\n")
+    print("\n--------------- PWM Signals created! ---------------\n")
 
     # Copy the files to the folder of the corresponding topology (This removes the old files !)
     copy_pwm_files(config)
-    print(f"\n\n--------- Files of {config["topology"]} overwritten! --------\n")
+    print(f"\n--------- Files of {config["topology"]} overwritten! --------\n")
 
     # Plotter
     PLT = Plotter(config)
     PLT.plot_deviation_scatter(max_dev=max_dev, recompute=True, fig_type=fig_type)
     PLT.plot_deviation_range(max_dev=max_dev, recompute=False, fig_type=fig_type)
-    print(f"\n\n--------- Deviation Experiments completed --------\n")
+    print(f"\n--------- Deviation Experiments completed --------\n")
 
     for comb in range(8):
         comb_str = bin(comb)[2:].zfill(3)
         PLT.plot_waveforms_with_deviation(comb_str, dev=dev_wf, recompute=False, fig_type=fig_type)
-    print(f"\n\n--------- Waveforms with deviation {dev_wf} saved --------\n")
+    print(f"\n--------- Waveforms with deviation {dev_wf} saved --------\n")
 
     PLT.save_algorithm_files(f"{config["algorithm"].split(".")[0]}")

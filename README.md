@@ -12,6 +12,9 @@ The pipeline for this project automates the following steps:
 6) Illustration of Waveforms with deviation
 7) Scatter plots and output state range over resistive deviation visualization
 
+<img alt="pipeline" src="./assets/Pipeline.png"/>
+
+
 ## Requirements for this Project
 
 ### Additional Software
