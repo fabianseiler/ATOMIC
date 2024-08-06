@@ -40,13 +40,15 @@ class Plotter:
         # Calculate the energy
         self.energy = self.Simulator.calculate_energy()
 
-    def plot_waveforms_with_deviation(self, comb: str, dev: int, recompute: bool = False, show: bool = False) -> None:
+    def plot_waveforms_with_deviation(self, comb: str, dev: int, recompute: bool = False,
+                                      show: bool = False, fig_type: str = 'pdf') -> None:
         """
         Plots specific waveforms with chosen deviation
         :param comb: input combination
         :param dev: chosen deviation
         :param recompute: If the deviation experiments need to be recomputed
         :param show: If the deviation experiments should be shown
+        :param fig_type: Type of plot
         """
         if recompute:
             self.logger.L.info(f"Started recomputing deviation {dev}")
@@ -160,19 +162,23 @@ class Plotter:
                     axs[idx].set_xlabel("Time in $\mu$s", fontsize=24, labelpad=0)
 
             plt.tight_layout()
-            plt.savefig(f"./outputs/Images/Comb_{comb}_{dev}.pdf", bbox_inches='tight', pad_inches=0.01, format='pdf')
+            fig_type = str(fig_type)
+            plt.savefig(f"./outputs/Images/Comb_{comb}_{dev}.{fig_type}", bbox_inches='tight',
+                        pad_inches=0.01, format=fig_type)
             if show:
                 plt.show()
 
         except Exception as e:
             self.logger.L.error(f"Plotting waveforms at deviation={dev}, combination={comb} failed due to: {e}")
 
-    def plot_deviation_scatter(self, max_dev: int = 50, recompute: bool = False, show: bool = False) -> None:
+    def plot_deviation_scatter(self, max_dev: int = 50, recompute: bool = False,
+                               show: bool = False, fig_type: str = 'pdf') -> None:
         """
         For every input combination plot the output states over increasing deviations
         :param max_dev: maximum deviation
         :param recompute: If the deviation experiments need to be recomputed
         :param show: If the deviation experiments should be shown
+        :param fig_type: Type of plot
         """
         fig, ax = plt.subplots(1, len(self.expected_logic), figsize=(max(3*max_dev/10, 12), 4))
 
@@ -217,16 +223,20 @@ class Plotter:
             ax[idx].set_ylabel(f"State Deviation of {output_mem[idx]}", fontsize=20)
 
         plt.tight_layout()
-        plt.savefig(f"./outputs/Images/OutputDeviation_Scatter.pdf", bbox_inches='tight', pad_inches=0.01, format='pdf')
+        fig_type = str(fig_type)
+        plt.savefig(f"./outputs/Images/OutputDeviation_Scatter.{fig_type}", bbox_inches='tight',
+                    pad_inches=0.01, format=fig_type)
         if show:
             plt.show()
 
-    def plot_deviation_range(self, max_dev: int = 50, recompute: bool = False, show: bool = False) -> None:
+    def plot_deviation_range(self, max_dev: int = 50, recompute: bool = False,
+                             show: bool = False, fig_type: str = 'pdf') -> None:
         """
         Plot the range of output states for every output state
         :param max_dev: maximum deviation
         :param recompute: If the deviation experiments need to be recomputed
         :param show: If the deviation experiments should be shown
+        :param fig_type: Type of plot
         """
         fig = plt.figure(figsize=(max(max_dev/10, 5), 5))
 
@@ -305,7 +315,9 @@ class Plotter:
         plt.legend(loc='center left', fontsize=20)
 
         plt.tight_layout()
-        plt.savefig('./outputs/Images/StateDeviations.pdf', bbox_inches='tight', pad_inches=0.1, format='pdf')
+        fig_type = str(fig_type)
+        plt.savefig(f'./outputs/Images/StateDeviations.{fig_type}', bbox_inches='tight',
+                    pad_inches=0.1, format=fig_type)
         if show:
             plt.show()
 
