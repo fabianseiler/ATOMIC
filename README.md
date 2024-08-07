@@ -21,7 +21,9 @@ The pipeline for this project automates the following steps:
 A compatible version of LT-SPICE has to be installed. We build this project for the LT-SPICE version 17.1.6.0 so other 
 versions may not work as intended. \
 For more information we refer to the [PyLTSpice documentation](https://pyltspice.readthedocs.io/en/latest/index.html)
-and [PyLTSpice github page](https://github.com/nunobrum/PyLTSpice).
+and [PyLTSpice github page](https://github.com/nunobrum/PyLTSpice). \
+For linux users we refer to [LTSpice on Linux](https://github.com/joaocarvalhoopen/LTSpice_on_Linux_Ubuntu__How_to_install_and_use)
+for more information on how to install LTSpice.
 
 ### Python Dependencies
 To install the required python libraries, run:
@@ -130,9 +132,9 @@ The plots consist of:
 <img alt="deviation_range" src="./assets/StateDeviations.png" width="250" height="250"/>
 
 Additional flags are:
-```--max_dev=INT``` which sets the maximum deviation to be evaluated 
-and ```--dev_wf=INT``` which controls what deviation range shall be illustrated in the waveform plots.
-
+1) ```--max_dev=INT``` which sets the maximum deviation to be evaluated 
+2) ```--dev_wf=INT``` which controls what deviation range shall be illustrated in the waveform plots
+3) ```--fig_type='str'``` which defines in what format the images are saved ('pdf', 'png', 'svg')
 
 
 ### Evaluate State of the Art (SoA) algorithms

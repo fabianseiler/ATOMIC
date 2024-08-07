@@ -14,10 +14,10 @@ from src.util import copy_pwm_files
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Run the pipeline and evaluate the IMPLY algorithm')
-    parser.add_argument('--config_file', type=str, default='./configs/SSAx2.json', help='Configuration file')
+    parser.add_argument('--config_file', type=str, default='./configs/Serial_exact.json', help='Configuration file')
     parser.add_argument('--max_dev', type=int, default=50, help='Maximum deviation for experiments, recommended: 50')
     parser.add_argument('--dev_wf', type=int, default=20, help='Deviations at which waveforms are plotted')
-    parser.add_argument('--fig_type', type=str, default='png',
+    parser.add_argument('--fig_type', type=str, default='pdf',
                         choices=['pdf', 'png', 'svg'], help='Type of the plot that will be stored')
 
     args = parser.parse_args()
@@ -39,8 +39,8 @@ if __name__ == '__main__':
     print("\n--------------- PWM Signals created! ---------------\n")
 
     # Copy the files to the folder of the corresponding topology (This removes the old files !)
-    copy_pwm_files(config)
-    print(f"\n--------- Files of {config["topology"]} overwritten! --------\n")
+    copy_pwm_files(config, PWM.step_size)
+    print(f"\n--------- Files of {config["topology"]} topology overwritten! --------\n")
 
     # Plotter
     PLT = Plotter(config)

@@ -57,31 +57,31 @@ def simplify_number_string(s: str) -> str:
     return s
 
 
-def r_on(d, pos=1, R_H=10) -> str:
+def r_on(d, pos=1, R_on=10) -> str:
     """
     Automatic Calculation of Ron with deviation
     :param d: given deviation
     :param pos: if dev is added or subtracted
-    :param R_H: Reference resistance
+    :param R_on: Reference resistance
     :return: Cleaned up String with new resistance value
     """
-    r = R_H*(1+d/100) if pos == 1 else R_H*(1-d/100)
+    r = R_on * (1 + d / 100) if pos == 1 else R_on * (1 - d / 100)
     return simplify_number_string(f"{r}k")
 
 
-def r_off(d, pos=1, R_L=1000) -> str:
+def r_off(d, pos=1, R_off=1000) -> str:
     """
     Automatic Calculation of Roff with deviation
     :param d: given deviation
     :param pos: if dev is added or subtracted
-    :param R_L: Reference resistance
+    :param R_off: Reference resistance
     :return: Cleaned up String with new resistance value
     """
-    r = R_L*(1+d/100) if pos == 1 else R_L*(1-d/100)
+    r = R_off * (1 + d / 100) if pos == 1 else R_off * (1 - d / 100)
     return simplify_number_string(f"{r}k")
 
 
-def resistance_comb9(dev: int, R_H=10, R_L=1000) -> [[str], [str]]:
+def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) -> [[str], [str]]:
     """
     Returns two lists with 9 resistance combinations
     :param dev: deviation of the resistance
@@ -89,19 +89,26 @@ def resistance_comb9(dev: int, R_H=10, R_L=1000) -> [[str], [str]]:
     :param R_L: Low State Resistance
     :return: Ron and Roff lists with varying resistance combinations
     """
-    R_on_c = [r_on(dev, 0), r_on(dev, 0), r_on(dev, 0),
-              f"{R_H}k", f"{R_H}k", f"{R_H}k",
-              r_on(dev, 1), r_on(dev, 1), r_on(dev, 1)]
-    R_off_c = [r_off(dev, 0), f"{R_L}k", r_off(dev, 1),
-               r_off(dev, 0), f"{R_L}k", r_off(dev, 1),
-               r_off(dev, 0), f"{R_L}k", r_off(dev, 1)]
+    if type(R_off) is str:
+        R_off = int(R_off[:-1])
+    if type(R_on) is str:
+        R_on = int(R_on[:-1])
+
+    # Create two lists with all combinations
+    R_on_c = [r_on(dev, 0, R_on), r_on(dev, 0, R_on), r_on(dev, 0, R_on),
+              f"{R_on}k", f"{R_on}k", f"{R_on}k",
+              r_on(dev, 1, R_on), r_on(dev, 1, R_on), r_on(dev, 1, R_on)]
+    R_off_c = [r_off(dev, 0, R_off), f"{R_off}k", r_off(dev, 1, R_off),
+               r_off(dev, 0, R_off), f"{R_off}k", r_off(dev, 1, R_off),
+               r_off(dev, 0, R_off), f"{R_off}k", r_off(dev, 1), R_off]
     return R_on_c, R_off_c
 
 
-def copy_pwm_files(config: dict) -> None:
+def copy_pwm_files(config: dict, cycle_time) -> None:
     """
     Overwrite the PWM files for the given topology
     :param config: config file
+    :param cycle_time: cycle time from IMPLY_parameters
     """
     # Iterate over files
     for file in os.listdir(f"./Structures/{config["topology"]}"):
@@ -114,9 +121,9 @@ def copy_pwm_files(config: dict) -> None:
                 # If files are unused rewrite the content to not use them
                 with open(f"./Structures/{config["topology"]}/{file}", "w") as f:
                     if 'sw' in f.name.split('/')[-1]:
-                        f.write(f"0,-100\n {config["cycle_time"] * (config["steps"] + 1)},-100")
+                        f.write(f"0,-100\n {cycle_time * (config["steps"] + 1)},-100")
                     else:
-                        f.write(f"0,0\n {config["cycle_time"] * (config["steps"] + 1)},0")
+                        f.write(f"0,0\n {cycle_time * (config["steps"] + 1)},0")
 
 
 class Logger:
@@ -148,5 +155,3 @@ class Logger:
             # Add the handlers to the logger
             self.L.addHandler(ch)
             self.L.addHandler(fh)
-
-

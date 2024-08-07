@@ -1,6 +1,7 @@
 """
 Created by Fabian Seiler @ 22.07.24
 """
+import json
 import shutil
 import os
 from src.util import Logger
@@ -17,11 +18,15 @@ class PWMWriter:
         self.logger.L.info(f"Initializing PWM Writer")
 
         self.algo = config["algorithm"]
-        self.step_size = config["cycle_time"]
+        # self.step_size = config["cycle_time"]
         self.memristors = config["memristors"]
         self.count = 0
         self.topology = config["topology"]
         self.output_path = f"./outputs/PWM_output/"
+
+        with open("./Structures/IMPLY_parameters.json", "r") as f:
+            self.params = json.load(f)
+        self.step_size = self.params["t_pulse"]
 
         # Create save files
         try:
@@ -165,20 +170,20 @@ class PWMWriter:
         for i, mem in enumerate(self.memristors):
             if i in digits:  # Check if memristor is used
                 if cmd[0] == 'F':  # if false operation
-                    self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,-1")
+                    self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}")
                     self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
-                    self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,-1")
+                    self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}")
                     self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                 elif cmd[0] == 'I':
                     if i == digits[0]:
-                        self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,900m")
+                        self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}")
                         self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
-                        self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,900m")
+                        self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}")
                         self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                     else:
-                        self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,1")
+                        self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}")
                         self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
-                        self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,1")
+                        self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}")
                         self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
             # If memristor is unused
             else:
@@ -203,20 +208,20 @@ class PWMWriter:
 
                     if i in digits[section]:    # Check if memristor is in this section
                         if cmd[section][0] == 'F':  # if false operation
-                            self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,-1")
-                            self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,-1")
+                            self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}")
+                            self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}")
                             self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
                             self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
 
                         elif cmd[section][0] == 'I':  # If IMPLY operation
                             if i == digits[section][0]:
-                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,900m")
-                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,900m")
+                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}")
+                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}")
                                 self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
                             else:
-                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,1")
-                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,1")
+                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}")
+                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}")
                                 self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
 
@@ -307,19 +312,19 @@ class PWMWriter:
                 for section in range(len(digits)):
                     if i in digits[section]:  # Check if memristor is used in this section
                         if cmd[section][0] == 'F':  # if false operation
-                            self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,-1")
-                            self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,-1")
+                            self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}")
+                            self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}")
                             self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                             self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                         elif cmd[section][0] == 'I':
                             if i == digits[section][0]:
-                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,900m")
-                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,900m")
+                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}")
+                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}")
                                 self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                             else:
-                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,1")
-                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,1")
+                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}")
+                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}")
                                 self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
             else:

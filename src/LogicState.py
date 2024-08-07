@@ -125,7 +125,10 @@ class LogicState:
                 for lnr, line in enumerate(lines):
                     if line[0] == 'F':
                         if line[2] == ',':
-                            self.false_op([int(line[1]), int(line[3])])
+                            if line[4] == ',':
+                                self.false_op([int(line[1]), int(line[3]), int(line[5])])
+                            else:
+                                self.false_op([int(line[1]), int(line[3])])
                         else:
                             self.false_op([int(line[1])])
                     elif line[0] == 'I':

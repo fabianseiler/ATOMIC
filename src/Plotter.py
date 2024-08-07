@@ -67,7 +67,7 @@ class Plotter:
                 data = np.genfromtxt(f"./outputs/Waveforms/{comb}/{dev}/" + file, delimiter=' ', names=True)
 
                 # Save the exact waveform for later
-                if file == "10k_1000k.txt":
+                if file == f"{self.Simulator.vteam_parameters["R_on"]}_{self.Simulator.vteam_parameters["R_off"]}.txt":
                     exact_idx = k
 
                 waveforms[0].append(data["time"])
@@ -102,7 +102,7 @@ class Plotter:
             total_wv = len(wv_interpolated_array)
             num_subplots = math.ceil(total_wv/self.plots_per_subfigure)
 
-            fig = plt.figure(figsize=(16, 3*num_subplots))
+            fig = plt.figure(figsize=(16, 2*num_subplots))
             if num_subplots == 1:
                 gs = gridspec.GridSpec(1, 1)
             else:
@@ -238,7 +238,7 @@ class Plotter:
         :param show: If the deviation experiments should be shown
         :param fig_type: Type of plot
         """
-        fig = plt.figure(figsize=(max(max_dev/10, 5), 5))
+        fig = plt.figure(figsize=(max(2*max_dev/10, 5), 5))
 
         # If the results are recomputed
         if recompute:
@@ -286,6 +286,8 @@ class Plotter:
 
             r0, r1 = np.array(range_logic0), np.array(range_logic1)
 
+        # TODO: Extract and save deviation ranges
+
         except Exception as e:
             self.logger.L.info(f"Extraction of min and max values for each deviation failed due to: {e}")
             raise Exception(f"Extraction of min and max values for each deviation failed due to: {e}")
@@ -307,12 +309,12 @@ class Plotter:
         plt.ylim([-0.01, 1.01])
         plt.xlim([-0.25, len(self.get_dev_list(max_dev)) + 1.25])
         plt.xticks(np.linspace(0, len(self.get_dev_list(max_dev))+1, len(self.get_dev_list(max_dev))),
-                   labels=self.get_dev_list(max_dev), fontsize=14)
-        plt.yticks([0, 1], labels=["HRS", "LRS"], rotation=45, fontsize=14)
-        plt.xlabel("$R_{on}$ & $R_{off}$ Deviation in %", fontsize=20)
+                   labels=self.get_dev_list(max_dev), fontsize=20)
+        plt.yticks([0, 1], labels=["HRS", "LRS"], rotation=45, fontsize=20)
+        plt.xlabel("$R_{on}$ & $R_{off}$ Deviation in %", fontsize=24)
         plt.grid(False)
-        plt.ylabel(f"Resulting State Deviation", fontsize=20)
-        plt.legend(loc='center left', fontsize=20)
+        plt.ylabel(f"Resulting State Deviation", fontsize=24)
+        plt.legend(loc='center left', fontsize=24)
 
         plt.tight_layout()
         fig_type = str(fig_type)
@@ -370,7 +372,7 @@ class Plotter:
         try:
             if os.path.exists(f"./OUTPUT_FILES/{name}"):
                 shutil.rmtree(f"./OUTPUT_FILES/{name}")
-                os.mkdir(f"./OUTPUT_FILES/{name}")
+                os.makedirs(f"./OUTPUT_FILES/{name}", exist_ok=True)
             shutil.copytree("./outputs/deviation_results", f"./OUTPUT_FILES/{name}/deviation_results")
             shutil.copytree("./outputs/Images", f"./OUTPUT_FILES/{name}/Images")
 

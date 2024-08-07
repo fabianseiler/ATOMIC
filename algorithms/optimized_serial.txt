@@ -1,5 +1,4 @@
-F3,4    # False(w1,w2)
-F5      # False(w3)
+F3,4,5  # False(w1,w2, w3)
 I0,3    # w1 = ~a
 I1,4    # w2 = ~b
 I3,1    # b' = ~a -> b = X

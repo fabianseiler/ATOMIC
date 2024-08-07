@@ -33,9 +33,15 @@ class Simulator:
         self.netlist_path = None
 
         # Set number of cycles for algorithm and the cycle time
-        self.steps = config["steps"]
+        with open("./Structures/IMPLY_parameters.json", "r") as f:
+            self.parameters = json.load(f)
+        self.steps = self.parameters["t_pulse"]
+        # self.steps = config["steps"]
         self.cycle_time = config["cycle_time"]
         self.sim_time = self.steps * self.cycle_time
+
+        with open("./Structures/VTEAM_parameters.json", "r") as g:
+            self.vteam_parameters = json.load(g)
 
         if os.path.exists("./temp/"):
             shutil.rmtree("./temp/")
@@ -47,8 +53,9 @@ class Simulator:
         :param param_values: list of parameter values [memristor values, R_on, R_off]
         """
 
-        # Set stop time for transient analysis
+        # Set stop time for transient analysis and R_G for IMPLY logic
         self.netlist.set_parameter("tstop", f"{self.sim_time}u")
+        self.netlist.set_parameter("R_g", self.parameters["R_G"])
 
         with open(f"./Structures/{self.topology}.json") as f:
             topology_data = json.load(f)
@@ -162,7 +169,7 @@ class Simulator:
         print("Calculating energy consumption:")
         self.logger.L.info('Started calculating energy consumption')
         energy = []
-        R_on, R_off = "10k", "1000k"
+        R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
         for inputs in tqdm(range(8)):
             name = bin(inputs)[2:].zfill(3)
 
@@ -192,7 +199,7 @@ class Simulator:
         for inputs in tqdm(range(8)):
 
             name = bin(inputs)[2:].zfill(3)
-            r_on_c, r_off_c = resistance_comb9(dev)
+            r_on_c, r_off_c = resistance_comb9(dev, self.vteam_parameters["R_off"], self.vteam_parameters["R_on"])
 
             comb = []
 
@@ -200,7 +207,7 @@ class Simulator:
             if dev > 0:
                 for R_on, R_off in zip(r_on_c, r_off_c):
 
-                    param_values = ([f"{name[0]*3}n", f"{name[1]*3}n", f"{name[2]*3}n"]
+                    param_values = ([f"{int(name[0])*3}n", f"{int(name[1])*3}n", f"{int(name[2])*3}n"]
                                     + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
                     self.run_simulation(param_values)
 
@@ -211,7 +218,7 @@ class Simulator:
 
             # If the simulation is done without any deviation
             elif dev == 0:
-                R_on, R_off = "10k", "1000k"
+                R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
                 param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
                                 + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
                 self.run_simulation(param_values)
@@ -227,6 +234,7 @@ class Simulator:
             os.makedirs(f"./outputs/deviation_results/", exist_ok=True)
             with open(f"./outputs/deviation_results/dev_{dev}", 'wb') as fp:
                 pickle.dump(valid_res, fp)
-            self.logger.L.info(f'Results of experiments with deviation: {dev} saved in \"outputs/deviation_results/dev_{dev}\"')
+            self.logger.L.info(f'Results of experiments with deviation: {dev} saved in '
+                               f'\"outputs/deviation_results/dev_{dev}\"')
 
 
