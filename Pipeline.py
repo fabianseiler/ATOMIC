@@ -14,7 +14,7 @@ from src.util import copy_pwm_files
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Run the pipeline and evaluate the IMPLY algorithm')
-    parser.add_argument('--config_file', type=str, default='./configs/Serial_exact.json', help='Configuration file')
+    parser.add_argument('--config_file', type=str, default='./configs/SSAx2.json', help='Configuration file')
     parser.add_argument('--max_dev', type=int, default=50, help='Maximum deviation for experiments, recommended: 50')
     parser.add_argument('--dev_wf', type=int, default=20, help='Deviations at which waveforms are plotted')
     parser.add_argument('--fig_type', type=str, default='pdf',

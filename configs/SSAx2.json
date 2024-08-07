@@ -6,10 +6,7 @@
   "work": ["w1", "w2"],
   "outputs": ["a", "c"],
   "switches": ["a_sw", "b_sw", "c_sw1", "c_sw2", "w1_sw1", "w1_sw2", "w2_sw1", "w2_sw2"],
-  "voltages_mem": ["V1", "V3", "V8", "V11", "V14"],
-  "voltages_sw": ["V2", "V4", "V9", "V10", "V12", "V13", "V15", "V16"],
   "steps": 6,
-  "cycle_time": 30,
   "output_states": {"sum":  [1, 1, 0, 0, 1, 0, 0, 0],
                     "cout": [0, 0, 1, 1, 0, 1, 1, 1]}
 }

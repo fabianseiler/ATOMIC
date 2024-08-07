@@ -21,8 +21,14 @@ class Simulator:
         self.topology = config["topology"]
         self.memristors = config["memristors"]
         self.switches = config["switches"]
-        self.voltages_mem = config["voltages_mem"]
-        self.voltages_sw = config["voltages_sw"]
+
+        with open(f"./Structures/{self.topology}.json", "r") as f:
+            self.topology_data = json.load(f)
+        indices = [self.topology_data["memristors"].index(item) for item in self.memristors]
+        self.voltages_mem = [self.topology_data["voltages_mem"][index] for index in indices]
+
+        indices = [self.topology_data["switches"].index(item) for item in self.switches]
+        self.voltages_sw = [self.topology_data["voltages_sw"][index] for index in indices]
 
         # Open SPICE editor
         try:
@@ -35,9 +41,8 @@ class Simulator:
         # Set number of cycles for algorithm and the cycle time
         with open("./Structures/IMPLY_parameters.json", "r") as f:
             self.parameters = json.load(f)
-        self.steps = self.parameters["t_pulse"]
-        # self.steps = config["steps"]
-        self.cycle_time = config["cycle_time"]
+        self.steps = config["steps"]
+        self.cycle_time = self.parameters["t_pulse"]
         self.sim_time = self.steps * self.cycle_time
 
         with open("./Structures/VTEAM_parameters.json", "r") as g:
@@ -57,15 +62,12 @@ class Simulator:
         self.netlist.set_parameter("tstop", f"{self.sim_time}u")
         self.netlist.set_parameter("R_g", self.parameters["R_G"])
 
-        with open(f"./Structures/{self.topology}.json") as f:
-            topology_data = json.load(f)
-
-        for i, mem in enumerate(topology_data["memristors"]):
-            self.netlist.set_component_value(device=f'{topology_data["voltages_mem"][i]}',
+        for i, mem in enumerate(self.topology_data["memristors"]):
+            self.netlist.set_component_value(device=f'{self.topology_data["voltages_mem"][i]}',
                                              value=open_csv(f"./Structures/{self.topology}/{mem}.csv"))
 
-        for j, switch in enumerate(topology_data["switches"]):
-            self.netlist.set_component_value(device=f'{topology_data["voltages_sw"][j]}',
+        for j, switch in enumerate(self.topology_data["switches"]):
+            self.netlist.set_component_value(device=f'{self.topology_data["voltages_sw"][j]}',
                                              value=open_csv(f"./Structures/{self.topology}/{switch}.csv"))
 
         # Set the parameters

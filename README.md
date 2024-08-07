@@ -63,10 +63,7 @@ A template to copy can be seen here:
     "work": [""],                             
     "outputs": ["", ""],                        
     "switches": ["", "", "", ""],
-    "voltages_mem": ["", ""],
-    "voltages_sw": ["", ""],
     "steps": ,
-    "cycle_time": ,
     "output_states": {"": [0, 0, 0, 0, 0, 0, 0, 0],
                       "": [1, 1, 1, 1, 1, 1, 1 ,1]}
     }
@@ -79,14 +76,12 @@ We explain the different keys here:
 * **work:** Work memristors in the form \["w1", "w2"]
 * **outputs:** Output memristors in the form \["a", "c"]
 * **switches:** Name of all switches in the form \["a_sw", "b_sw", ... "w2_sw"]
-* **voltages_mem:** Voltages applied to the memristors in the form \["V1", "V3", ...]
-* **voltages_sw:** Voltages to control the switches in the form \["V2", "V4", ...]
 * **steps:** Number of steps for the algorithm (INT)
-* **cycle_time:** Time for each step in the simulation in us (INT)
 * **output_states:** dictionary with the name of the output and the defined resulting bitvector
                      for all possible input combinations
 
-The corresponding Voltages for each memristor and switch for different topologies are:
+For the sake of extending this project we compiled a list for each voltage that controls either memristors or switches:
+
 ```
 ------------- SERIAL ---------------
 Memristors
