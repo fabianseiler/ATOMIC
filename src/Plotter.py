@@ -41,7 +41,7 @@ class Plotter:
         self.energy = self.Simulator.calculate_energy()
 
     def plot_waveforms_with_deviation(self, comb: str, dev: int, recompute: bool = False,
-                                      show: bool = False, fig_type: str = 'pdf') -> None:
+                                      show: bool = False, fig_type: str = 'pdf', plots_per_subfigure: int = 3) -> None:
         """
         Plots specific waveforms with chosen deviation
         :param comb: input combination
@@ -49,7 +49,11 @@ class Plotter:
         :param recompute: If the deviation experiments need to be recomputed
         :param show: If the deviation experiments should be shown
         :param fig_type: Type of plot
+        :param plots_per_subfigure: Number of plots per subfigure
         """
+
+        self.plots_per_subfigure = plots_per_subfigure
+
         if recompute:
             self.logger.L.info(f"Started recomputing deviation {dev}")
 
@@ -102,7 +106,7 @@ class Plotter:
             total_wv = len(wv_interpolated_array)
             num_subplots = math.ceil(total_wv/self.plots_per_subfigure)
 
-            fig = plt.figure(figsize=(16, 2*num_subplots))
+            fig = plt.figure(figsize=(16, max(2*num_subplots, 3)))
             if num_subplots == 1:
                 gs = gridspec.GridSpec(1, 1)
             else:

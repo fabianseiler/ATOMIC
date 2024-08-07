@@ -180,8 +180,8 @@ class Simulator:
             self.run_simulation(param_values, energy_sim=True)
             energy.append(self.read_energy() * self.sim_time * 1e-6)
 
-        print(f"Average Energy consumption: {energy}")
-        print(f"Energy over Combination: {sum(energy)/len(energy)}")
+        print(f"Average Energy consumption: {sum(energy)/len(energy)}")
+        print(f"Energy over Combination: {energy}")
         self.logger.L.info(f'Average Energy consumption: {sum(energy)/len(energy)}')
         self.logger.L.info(f'Energy over Combinations: {energy}')
         return energy, sum(energy)/len(energy)

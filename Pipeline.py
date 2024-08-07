@@ -10,7 +10,7 @@ from src.Simulator import Simulator
 from src.Plotter import Plotter
 from src.util import copy_pwm_files
 
-
+# TODO: Update the Project Overview Image
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Run the pipeline and evaluate the IMPLY algorithm')
