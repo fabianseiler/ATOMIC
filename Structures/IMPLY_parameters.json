@@ -1,7 +1,7 @@
 {
   "V_Set": "1",
   "V_Cond": "900m",
-  "V_Reset": "-1",
+  "V_Reset": "-2",
   "R_G": "40k",
   "t_pulse": 30
 }

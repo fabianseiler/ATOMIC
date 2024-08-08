@@ -1,12 +1,12 @@
 {
   "topology": "Serial",
-  "algorithm": "exact_rohani.txt",
+  "algorithm": "exact_karimi.txt",
   "memristors": ["a", "b", "c", "w1", "w2"],
   "inputs": ["a", "b", "c"],
   "work": ["w1", "w2"],
   "outputs": ["a", "c"],
   "switches": ["a_sw", "b_sw", "c_sw", "w1_sw", "w2_sw", "w3_sw"],
-  "steps": 21,
+  "steps": 22,
   "output_states": {"sum":  [0, 1, 1, 0, 1, 0, 0, 1],
                     "cout": [0, 0, 0, 1, 0, 1, 1, 1]}
 }
