@@ -152,10 +152,14 @@ To evaluate all previously configured algorithms, run the command
 ## Acknowledgements
 This Project was built upon the [PyLTSpice framework](https://github.com/nunobrum/PyLTSpice), which allows for an easy and diverse 
 interface to interact with SPICE objects. Special thanks to the creator Nuno Brum, 
-for his great work and detailed [documentation](https://pyltspice.readthedocs.io/en/latest/) . 
+for his great work and detailed [documentation](https://pyltspice.readthedocs.io/en/latest/) .
+
+## Contacts
+* Website of the EclectX Group: https://eclectx.org/
+* Repo Owner: [fabian.seiler\@tuwien.ac.at](mailto:fabian.seiler@tuwien.ac.at?subject=ATOMIC-SAV)
 
 ## Citation
-If you find this project useful, please consider starring ⭐ and citing our recent journals for which we implemented this project.
+If you find this project useful, please consider starring ⭐ and citing our recent journals for which we implemented this project.\
 
 ```
 @article{seiler2024NoCarry,

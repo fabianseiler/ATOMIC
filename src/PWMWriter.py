@@ -23,6 +23,8 @@ class PWMWriter:
         self.count = 0
         self.topology = config["topology"]
         self.output_path = f"./outputs/PWM_output/"
+        if not os.path.exists(self.output_path):
+            os.makedirs(self.output_path)
 
         with open("./Structures/IMPLY_parameters.json", "r") as f:
             self.params = json.load(f)
