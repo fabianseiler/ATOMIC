@@ -51,6 +51,34 @@ where *j,k* also correspond to the numbers given to the memristors.
 The memristor number depends on the placement of each memristor in the config file.
 (e.g. "memristors": ["a", "b", "c", "w1", "w2"] have the numbers [0, 1, 2, 3, 4])
 
+Examples for the different topologies:
+* **Serial:**
+Comments can be written like this and are filtered out automatically.
+```
+F3          # Operation M3 = 0
+F4,5        # Operation M4 = M5 = 0
+I1,2        # Operation M2' = M1 -> M2
+```
+
+* **Semi-Serial:**
+Operations can be declared like this in both sections:  OP1 | OP2
+```
+F3,4  | F5        # Section 1 | Section 2 
+I0,3  | I2,4      # Operations: M3' = M0 -> M3 | M4' = M2 -> M4
+I4,5  | NOP       # Operation: M5' = M4 -> M5 | NOP (No Operation)
+I2,5  | F3,4      # Operation: M5' = M2 -> M5 | M3 = M4 = 0
+```
+
+* **Semi-Parallel:**
+Operations can be declared for both sections and in between sections:  OP1 | OP2 | OP3 \
+When OP1 or OP2 are not NOP => OP3 must be NOP \
+When OP3 is not NOP => OP1 and OP2 must be NOP
+```
+F3,4  | F5   | NOP      # Section 1 | Section 2 | In-between Sections 
+I0,3  | NOP  | NOP      # Operations: M3' = M0 -> M3 | NOP | NOP
+NOP   | NOP  | I0,2     # Operation: NOP | NOP | M2' = M0 -> M2
+I2,5  | F3,4 | NOP      # Operation: M5' = M2 -> M5 | M3 = M4 = 0 | NOP
+```
 
 #### (2) Create corresponding config file
 
