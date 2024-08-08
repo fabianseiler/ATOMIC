@@ -10,7 +10,7 @@ from src.Simulator import Simulator
 from src.Plotter import Plotter
 from src.util import copy_pwm_files
 
-# TODO: Update the Project Overview Image
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Run the pipeline and evaluate the IMPLY algorithm')
@@ -44,8 +44,8 @@ if __name__ == '__main__':
 
     # Plotter
     PLT = Plotter(config)
-    PLT.plot_deviation_scatter(max_dev=max_dev, recompute=True, fig_type=fig_type)
-    PLT.plot_deviation_range(max_dev=max_dev, recompute=False, fig_type=fig_type)
+    PLT.plot_deviation_scatter(max_dev=max_dev, recompute=False, fig_type=fig_type)
+    PLT.plot_deviation_range(max_dev=max_dev, recompute=False, fig_type=fig_type, save_dev_range=True)
     print(f"\n--------- Deviation Experiments completed --------\n")
 
     for comb in range(8):

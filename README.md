@@ -1,4 +1,7 @@
-# Automatic Memristive IMPLY Verification and Simulation Tool
+<!-- AuToSVIMC **Au**tomatic **To**ol for **S**imulation and **V**erification of **I**MPLY logic for **Me**mristive **C**ircuits
+AVerSIMC: Automatic Verification and Simulation of IMPLY logic for Memristive Circuits -->
+
+# ATOMIC-SAV: Automatic Tool for Memristive IMPLY-based Circuit-level Simulation and Verification
 
 An automatic verification, evaluation, and plotting tool for memristive IMPLY-based In-Memory Computing 
 that is based on the PyLTSpice framework. This tool is able to automatically evaluate a large portion of the 

@@ -1,6 +1,7 @@
 """
 created by Fabian Seiler at 23.07.24
 """
+import csv
 import math
 import pickle
 import numpy as np
@@ -234,13 +235,14 @@ class Plotter:
             plt.show()
 
     def plot_deviation_range(self, max_dev: int = 50, recompute: bool = False,
-                             show: bool = False, fig_type: str = 'pdf') -> None:
+                             show: bool = False, fig_type: str = 'pdf', save_dev_range: bool = False) -> None:
         """
         Plot the range of output states for every output state
         :param max_dev: maximum deviation
         :param recompute: If the deviation experiments need to be recomputed
         :param show: If the deviation experiments should be shown
         :param fig_type: Type of plot
+        :param save_dev_range: If the range of the deviation experiments should be stored
         """
         fig = plt.figure(figsize=(max(2*max_dev/10, 5), 5))
 
@@ -289,8 +291,18 @@ class Plotter:
                 range_logic0[0].append(l0_min), range_logic0[1].append(l0_max)
 
             r0, r1 = np.array(range_logic0), np.array(range_logic1)
+            if save_dev_range:
+                text = "Deviation," + "".join([f"{str(d)}," for d in self.get_dev_list(max_dev)]) + "\n"
+                for idx, out in enumerate(self.expected_logic):
+                    data_str = (f"Output: {out}\n"
+                                f"Logic 0 (min), " + ", ".join(map(str, r0[idx, :, 0])) + "\n"
+                                f"Logic 0 (max), " + ", ".join(map(str, r0[idx, :, 1])) + "\n"
+                                f"Logic 1 (min), " + ", ".join(map(str, r1[idx, :, 0])) + "\n"
+                                f"Logic 1 (max), " + ", ".join(map(str, r1[idx, :, 1])) + "\n")
+                    text += data_str
 
-        # TODO: Extract and save deviation ranges
+                with open(f"./outputs/deviation_results/range_logic1.csv", "w") as fp:
+                    fp.write(text[:-1])
 
         except Exception as e:
             self.logger.L.info(f"Extraction of min and max values for each deviation failed due to: {e}")
