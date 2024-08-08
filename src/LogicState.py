@@ -1,6 +1,7 @@
 """
 Created by Fabian Seiler @ 21.07.2024
 """
+import os.path
 
 import numpy as np
 from src.util import Logger
@@ -46,6 +47,14 @@ class LogicState:
             # Correct Output States
             self.output_states_names = [array for array in self.output_states]
             self.outputs = [np.array(self.output_states[state], dtype=np.uint8) for state in self.output_states_names]
+
+            # Create file to store state history
+            if not os.path.exists("./outputs/State_History.txt"):
+                open("./outputs/State_History.txt", "w")
+            else:
+                with open("./outputs/State_History.txt", "w") as f:
+                    f.write("")
+
         except Exception as e:
             self.logger.L.error(f"Initialization of LogicState failed: {e}")
 
@@ -59,15 +68,22 @@ class LogicState:
         """
         Function that prints out the logical states of each memristor
         """
-        print("#####################################")
+        h_str = "#####################################"
+        print(h_str)
         print(f"Applied operations: {self.get_state_number()}")
         header_str = " ".join([f"{mem} |" if len(mem) == 1 else f"{mem}|" for mem in self.memristors])
         print(header_str)
         print("--------------------")
+        header_str += "\n--------------------"
         for i in range(pow(2, len(self.inputs))):
+            header_str += "\n" + np.array2string(self.state[i, :], precision=0, separator=' | ')[1:-1]
             print(np.array2string(self.state[i, :], precision=0, separator=' | ')[1:-1])
-        print("#####################################")
+        print(h_str)
 
+        with (open("./outputs/State_History.txt", "a") as file):
+            string = (h_str + "\n" + f"Applied operations: {self.get_state_number()}" + "\n" +
+                      header_str + "\n" + h_str + "\n")
+            file.write(string)
         self.logger.L.info(f"Applied Operations: {self.get_state_number()}")
 
     def get_state_number(self) -> [str]:

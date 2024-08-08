@@ -3175,3 +3175,92 @@
 2024-08-08 14:24:05,366 - Simulation - INFO - Started calculating deviation: 50
 2024-08-08 14:25:19,318 - Simulation - INFO - Results of experiments with deviation: 50 saved in "outputs/deviation_results/dev_50"
 2024-08-08 14:25:23,115 - Simulation - INFO - Files for exact_karimi were saved successfully!
+2024-08-08 20:57:05,489 - Simulation - INFO - Initializing class LogicState
+2024-08-08 20:57:09,991 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-08 20:57:09,992 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]']
+2024-08-08 20:57:09,993 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]']
+2024-08-08 20:57:09,993 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]']
+2024-08-08 20:57:09,994 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]']
+2024-08-08 20:57:09,994 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]']
+2024-08-08 20:57:09,995 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]']
+2024-08-08 20:57:09,995 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]']
+2024-08-08 20:57:09,996 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]']
+2024-08-08 20:57:09,996 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]']
+2024-08-08 20:57:09,997 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]']
+2024-08-08 20:57:09,997 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]']
+2024-08-08 20:57:09,998 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]']
+2024-08-08 20:57:09,998 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]']
+2024-08-08 20:57:09,999 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]']
+2024-08-08 20:57:09,999 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]']
+2024-08-08 20:57:10,000 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]']
+2024-08-08 20:57:10,000 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]']
+2024-08-08 20:57:10,001 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]', 'I[a,w1]']
+2024-08-08 20:57:10,001 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]', 'I[a,w1]', 'I[b,w1]']
+2024-08-08 20:57:10,001 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]', 'I[a,w1]', 'I[b,w1]', 'F[b]']
+2024-08-08 20:57:10,002 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]', 'I[a,w1]', 'I[b,w1]', 'F[b]', 'I[w1,b]']
+2024-08-08 20:57:10,002 - Simulation - WARNING - Output [0 1 1 0 1 0 0 1] was not found in any memristive state
+2024-08-08 20:57:10,003 - Simulation - INFO - Initializing PWM Writer
+2024-08-08 20:57:10,006 - Simulation - INFO - File ./outputs/PWM_output/a.csv created!
+2024-08-08 20:57:10,006 - Simulation - INFO - File ./outputs/PWM_output/b.csv created!
+2024-08-08 20:57:10,007 - Simulation - INFO - File ./outputs/PWM_output/c.csv created!
+2024-08-08 20:57:10,007 - Simulation - INFO - File ./outputs/PWM_output/w1.csv created!
+2024-08-08 20:57:10,007 - Simulation - INFO - File ./outputs/PWM_output/w2.csv created!
+2024-08-08 20:57:10,007 - Simulation - INFO - File ./outputs/PWM_output/a_sw.csv created!
+2024-08-08 20:57:10,008 - Simulation - INFO - File ./outputs/PWM_output/b_sw.csv created!
+2024-08-08 20:57:10,008 - Simulation - INFO - File ./outputs/PWM_output/c_sw.csv created!
+2024-08-08 20:57:10,008 - Simulation - INFO - File ./outputs/PWM_output/w1_sw.csv created!
+2024-08-08 20:57:10,008 - Simulation - INFO - File ./outputs/PWM_output/w2_sw.csv created!
+2024-08-08 20:57:10,012 - Simulation - INFO - PWM outputs written to files successfully
+2024-08-08 20:57:10,042 - Simulation - INFO - Initializing Plotter
+2024-08-08 20:57:10,042 - Simulation - INFO - Initializing Simulator
+2024-08-08 20:57:10,052 - Simulation - INFO - Started calculating energy consumption
+2024-08-08 20:57:18,221 - Simulation - INFO - Average Energy consumption: 4.687947e-09
+2024-08-08 20:57:18,221 - Simulation - INFO - Energy over Combinations: [3.527502e-09, 4.190194800000001e-09, 4.4873928e-09, 5.2539564000000004e-09, 4.0958676e-09, 4.849845e-09, 5.2204218e-09, 5.8783956e-09]
+2024-08-08 20:57:18,434 - Simulation - INFO - Started recomputing deviation experiments up to a deviation of 50
+2024-08-08 20:57:18,434 - Simulation - INFO - Started calculating deviation: 0
+2024-08-08 20:57:32,557 - Simulation - INFO - Initializing class LogicState
+2024-08-08 20:59:23,418 - Simulation - INFO - Initializing class LogicState
+2024-08-08 21:00:35,408 - Simulation - INFO - Initializing class LogicState
+2024-08-08 21:01:36,006 - Simulation - INFO - Initializing class LogicState
+2024-08-08 21:01:48,102 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-08 21:03:02,535 - Simulation - INFO - Initializing class LogicState
+2024-08-08 21:03:22,254 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-08 21:04:00,715 - Simulation - INFO - Initializing class LogicState
+2024-08-08 21:04:00,716 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-08 21:04:00,716 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]']
+2024-08-08 21:04:00,717 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]']
+2024-08-08 21:04:00,717 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]']
+2024-08-08 21:04:00,718 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]']
+2024-08-08 21:04:00,718 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]']
+2024-08-08 21:04:00,719 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]']
+2024-08-08 21:04:00,719 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]']
+2024-08-08 21:04:00,719 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]']
+2024-08-08 21:04:00,720 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]']
+2024-08-08 21:04:00,720 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]']
+2024-08-08 21:04:00,721 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]']
+2024-08-08 21:04:00,721 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]']
+2024-08-08 21:04:00,721 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]']
+2024-08-08 21:04:00,722 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]']
+2024-08-08 21:04:00,722 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]']
+2024-08-08 21:04:00,723 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]']
+2024-08-08 21:04:00,723 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]']
+2024-08-08 21:04:00,724 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]', 'I[a,w1]']
+2024-08-08 21:04:00,724 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]', 'I[a,w1]', 'I[b,w1]']
+2024-08-08 21:04:00,725 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]', 'I[a,w1]', 'I[b,w1]', 'F[b]']
+2024-08-08 21:04:00,725 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[a,w1]', 'I[b,w2]', 'I[w1,b]', 'I[a,w2]', 'F[a]', 'I[b,a]', 'I[w2,a]', 'F[b]', 'I[a,b]', 'F[w1]', 'I[c,w1]', 'I[c,a]', 'F[c]', 'I[w2,c]', 'I[a,c]', 'I[w2,b]', 'F[w1]', 'I[a,w1]', 'I[b,w1]', 'F[b]', 'I[w1,b]']
+2024-08-08 21:04:00,725 - Simulation - WARNING - Output [0 1 1 0 1 0 0 1] was not found in any memristive state
+2024-08-08 21:04:00,725 - Simulation - INFO - Initializing PWM Writer
+2024-08-08 21:04:00,725 - Simulation - INFO - File ./outputs/PWM_output/a.csv created!
+2024-08-08 21:04:00,726 - Simulation - INFO - File ./outputs/PWM_output/b.csv created!
+2024-08-08 21:04:00,726 - Simulation - INFO - File ./outputs/PWM_output/c.csv created!
+2024-08-08 21:04:00,726 - Simulation - INFO - File ./outputs/PWM_output/w1.csv created!
+2024-08-08 21:04:00,726 - Simulation - INFO - File ./outputs/PWM_output/w2.csv created!
+2024-08-08 21:04:00,726 - Simulation - INFO - File ./outputs/PWM_output/a_sw.csv created!
+2024-08-08 21:04:00,726 - Simulation - INFO - File ./outputs/PWM_output/b_sw.csv created!
+2024-08-08 21:04:00,727 - Simulation - INFO - File ./outputs/PWM_output/c_sw.csv created!
+2024-08-08 21:04:00,727 - Simulation - INFO - File ./outputs/PWM_output/w1_sw.csv created!
+2024-08-08 21:04:00,727 - Simulation - INFO - File ./outputs/PWM_output/w2_sw.csv created!
+2024-08-08 21:04:00,740 - Simulation - INFO - PWM outputs written to files successfully
+2024-08-08 21:04:00,749 - Simulation - INFO - Initializing Plotter
+2024-08-08 21:04:00,749 - Simulation - INFO - Initializing Simulator
+2024-08-08 21:04:00,751 - Simulation - INFO - Started calculating energy consumption
