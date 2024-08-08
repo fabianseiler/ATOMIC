@@ -118,7 +118,8 @@ Switches
 
 #### (3) Evaluate the algorithm
 To evaluate the new algorithm and automatically create varying plots run:\
-```python  Pipeline.py --config_file=CONFIG_FILENAME.json```\
+```python  Pipeline.py --config_file=CONFIG_FILENAME.json``` or use the ```Pipeline.ipynb``` notebook the run pipeline
+step by step (This is recommended for development).\
 The plots consist of: 
 1) Waveforms with deviation for all input combinations, 
 2) Scatter plot of outputs with increasing deviation
