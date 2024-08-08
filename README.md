@@ -125,14 +125,18 @@ The plots consist of:
 2) Scatter plot of outputs with increasing deviation
 3) Output State range plot with increasing deviation
 
-<img alt="waveform" src="./assets/Comb_100_20.png"/>
 <figcaption >Figure 1: Example Waveform (SSAx1) with a deviation of &plusmn;20% </figcaption>
-<img alt="waveform" src="./assets/Comb_011_40.png"/>
+<img alt="waveform" src="./assets/Comb_100_20.png"/>
+
 <figcaption >Figure 2: Example Waveform (SSAx2) with a deviation of &plusmn;40% </figcaption>
-<img alt="scatter" src="./assets/OutputDeviation_Scatter.png"/>
+<img alt="waveform" src="./assets/Comb_011_40.png"/>
+
 <figcaption >Figure 3: Example scatter plot of output states with increasing deviation range </figcaption>
-<img alt="deviation_range" src="./assets/StateDeviations.png" width="250" height="250"/>
+<img alt="scatter" src="./assets/OutputDeviation_Scatter.png"/>
+
 <figcaption >Figure 4: Example output state range plot with increasing deviation </figcaption>
+<img alt="deviation_range" src="./assets/StateDeviations.png" width="250" height="250"/>
+
 
 Additional flags are:
 1) ```--max_dev=INT``` which sets the maximum deviation to be evaluated 

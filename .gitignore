@@ -6,12 +6,3 @@ temp/*
 !temp/
 outputs/*
 !outputs/
-Simulation.log
-outputs/deviation_results/*
-!outputs/deviation_results/
-outputs/Images/*
-!outputs/Images/
-outputs/PWM_output/*
-!outputs/PWM_output/
-outputs/Waveforms/*
-!outputs/Waveforms/
