@@ -12,6 +12,10 @@ from tqdm import tqdm
 
 
 class Simulator:
+    """
+    This class is responsible for Netlist writing, SPICE Simulations, and energy calculations
+    given PWM files, configurable parameters, and resistive deviations. The results of these experiments are stored.
+    """
 
     def __init__(self, config):
 

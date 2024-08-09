@@ -9,7 +9,8 @@ from src.util import Logger
 
 class PWMWriter:
     """
-    Creates PWM files given an algorithm in IMPLY Logic
+    This class is responsible for automatically creating PWM files (control logic for IMPLY/FALSE operations)
+    depending on algorithm and topology given.
     """
 
     def __init__(self, config: dict):

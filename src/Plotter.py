@@ -15,6 +15,9 @@ from src.util import Logger
 
 
 class Plotter:
+    """
+    This class builds upon the Simulator class and is responsible for the extraction and visualization of the data.
+    """
 
     def __init__(self, config):
 

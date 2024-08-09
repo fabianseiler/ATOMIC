@@ -1,7 +1,7 @@
 """
 Created by Fabian Seiler at 23.07.24
 
-Consists of useful utility functions
+Consists of useful utility functions for the other classes + Logger class
 """
 
 import logging
@@ -85,8 +85,8 @@ def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) ->
     """
     Returns two lists with 9 resistance combinations
     :param dev: deviation of the resistance
-    :param R_H: High State Resistance
-    :param R_L: Low State Resistance
+    :param R_off: High State Resistance
+    :param R_on: Low State Resistance
     :return: Ron and Roff lists with varying resistance combinations
     """
     if type(R_off) is str:

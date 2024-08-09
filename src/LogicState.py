@@ -9,8 +9,8 @@ from src.util import Logger
 
 class LogicState:
     """
-    Represents the logical states for each memristor.
-    Can represent IMPLY and FALSE operations, and verifies algorithms
+    This class is responsible for creating a State History for each memristor
+    and to verify the functionality of a given algorithm in IMPLY logic
     """
 
     def __init__(self, config: dict):
