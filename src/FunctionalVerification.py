@@ -7,7 +7,7 @@ import numpy as np
 from src.util import Logger
 
 
-class LogicState:
+class FunctionalVerification:
     """
     This class is responsible for creating a State History for each memristor
     and to verify the functionality of a given algorithm in IMPLY logic
@@ -16,7 +16,7 @@ class LogicState:
     def __init__(self, config: dict):
 
         self.logger = Logger()
-        self.logger.L.info('Initializing class LogicState')
+        self.logger.L.info('Initializing class FunctionalVerification')
 
         try:
             self.topology = config["topology"]    # ["Serial", "Semi-Serial", "Semi-Parallel"]
@@ -56,7 +56,7 @@ class LogicState:
                     f.write("")
 
         except Exception as e:
-            self.logger.L.error(f"Initialization of LogicState failed: {e}")
+            self.logger.L.error(f"Initialization of FunctionalVerification failed: {e}")
 
     def generate_input(self, index: int) -> [int]:
         """

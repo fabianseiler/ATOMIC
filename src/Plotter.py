@@ -1,7 +1,6 @@
 """
 created by Fabian Seiler at 23.07.24
 """
-import csv
 import math
 import pickle
 import numpy as np

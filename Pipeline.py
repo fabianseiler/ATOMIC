@@ -4,8 +4,8 @@ Created by Fabian Seiler @ 26.07.24
 import json
 import argparse
 
-from src.LogicState import LogicState
-from src.PWMWriter import PWMWriter
+from src.FunctionalVerification import FunctionalVerification
+from src.ControlLogicGenerator import ControlLogicGenerator
 from src.Simulator import Simulator
 from src.Plotter import Plotter
 from src.util import copy_pwm_files
@@ -14,7 +14,7 @@ from src.util import copy_pwm_files
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Run the pipeline and evaluate the IMPLY algorithm')
-    parser.add_argument('--config_file', type=str, default='./configs/Serial_exact_karimi.json', help='Configuration file')
+    parser.add_argument('--config_file', type=str, default='./configs/SSAx2.json', help='Configuration file')
     parser.add_argument('--max_dev', type=int, default=50, help='Maximum deviation for experiments, recommended: 50')
     parser.add_argument('--dev_wf', type=int, default=20, help='Deviations at which waveforms are plotted')
     parser.add_argument('--fig_type', type=str, default='pdf',
@@ -29,17 +29,17 @@ if __name__ == '__main__':
         config = json.load(f)
 
     # Check if the algorithm is valid and the resulting states are correct
-    LS = LogicState(config)
-    LS.calc_algorithm(plot_tt=True)
+    Verifier = FunctionalVerification(config)
+    Verifier.calc_algorithm(plot_tt=True)
     print("\n--------------- Logic States verified! ---------------\n")
 
     # Automatically create PWM signals and store them in "PWM_output"
-    PWM = PWMWriter(config)
-    PWM.eval_algo()
+    CLG = ControlLogicGenerator(config)
+    CLG.eval_algo()
     print("\n--------------- PWM Signals created! ---------------\n")
 
     # Copy the files to the folder of the corresponding topology (This removes the old files !)
-    copy_pwm_files(config, PWM.step_size)
+    copy_pwm_files(config, CLG.step_size)
     print(f"\n--------- Files of {config["topology"]} topology overwritten! --------\n")
 
     # Plotter

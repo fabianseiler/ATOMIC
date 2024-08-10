@@ -7,16 +7,16 @@ import os
 from src.util import Logger
 
 
-class PWMWriter:
+class ControlLogicGenerator:
     """
-    This class is responsible for automatically creating PWM files (control logic for IMPLY/FALSE operations)
-    depending on algorithm and topology given.
+    This class is responsible for automatically creating the control logic for IMPLY and FALSE operations
+    (via PWM signals in .csv files) depending on algorithm and topology given.
     """
 
     def __init__(self, config: dict):
 
         self.logger = Logger()
-        self.logger.L.info(f"Initializing PWM Writer")
+        self.logger.L.info(f"Initializing {self.__class__.__name__}")
 
         self.algo = config["algorithm"]
         # self.step_size = config["cycle_time"]
@@ -250,43 +250,6 @@ class PWMWriter:
                 self.pwm_sw[idx1].append(f"{self.step_size * (self.count + 1)}u,-100")
                 self.pwm_sw[idx2].append(f"{self.step_size * self.count + 0.001}u,-100")
                 self.pwm_sw[idx2].append(f"{self.step_size * (self.count + 1)}u,-100")
-
-            """
-            already_set = False
-            for section in range(len(digits)):
-                # Calculate the indexing for accessing the correct switches
-                idx = i if i < 2 else (2 * (i - 2) + 2 if section == 0 else 2 * (i - 2) + 1)
-
-                if i in digits[section]:  # Check if memristor is used
-                    if cmd[section][0] == 'F':  # if false operation
-                        self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,-1")
-                        self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,-1")
-                        self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
-                        self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
-
-                    elif cmd[section][0] == 'I':  # If IMPLY operation
-                        if i == digits[section][0]:
-                            self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,900m")
-                            self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,900m")
-                            self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
-                            self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
-                        else:
-                            self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,1")
-                            self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,1")
-                            self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
-                            self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
-                else:
-                    if not already_set and i not in digits[section - 1]:
-                        self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
-                        self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
-                        already_set = True
-
-                    if mem in ["a", "b"] and section == 1:
-                        None
-                    else:
-                        self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,-100")
-                        self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,-100")
-            """
 
     @staticmethod
     def memristor_used(mem_idx: int, digits: []) -> bool:

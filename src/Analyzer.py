@@ -8,6 +8,6 @@ class Analyzer:
     This class can be utilized to advance this project by implementing behaviour/application level analysis tools.
     """
 
-    def __init__(self):
+    def __init__(self, config):
         self.init = None
 
