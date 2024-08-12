@@ -26,10 +26,11 @@ For linux users we refer to [LTSpice on Linux](https://github.com/joaocarvalhoop
 for more information on how to install LTSpice.
 
 ### Python Dependencies
-To install the required python libraries, run:
-```pip install -r requirements.txt -e .``` \
-In the case of problems, try to first run: ```pip install --upgrade pip setuptools```
-
+To install the required python libraries, run: \
+```python.exe -m pip install --upgrade pip``` \
+```python -m venv atomic``` \
+```.\atomic\Scripts\activate.bat``` \
+```pip install -r requirements.txt``` 
 
 ## How to use
 

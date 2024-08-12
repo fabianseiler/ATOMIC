@@ -40,17 +40,17 @@ if __name__ == '__main__':
 
     # Copy the files to the folder of the corresponding topology (This removes the old files !)
     copy_pwm_files(config, CLG.step_size)
-    print(f"\n--------- Files of {config["topology"]} topology overwritten! --------\n")
+    print(f"""\n--------- Files of {config["topology"]} topology overwritten! --------\n""")
 
     # Plotter
     PLT = Plotter(config)
     PLT.plot_deviation_scatter(max_dev=max_dev, recompute=True, fig_type=fig_type)
     PLT.plot_deviation_range(max_dev=max_dev, recompute=False, fig_type=fig_type, save_dev_range=True)
-    print(f"\n--------- Deviation Experiments completed --------\n")
+    print(f"""\n--------- Deviation Experiments completed --------\n""")
 
     for comb in range(8):
         comb_str = bin(comb)[2:].zfill(3)
         PLT.plot_waveforms_with_deviation(comb_str, dev=dev_wf, recompute=False, fig_type=fig_type)
-    print(f"\n--------- Waveforms with deviation {dev_wf} saved --------\n")
+    print(f"""\n--------- Waveforms with deviation {dev_wf} saved --------\n""")
 
-    PLT.save_algorithm_files(f"{config["algorithm"].split(".")[0]}")
+    PLT.save_algorithm_files(f"""{config["algorithm"].split(".")[0]}""")

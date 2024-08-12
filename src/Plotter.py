@@ -74,7 +74,7 @@ class Plotter:
                 data = np.genfromtxt(f"./outputs/Waveforms/{comb}/{dev}/" + file, delimiter=' ', names=True)
 
                 # Save the exact waveform for later
-                if file == f"{self.Simulator.vteam_parameters["R_on"]}_{self.Simulator.vteam_parameters["R_off"]}.txt":
+                if file == f"""{self.Simulator.vteam_parameters["R_on"]}_{self.Simulator.vteam_parameters["R_off"]}.txt""":
                     exact_idx = k
 
                 waveforms[0].append(data["time"])
