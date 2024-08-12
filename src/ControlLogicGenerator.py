@@ -53,6 +53,8 @@ class ControlLogicGenerator:
                 self.output_sw = ([self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv")
                                   for memristor in self.memristors]
                                   + [self.create_empty_csv(f"{self.output_path}S{j+1}.csv") for j in range(3)])
+            # ADD NEW TOPOLOGIES HERE:
+            # elif self.topology == "New topology":
 
             # Create lists with command content
             self.pwm_mem = [["0u,0"] for _ in self.output_mem]
@@ -74,6 +76,8 @@ class ControlLogicGenerator:
             elif self.topology == "Semi-Serial" or self.topology == "Semi-Parallel":
                 lines_sectioned = [line.split("|") for line in lines]
                 lines_clean = [[cmd.strip() for cmd in line] for line in lines_sectioned]
+            # ADD NEW TOPOLOGIES HERE:
+            # elif self.topology == "New topology":
             else:
                 self.logger.L.error(f"Invalid topology found: {self.topology}")
                 raise NotImplementedError(f"Invalid topology {self.topology}")
@@ -117,6 +121,7 @@ class ControlLogicGenerator:
                             f.write(line + '\n')
 
             elif self.topology == "Semi-Serial":
+                # Add final lines to zero out the simulation after the steps
                 for i, _ in enumerate(self.pwm_mem):
                     self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
                     self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,0")
@@ -124,6 +129,7 @@ class ControlLogicGenerator:
                     self.pwm_sw[j].append(f"{self.step_size * self.count + 0.001}u,-100")
                     self.pwm_sw[j].append(f"{self.step_size * (self.count + 1)}u,-100")
 
+                # Write the content in each memristor + switches files
                 for i, mem in enumerate(self.memristors):
                     with open(f"{self.output_path}{mem}.csv", "a") as f:
                         for line in self.pwm_mem[i]:
@@ -151,11 +157,16 @@ class ControlLogicGenerator:
                         for line in self.pwm_sw[i]:
                             f.write(line + '\n')
 
+                # Write the content for the section switches
                 switches_sec = ["S1", "S2", "S3"]
                 for j, sw in enumerate(self.pwm_sw[-3:]):
                     with open(f"{self.output_path}{switches_sec[j]}.csv", "a") as f:
                         for line in sw:
                             f.write(line + '\n')
+
+            # ADD NEW TOPOLOGIES HERE:
+            # elif self.topology == "New topology":
+
         except Exception as e:
             self.logger.L.error(f"Writing PWM outputs to files failed at {self.__class__.__name__} due to: {e}")
 
@@ -340,6 +351,8 @@ class ControlLogicGenerator:
 
         elif self.topology == "Semi-Parallel":
             self.write_timestep_semi_parallel(cmd)
+        # ADD NEW TOPOLOGIES HERE:
+        # elif self.topology == "New topology":
 
         self.count = self.count + 1
 

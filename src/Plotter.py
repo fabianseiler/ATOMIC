@@ -303,7 +303,7 @@ class Plotter:
                                 f"Logic 1 (max), " + ", ".join(map(str, r1[idx, :, 1])) + "\n")
                     text += data_str
 
-                with open(f"./outputs/deviation_results/range_logic1.csv", "w") as fp:
+                with open(f"./outputs/deviation_results/deviation_range.csv", "w") as fp:
                     fp.write(text[:-1])
 
         except Exception as e:

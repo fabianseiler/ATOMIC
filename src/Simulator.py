@@ -66,10 +66,12 @@ class Simulator:
         self.netlist.set_parameter("tstop", f"{self.sim_time}u")
         self.netlist.set_parameter("R_g", self.parameters["R_G"])
 
+        # The memristors of the topology are checked, and if in use the voltages are overwritten
         for i, mem in enumerate(self.topology_data["memristors"]):
             self.netlist.set_component_value(device=f'{self.topology_data["voltages_mem"][i]}',
                                              value=open_csv(f"./Structures/{self.topology}/{mem}.csv"))
 
+        # The switches of the topology are checked, and if in use the voltages are overwritten
         for j, switch in enumerate(self.topology_data["switches"]):
             self.netlist.set_component_value(device=f'{self.topology_data["voltages_sw"][j]}',
                                              value=open_csv(f"./Structures/{self.topology}/{switch}.csv"))
@@ -122,7 +124,7 @@ class Simulator:
             for mem in self.memristors:
                 outputs.append([LTR.get_trace(f'V({mem})').get_wave(step) for step in steps][0])
             outputs_array = np.array(outputs)
-            outputs_array[:, 0] = np.zeros(shape=(len(outputs),))     # To fix bug of LTSPICE
+            outputs_array[:, 0] = np.zeros(shape=(len(outputs),))     # To fix bug that sometimes happens in LTSPICE
             header = ['time'] + [f'{mem}' for mem in self.memristors]
 
         except Exception as e:

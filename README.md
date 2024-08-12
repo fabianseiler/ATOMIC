@@ -1,14 +1,12 @@
-<!-- AuToSVIMC **Au**tomatic **To**ol for **S**imulation and **V**erification of **I**MPLY logic for **Me**mristive **C**ircuits
-AVerSIMC: Automatic Verification and Simulation of IMPLY logic for Memristive Circuits -->
+<!--# ATOMIC-SAVE: Automatic Tool for Memristive IMPLY-based Circuit-level Simulation and Validation-->
+# ATOMIC: Automatic Tool for Memristive IMPLY-based Circuit-level Simulation and Validation
 
-# ATOMIC-SAV: Automatic Tool for Memristive IMPLY-based Circuit-level Simulation and Verification
-
-An automatic verification, evaluation, and plotting tool for memristive IMPLY-based In-Memory Computing 
+An automatic validation, evaluation, and plotting tool for memristive IMPLY-based In-Memory Computing 
 that is based on the PyLTSpice framework. This tool is able to automatically evaluate a large portion of the 
 design and evaluation process for IMPLY-based algorithms in various topologies.\
 The pipeline for this project automates the following steps:
-1) Functional verification of algorithms in the Serial, Semi-Serial, and Semi-Parallel topology
-2) Creation of PWM files and mapping to defined topology
+1) Functional validation of algorithms in the Serial, Semi-Serial, and Semi-Parallel topology
+2) Creation of control logic via PWM signals and mapping to defined topology
 3) SPICE simulations with energy consumption calculation
 4) SPICE simulations with resistive state deviations of the memristors
 5) Output State evaluation with resistive deviations
@@ -35,7 +33,7 @@ In the case of problems, try to first run: ```pip install --upgrade pip setuptoo
 
 ## How to use
 
-### Run Verification and Simulation Pipeline
+### Run Validation and Simulation Pipeline
 #### (1) Create Pseudocode of algorithm (1-bit)
 
 Navigate to the folder ``algorithms`` and create a new file ``ALGORITHM_NAME.txt`` \

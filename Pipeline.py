@@ -4,7 +4,7 @@ Created by Fabian Seiler @ 26.07.24
 import json
 import argparse
 
-from src.FunctionalVerification import FunctionalVerification
+from src.FunctionalValidation import FunctionalValidation
 from src.ControlLogicGenerator import ControlLogicGenerator
 from src.Simulator import Simulator
 from src.Plotter import Plotter
@@ -29,7 +29,7 @@ if __name__ == '__main__':
         config = json.load(f)
 
     # Check if the algorithm is valid and the resulting states are correct
-    Verifier = FunctionalVerification(config)
+    Verifier = FunctionalValidation(config)
     Verifier.calc_algorithm(plot_tt=True)
     print("\n--------------- Logic States verified! ---------------\n")
 

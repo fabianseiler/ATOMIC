@@ -7,16 +7,16 @@ import numpy as np
 from src.util import Logger
 
 
-class FunctionalVerification:
+class FunctionalValidation:
     """
     This class is responsible for creating a State History for each memristor
-    and to verify the functionality of a given algorithm in IMPLY logic
+    and to validate the functionality of a given algorithm in IMPLY logic
     """
 
     def __init__(self, config: dict):
 
         self.logger = Logger()
-        self.logger.L.info('Initializing class FunctionalVerification')
+        self.logger.L.info(f'Initializing class {self.__class__.__name__}')
 
         try:
             self.topology = config["topology"]    # ["Serial", "Semi-Serial", "Semi-Parallel"]
@@ -56,7 +56,7 @@ class FunctionalVerification:
                     f.write("")
 
         except Exception as e:
-            self.logger.L.error(f"Initialization of FunctionalVerification failed: {e}")
+            self.logger.L.error(f"Initialization of {self.__class__.__name__} failed: {e}")
 
     def generate_input(self, index: int) -> [int]:
         """
@@ -179,6 +179,9 @@ class FunctionalVerification:
                             raise ValueError(f"Incorrect Function in algorithm line: {line[section]}")
                     if plot_tt:
                         self.print_states()
+
+            # ADD NEW TOPOLOGIES HERE
+            # elif.topology == "New topology":
 
         # Check if the operation leads to valid results
         self.check_if_valid()
