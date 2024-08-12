@@ -52,6 +52,7 @@ class FunctionalValidation:
             if not os.path.exists("./outputs/State_History.txt"):
                 open("./outputs/State_History.txt", "w")
             else:
+                os.makedirs("./outputs/", exist_ok=True)
                 with open("./outputs/State_History.txt", "w") as f:
                     f.write("")
 
