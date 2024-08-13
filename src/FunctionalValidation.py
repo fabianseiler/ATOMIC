@@ -49,7 +49,7 @@ class FunctionalValidation:
             self.outputs = [np.array(self.output_states[state], dtype=np.uint8) for state in self.output_states_names]
 
             # Create file to store state history
-            if not os.path.exists("./outputs/State_History.txt"):
+            if os.path.exists("./outputs/State_History.txt"):
                 open("./outputs/State_History.txt", "w")
             else:
                 os.makedirs("./outputs/", exist_ok=True)
