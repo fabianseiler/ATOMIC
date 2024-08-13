@@ -5,6 +5,7 @@ import json
 import pickle
 import os
 import shutil
+import PyLTSpice
 import numpy as np
 from PyLTSpice import SpiceEditor, RawRead, LTspice, SimCommander
 from src.util import open_csv, extract_energy_from_log, resistance_comb9, Logger

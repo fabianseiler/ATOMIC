@@ -3359,3 +3359,103 @@
 2024-08-10 11:03:09,726 - Simulation - INFO - Energy over Combinations: [1.1116853999999999e-09, 1.5245297999999998e-09, 1.4622498000000001e-09, 1.863126e-09, 1.5319817999999997e-09, 2.0664719999999996e-09, 1.871658e-09, 2.360286e-09]
 2024-08-10 11:03:09,780 - Simulation - INFO - Started recomputing deviation experiments up to a deviation of 50
 2024-08-10 11:03:09,781 - Simulation - INFO - Started calculating deviation: 0
+2024-08-13 10:56:26,079 - Simulation - INFO - Initializing class FunctionalValidation
+2024-08-13 10:56:26,086 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-13 10:56:26,090 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]']
+2024-08-13 10:56:26,094 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]']
+2024-08-13 10:56:26,098 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]']
+2024-08-13 10:56:26,102 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]']
+2024-08-13 10:56:26,106 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]', 'I[c,a]', 'F[w1,w2]']
+2024-08-13 10:56:26,107 - Simulation - INFO - Initializing ControlLogicGenerator
+2024-08-13 10:56:26,111 - Simulation - INFO - File ./outputs/PWM_output/a.csv created!
+2024-08-13 10:56:26,112 - Simulation - INFO - File ./outputs/PWM_output/b.csv created!
+2024-08-13 10:56:26,112 - Simulation - INFO - File ./outputs/PWM_output/c.csv created!
+2024-08-13 10:56:26,114 - Simulation - INFO - File ./outputs/PWM_output/w1.csv created!
+2024-08-13 10:56:26,114 - Simulation - INFO - File ./outputs/PWM_output/w2.csv created!
+2024-08-13 10:56:26,115 - Simulation - INFO - File ./outputs/PWM_output/a_sw.csv created!
+2024-08-13 10:56:26,115 - Simulation - INFO - File ./outputs/PWM_output/b_sw.csv created!
+2024-08-13 10:56:26,116 - Simulation - INFO - File ./outputs/PWM_output/c_sw1.csv created!
+2024-08-13 10:56:26,117 - Simulation - INFO - File ./outputs/PWM_output/c_sw2.csv created!
+2024-08-13 10:56:26,117 - Simulation - INFO - File ./outputs/PWM_output/w1_sw1.csv created!
+2024-08-13 10:56:26,118 - Simulation - INFO - File ./outputs/PWM_output/w1_sw2.csv created!
+2024-08-13 10:56:26,118 - Simulation - INFO - File ./outputs/PWM_output/w2_sw1.csv created!
+2024-08-13 10:56:26,119 - Simulation - INFO - File ./outputs/PWM_output/w2_sw2.csv created!
+2024-08-13 10:56:26,125 - Simulation - INFO - PWM outputs written to files successfully
+2024-08-13 10:56:26,158 - Simulation - INFO - Initializing Plotter
+2024-08-13 10:56:26,158 - Simulation - INFO - Initializing Simulator
+2024-08-13 10:56:26,169 - Simulation - INFO - Started calculating energy consumption
+2024-08-13 13:40:29,789 - Simulation - INFO - Initializing class FunctionalValidation
+2024-08-13 13:40:29,791 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-13 13:40:29,792 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]']
+2024-08-13 13:40:29,792 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]']
+2024-08-13 13:40:29,793 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]']
+2024-08-13 13:40:29,793 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]']
+2024-08-13 13:40:29,794 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]', 'I[c,a]', 'F[w1,w2]']
+2024-08-13 13:40:29,794 - Simulation - INFO - Initializing ControlLogicGenerator
+2024-08-13 13:40:29,794 - Simulation - INFO - File ./outputs/PWM_output/a.csv created!
+2024-08-13 13:40:29,794 - Simulation - INFO - File ./outputs/PWM_output/b.csv created!
+2024-08-13 13:40:29,795 - Simulation - INFO - File ./outputs/PWM_output/c.csv created!
+2024-08-13 13:40:29,795 - Simulation - INFO - File ./outputs/PWM_output/w1.csv created!
+2024-08-13 13:40:29,795 - Simulation - INFO - File ./outputs/PWM_output/w2.csv created!
+2024-08-13 13:40:29,795 - Simulation - INFO - File ./outputs/PWM_output/a_sw.csv created!
+2024-08-13 13:40:29,796 - Simulation - INFO - File ./outputs/PWM_output/b_sw.csv created!
+2024-08-13 13:40:29,796 - Simulation - INFO - File ./outputs/PWM_output/c_sw1.csv created!
+2024-08-13 13:40:29,796 - Simulation - INFO - File ./outputs/PWM_output/c_sw2.csv created!
+2024-08-13 13:40:29,796 - Simulation - INFO - File ./outputs/PWM_output/w1_sw1.csv created!
+2024-08-13 13:40:29,796 - Simulation - INFO - File ./outputs/PWM_output/w1_sw2.csv created!
+2024-08-13 13:40:29,797 - Simulation - INFO - File ./outputs/PWM_output/w2_sw1.csv created!
+2024-08-13 13:40:29,797 - Simulation - INFO - File ./outputs/PWM_output/w2_sw2.csv created!
+2024-08-13 13:40:29,801 - Simulation - INFO - PWM outputs written to files successfully
+2024-08-13 13:40:29,825 - Simulation - INFO - Initializing Plotter
+2024-08-13 13:40:29,826 - Simulation - INFO - Initializing Simulator
+2024-08-13 13:40:29,828 - Simulation - INFO - Started calculating energy consumption
+2024-08-13 13:50:05,394 - Simulation - INFO - Initializing class FunctionalValidation
+2024-08-13 13:50:05,396 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-13 13:50:05,396 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]']
+2024-08-13 13:50:05,397 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]']
+2024-08-13 13:50:05,397 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]']
+2024-08-13 13:50:05,398 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]']
+2024-08-13 13:50:05,398 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]', 'I[c,a]', 'F[w1,w2]']
+2024-08-13 13:50:05,399 - Simulation - INFO - Initializing ControlLogicGenerator
+2024-08-13 13:50:05,399 - Simulation - INFO - File ./outputs/PWM_output/a.csv created!
+2024-08-13 13:50:05,399 - Simulation - INFO - File ./outputs/PWM_output/b.csv created!
+2024-08-13 13:50:05,399 - Simulation - INFO - File ./outputs/PWM_output/c.csv created!
+2024-08-13 13:50:05,400 - Simulation - INFO - File ./outputs/PWM_output/w1.csv created!
+2024-08-13 13:50:05,400 - Simulation - INFO - File ./outputs/PWM_output/w2.csv created!
+2024-08-13 13:50:05,400 - Simulation - INFO - File ./outputs/PWM_output/a_sw.csv created!
+2024-08-13 13:50:05,400 - Simulation - INFO - File ./outputs/PWM_output/b_sw.csv created!
+2024-08-13 13:50:05,400 - Simulation - INFO - File ./outputs/PWM_output/c_sw1.csv created!
+2024-08-13 13:50:05,401 - Simulation - INFO - File ./outputs/PWM_output/c_sw2.csv created!
+2024-08-13 13:50:05,401 - Simulation - INFO - File ./outputs/PWM_output/w1_sw1.csv created!
+2024-08-13 13:50:05,401 - Simulation - INFO - File ./outputs/PWM_output/w1_sw2.csv created!
+2024-08-13 13:50:05,401 - Simulation - INFO - File ./outputs/PWM_output/w2_sw1.csv created!
+2024-08-13 13:50:05,401 - Simulation - INFO - File ./outputs/PWM_output/w2_sw2.csv created!
+2024-08-13 13:50:05,415 - Simulation - INFO - PWM outputs written to files successfully
+2024-08-13 13:50:05,429 - Simulation - INFO - Initializing Plotter
+2024-08-13 13:50:05,429 - Simulation - INFO - Initializing Simulator
+2024-08-13 13:50:05,431 - Simulation - INFO - Started calculating energy consumption
+2024-08-13 14:09:00,418 - Simulation - INFO - Initializing class FunctionalValidation
+2024-08-13 14:09:00,420 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-13 14:09:00,421 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]']
+2024-08-13 14:09:00,421 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]']
+2024-08-13 14:09:00,421 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]']
+2024-08-13 14:09:00,422 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]']
+2024-08-13 14:09:00,422 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]', 'I[c,a]', 'F[w1,w2]']
+2024-08-13 14:09:00,423 - Simulation - INFO - Initializing ControlLogicGenerator
+2024-08-13 14:09:00,423 - Simulation - INFO - File ./outputs/PWM_output/a.csv created!
+2024-08-13 14:09:00,423 - Simulation - INFO - File ./outputs/PWM_output/b.csv created!
+2024-08-13 14:09:00,423 - Simulation - INFO - File ./outputs/PWM_output/c.csv created!
+2024-08-13 14:09:00,424 - Simulation - INFO - File ./outputs/PWM_output/w1.csv created!
+2024-08-13 14:09:00,424 - Simulation - INFO - File ./outputs/PWM_output/w2.csv created!
+2024-08-13 14:09:00,424 - Simulation - INFO - File ./outputs/PWM_output/a_sw.csv created!
+2024-08-13 14:09:00,424 - Simulation - INFO - File ./outputs/PWM_output/b_sw.csv created!
+2024-08-13 14:09:00,424 - Simulation - INFO - File ./outputs/PWM_output/c_sw1.csv created!
+2024-08-13 14:09:00,425 - Simulation - INFO - File ./outputs/PWM_output/c_sw2.csv created!
+2024-08-13 14:09:00,425 - Simulation - INFO - File ./outputs/PWM_output/w1_sw1.csv created!
+2024-08-13 14:09:00,425 - Simulation - INFO - File ./outputs/PWM_output/w1_sw2.csv created!
+2024-08-13 14:09:00,425 - Simulation - INFO - File ./outputs/PWM_output/w2_sw1.csv created!
+2024-08-13 14:09:00,425 - Simulation - INFO - File ./outputs/PWM_output/w2_sw2.csv created!
+2024-08-13 14:09:00,439 - Simulation - INFO - PWM outputs written to files successfully
+2024-08-13 14:09:00,454 - Simulation - INFO - Initializing Plotter
+2024-08-13 14:09:00,454 - Simulation - INFO - Initializing Simulator
+2024-08-13 14:09:00,456 - Simulation - INFO - Started calculating energy consumption
