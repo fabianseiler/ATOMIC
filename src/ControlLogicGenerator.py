@@ -184,20 +184,20 @@ class ControlLogicGenerator:
         for i, mem in enumerate(self.memristors):
             if i in digits:  # Check if memristor is used
                 if cmd[0] == 'F':  # if false operation
-                    self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}")
+                    self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}""")
                     self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
-                    self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}")
+                    self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}""")
                     self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                 elif cmd[0] == 'I':
                     if i == digits[0]:
-                        self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}")
+                        self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}""")
                         self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
-                        self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}")
+                        self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}""")
                         self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                     else:
-                        self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}")
+                        self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}""")
                         self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
-                        self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}")
+                        self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}""")
                         self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
             # If memristor is unused
             else:
@@ -222,20 +222,20 @@ class ControlLogicGenerator:
 
                     if i in digits[section]:    # Check if memristor is in this section
                         if cmd[section][0] == 'F':  # if false operation
-                            self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}")
-                            self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}")
+                            self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}""")
+                            self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}""")
                             self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
                             self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
 
                         elif cmd[section][0] == 'I':  # If IMPLY operation
                             if i == digits[section][0]:
-                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}")
-                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}")
+                                self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}""")
+                                self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}""")
                                 self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
                             else:
-                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}")
-                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}")
+                                self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}""")
+                                self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}""")
                                 self.pwm_sw[idx].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[idx].append(f"{self.step_size * (self.count + 1)}u,100")
 
@@ -289,19 +289,19 @@ class ControlLogicGenerator:
                 for section in range(len(digits)):
                     if i in digits[section]:  # Check if memristor is used in this section
                         if cmd[section][0] == 'F':  # if false operation
-                            self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}")
-                            self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}")
+                            self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Reset"]}""")
+                            self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Reset"]}""")
                             self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                             self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                         elif cmd[section][0] == 'I':
                             if i == digits[section][0]:
-                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}")
-                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}")
+                                self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Cond"]}""")
+                                self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Cond"]}""")
                                 self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
                             else:
-                                self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}")
-                                self.pwm_mem[i].append(f"{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}")
+                                self.pwm_mem[i].append(f"""{self.step_size * self.count + 0.001}u,{self.params["V_Set"]}""")
+                                self.pwm_mem[i].append(f"""{self.step_size * (self.count + 1)}u,{self.params["V_Set"]}""")
                                 self.pwm_sw[i].append(f"{self.step_size * self.count + 0.001}u,100")
                                 self.pwm_sw[i].append(f"{self.step_size * (self.count + 1)}u,100")
             else:
