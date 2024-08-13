@@ -26,7 +26,7 @@ For linux users we refer to [LTSpice on Linux](https://github.com/joaocarvalhoop
 for more information on how to install LTSpice.
 
 ### Python Dependencies
-To install the required python libraries, run: \
+To install the required python libraries and setup the project on Windows run: \
 ```python.exe -m pip install --upgrade pip``` \
 ```python -m venv atomic``` \
 ```.\atomic\Scripts\activate.bat``` \
