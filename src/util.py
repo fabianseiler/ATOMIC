@@ -143,15 +143,15 @@ class Logger:
         if not self.L.hasHandlers():
             self.L.setLevel(logging.DEBUG)
             # Create console handler with a higher log level
-            ch = logging.StreamHandler()
-            ch.setLevel(logging.DEBUG)
+            #ch = logging.StreamHandler()
+            #ch.setLevel(logging.DEBUG)
             # Create file handler which logs even debug messages
             fh = logging.FileHandler('Simulation.log')
             fh.setLevel(logging.DEBUG)
             # Create formatter and add it to the handlers
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            ch.setFormatter(formatter)
+            #ch.setFormatter(formatter)
             fh.setFormatter(formatter)
             # Add the handlers to the logger
-            self.L.addHandler(ch)
+            #self.L.addHandler(ch)
             self.L.addHandler(fh)

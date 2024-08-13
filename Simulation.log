@@ -3485,3 +3485,34 @@
 2024-08-13 15:35:01,017 - Simulation - INFO - Initializing Plotter
 2024-08-13 15:35:01,018 - Simulation - INFO - Initializing Simulator
 2024-08-13 15:35:01,027 - Simulation - INFO - Started calculating energy consumption
+2024-08-13 15:42:03,901 - Simulation - INFO - Initializing class FunctionalValidation
+2024-08-13 15:42:03,902 - Simulation - INFO - Applied Operations: ['F[w1,w2]']
+2024-08-13 15:42:03,903 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]']
+2024-08-13 15:42:03,904 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]']
+2024-08-13 15:42:03,905 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]']
+2024-08-13 15:42:03,906 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]']
+2024-08-13 15:42:03,906 - Simulation - INFO - Applied Operations: ['F[w1,w2]', 'I[c,w1]', 'I[b,w2]', 'I[a,w1]', 'F[c]', 'I[w1,c]', 'F[a]', 'I[w2,c]', 'I[c,a]', 'F[w1,w2]']
+2024-08-13 15:42:03,907 - Simulation - INFO - Initializing ControlLogicGenerator
+2024-08-13 15:42:03,907 - Simulation - INFO - File ./outputs/PWM_output/a.csv created!
+2024-08-13 15:42:03,907 - Simulation - INFO - File ./outputs/PWM_output/b.csv created!
+2024-08-13 15:42:03,907 - Simulation - INFO - File ./outputs/PWM_output/c.csv created!
+2024-08-13 15:42:03,908 - Simulation - INFO - File ./outputs/PWM_output/w1.csv created!
+2024-08-13 15:42:03,908 - Simulation - INFO - File ./outputs/PWM_output/w2.csv created!
+2024-08-13 15:42:03,908 - Simulation - INFO - File ./outputs/PWM_output/a_sw.csv created!
+2024-08-13 15:42:03,908 - Simulation - INFO - File ./outputs/PWM_output/b_sw.csv created!
+2024-08-13 15:42:03,908 - Simulation - INFO - File ./outputs/PWM_output/c_sw1.csv created!
+2024-08-13 15:42:03,909 - Simulation - INFO - File ./outputs/PWM_output/c_sw2.csv created!
+2024-08-13 15:42:03,909 - Simulation - INFO - File ./outputs/PWM_output/w1_sw1.csv created!
+2024-08-13 15:42:03,909 - Simulation - INFO - File ./outputs/PWM_output/w1_sw2.csv created!
+2024-08-13 15:42:03,909 - Simulation - INFO - File ./outputs/PWM_output/w2_sw1.csv created!
+2024-08-13 15:42:03,910 - Simulation - INFO - File ./outputs/PWM_output/w2_sw2.csv created!
+2024-08-13 15:42:03,923 - Simulation - INFO - PWM outputs written to files successfully
+2024-08-13 15:42:03,961 - Simulation - INFO - Initializing Plotter
+2024-08-13 15:42:03,961 - Simulation - INFO - Initializing Simulator
+2024-08-13 15:42:03,962 - Simulation - INFO - Started calculating energy consumption
+2024-08-13 15:42:12,131 - Simulation - INFO - Average Energy consumption: 1.7239985999999998e-09
+2024-08-13 15:42:12,131 - Simulation - INFO - Energy over Combinations: [1.1116853999999999e-09, 1.5245297999999998e-09, 1.4622498000000001e-09, 1.863126e-09, 1.5319817999999997e-09, 2.0664719999999996e-09, 1.871658e-09, 2.360286e-09]
+2024-08-13 15:42:12,237 - Simulation - INFO - Started recomputing deviation experiments up to a deviation of 50
+2024-08-13 15:42:12,237 - Simulation - INFO - Started calculating deviation: 0
+2024-08-13 15:42:20,448 - Simulation - INFO - Results of experiments with deviation: 0 saved in "outputs/deviation_results/dev_0"
+2024-08-13 15:42:20,449 - Simulation - INFO - Started calculating deviation: 5
