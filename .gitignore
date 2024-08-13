@@ -8,3 +8,4 @@ outputs/*
 !outputs/
 algorithms/optimized_serial.txt
 configs/Serial_exact.json
+Simulation.log

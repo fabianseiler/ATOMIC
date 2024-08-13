@@ -20,6 +20,8 @@ The pipeline for this project automates the following steps:
 ### Additional Software
 A compatible version of LT-SPICE has to be installed. We build this project for the LT-SPICE version 17.1.6.0 so other 
 versions may not work as intended. \
+It is important to use the versions PyLTSpice==5.3.1 and spicelib==1.1.2 as newer versions contain a detremental bug. \
+
 For more information we refer to the [PyLTSpice documentation](https://pyltspice.readthedocs.io/en/latest/index.html)
 and [PyLTSpice github page](https://github.com/nunobrum/PyLTSpice). \
 For linux users we refer to [LTSpice on Linux](https://github.com/joaocarvalhoopen/LTSpice_on_Linux_Ubuntu__How_to_install_and_use)
