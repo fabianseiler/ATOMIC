@@ -1,6 +1,8 @@
 <!--# ATOMIC-SAVE: Automatic Tool for Memristive IMPLY-based Circuit-level Simulation and Validation-->
 # ATOMIC: Automatic Tool for Memristive IMPLY-based Circuit-level Simulation and Validation
 
+<img alt="pipeline" src="./assets/Pipeline.png"/>
+
 An automatic validation, evaluation, and plotting tool for memristive IMPLY-based In-Memory Computing 
 that is based on the PyLTSpice framework. This tool is able to automatically evaluate a large portion of the 
 design and evaluation process for IMPLY-based algorithms in various topologies.\
@@ -12,8 +14,6 @@ The pipeline for this project automates the following steps:
 5) Output State evaluation with resistive deviations
 6) Illustration of Waveforms with deviation
 7) Scatter plots and output state range over resistive deviation visualization
-
-<img alt="pipeline" src="./assets/Pipeline.png"/>
 
 ## Requirements for this Project
 
