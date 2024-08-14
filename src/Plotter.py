@@ -40,6 +40,9 @@ class Plotter:
         except Exception as e:
             self.logger.L.error(f"Loading of expected logic values failed at {self.__class__.__name__}: {e}")
 
+        if not os.path.exists("./outputs/Images/"):
+            os.makedirs("./outputs/Images/")
+
         # Calculate the energy
         self.energy = self.Simulator.calculate_energy()
 

@@ -36,6 +36,8 @@ To install the required python libraries and setup the project on Windows run: \
 
 ## How to use
 
+An introductory video for ATOMIC  can be found [here](https://github.com/fabianseiler/ATOMIC_Video)
+
 ### Run Validation and Simulation Pipeline
 #### (1) Create Pseudocode of algorithm (1-bit)
 
