@@ -18,7 +18,7 @@ The pipeline for this project automates the following steps:
 ## Requirements for this Project
 
 ### Additional Software
-A compatible version of LT-SPICE has to be installed. We build this project for the LT-SPICE version 17.1.6.0 so other 
+A compatible version of LT-SPICE has to be installed ([LTSpice 17 download](https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html)). We build this project for the LT-SPICE version 17.1.6.0 so other 
 versions may not work as intended. \
 It is important to use the versions PyLTSpice==5.3.1 and spicelib==1.1.2 as newer versions contain a detrimental bug. 
 
