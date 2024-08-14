@@ -36,9 +36,7 @@ class Simulator:
 
         # Open SPICE editor
         try:
-            # TODO: Fix Netlist creation
             netlist = LTspice.create_netlist(f"./Structures/{self.topology}/1bit_adder_cin.asc")
-            #self.netlist = SpiceEditor(f"./Structures/{self.topology}/1bit_adder_cin.net")
             self.netlist = SpiceEditor(netlist)
         except Exception as e:
             self.logger.L.error(f'Could not create SpiceEditor due to: {e}')

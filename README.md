@@ -20,7 +20,7 @@ The pipeline for this project automates the following steps:
 ### Additional Software
 A compatible version of LT-SPICE has to be installed. We build this project for the LT-SPICE version 17.1.6.0 so other 
 versions may not work as intended. \
-It is important to use the versions PyLTSpice==5.3.1 and spicelib==1.1.2 as newer versions contain a detremental bug. \
+It is important to use the versions PyLTSpice==5.3.1 and spicelib==1.1.2 as newer versions contain a detrimental bug. 
 
 For more information we refer to the [PyLTSpice documentation](https://pyltspice.readthedocs.io/en/latest/index.html)
 and [PyLTSpice github page](https://github.com/nunobrum/PyLTSpice). \
@@ -30,8 +30,8 @@ for more information on how to install LTSpice.
 ### Python Dependencies
 To install the required python libraries and setup the project on Windows run: \
 ```python.exe -m pip install --upgrade pip``` \
-```python -m venv atomic``` \
-```.\atomic\Scripts\activate.bat``` \
+```python -m venv venv``` \
+```.\venv\Scripts\activate.bat``` or ```.\venv\Scripts\activate.ps1 ``` \
 ```pip install -r requirements.txt``` 
 
 ## How to use
@@ -188,7 +188,7 @@ for his great work and detailed [documentation](https://pyltspice.readthedocs.io
 * Repo Owner: [fabian.seiler\@tuwien.ac.at](mailto:fabian.seiler@tuwien.ac.at?subject=ATOMIC-SAV)
 
 ## Citation
-If you find this project useful, please consider starring ⭐ and citing our recent journals for which we implemented this project.\
+If you find this project useful, please consider starring ⭐ and citing our recent journals for which we implemented this project.
 
 ```
 @article{seiler2024NoCarry,
