@@ -189,6 +189,21 @@ for his great work and detailed [documentation](https://pyltspice.readthedocs.io
 * Website of the EclectX Group: https://eclectx.org/
 * Repo Owner: [fabian.seiler\@tuwien.ac.at](mailto:fabian.seiler@tuwien.ac.at?subject=ATOMIC-SAV)
 
+## More Information
+For more detailed information regarding the project structure we refer the reader to:
+
+``` 
+@misc{seiler2024atomic,
+    title={ATOMIC: Automatic Tool for Memristive IMPLY-based Circuit-level Simulation and Validation}, 
+    author={Fabian Seiler and Nima TaheriNejad},
+    year={2024},
+    eprint={2410.15893},
+    archivePrefix={arXiv},
+    primaryClass={cs.ET},
+    url={https://arxiv.org/abs/2410.15893} 
+}
+```
+
 ## Citation
 If you find this project useful, please consider starring ⭐ and citing our recent journals for which we implemented this project.
 
