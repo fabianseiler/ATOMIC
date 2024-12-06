@@ -19,6 +19,8 @@ class Simulator:
 
     def __init__(self, config):
 
+        self.config = config
+
         self.logger = Logger()
         self.logger.L.info(f'Initializing {self.__class__.__name__}')
 
@@ -180,11 +182,12 @@ class Simulator:
         self.logger.L.info('Started calculating energy consumption')
         energy = []
         R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
-        for inputs in tqdm(range(8)):
-            name = bin(inputs)[2:].zfill(3)
+        for inputs in tqdm(range(2 ** len(self.config["inputs"]))):
+            name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
 
-            param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
-                            + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+            param_values = ([f"{int(mem) * 3}n" for mem in name] + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+            # param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
+            #                + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
             self.run_simulation(param_values, energy_sim=True)
             energy.append(self.read_energy() * self.sim_time * 1e-6)
 
@@ -206,9 +209,9 @@ class Simulator:
         self.logger.L.info(f'Started calculating deviation: {dev}')
 
         # Iterate over the input combinations
-        for inputs in tqdm(range(8)):
+        for inputs in tqdm(range(2**len(self.config["inputs"]))):
 
-            name = bin(inputs)[2:].zfill(3)
+            name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
             r_on_c, r_off_c = resistance_comb9(dev, self.vteam_parameters["R_off"], self.vteam_parameters["R_on"])
 
             comb = []
@@ -217,8 +220,8 @@ class Simulator:
             if dev > 0:
                 for R_on, R_off in zip(r_on_c, r_off_c):
 
-                    param_values = ([f"{int(name[0])*3}n", f"{int(name[1])*3}n", f"{int(name[2])*3}n"]
-                                    + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+                    param_values = ([f"{int(i) * 3}n" for i in name]
+                                    + [f'0n' for _ in self.memristors[len(self.config["inputs"]) - 1:]] + [R_on, R_off])
                     self.run_simulation(param_values)
 
                     # Save waveforms
@@ -229,8 +232,8 @@ class Simulator:
             # If the simulation is done without any deviation
             elif dev == 0:
                 R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
-                param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
-                                + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+                param_values = ([f"{int(i)*3}n" for i in name]
+                                + [f'0n' for _ in self.memristors[len(self.config["inputs"])-1:]] + [R_on, R_off])
                 self.run_simulation(param_values)
 
                 # Save waveforms

@@ -42,6 +42,9 @@ class Plotter:
 
         if not os.path.exists("./outputs/Images/"):
             os.makedirs("./outputs/Images/")
+        else:
+            shutil.rmtree("./outputs/Images/")
+            os.makedirs("./outputs/Images/")
 
         # Calculate the energy
         self.energy = self.Simulator.calculate_energy()
@@ -116,7 +119,7 @@ class Plotter:
             if num_subplots == 1:
                 gs = gridspec.GridSpec(1, 1)
             else:
-                gs = gridspec.GridSpec(num_subplots, 1, height_ratios=[1, 1])
+                gs = gridspec.GridSpec(num_subplots, 1, height_ratios=[1] * num_subplots)
             axs = []
 
             for idx in range(num_subplots):

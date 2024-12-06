@@ -1,0 +1,11 @@
+{
+  "topology": "Serial",
+  "algorithm": "serial_copy.txt",
+  "memristors": ["a", "b", "w1"],
+  "inputs": ["a", "b"],
+  "work": ["w1"],
+  "outputs": ["b"],
+  "switches": ["a_sw", "b_sw", "w1_sw"],
+  "steps": 3,
+  "output_states": {"copy":  [0, 0, 1, 1]}
+}

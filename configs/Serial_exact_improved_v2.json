@@ -1,0 +1,12 @@
+{
+  "topology": "Serial",
+  "algorithm": "improved_serial_v2.txt",
+  "memristors": ["a", "b", "c", "w1", "w2", "w3"],
+  "inputs": ["a", "b", "c"],
+  "work": ["w1", "w2", "w3"],
+  "outputs": ["a", "b", "c"],
+  "switches": ["a_sw", "b_sw", "c_sw", "w1_sw", "w2_sw", "w3_sw"],
+  "steps": 18,
+  "output_states": {"sum":  [0, 1, 1, 0, 1, 0, 0, 1],
+                    "cout": [0, 0, 0, 1, 0, 1, 1, 1]}
+}

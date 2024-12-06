@@ -1,0 +1,12 @@
+{
+  "topology": "Serial",
+  "algorithm": "SAID1.txt",
+  "memristors": ["a", "b", "c"],
+  "inputs": ["a", "b", "c"],
+  "work": ["a", "b"],
+  "outputs": ["a", "b"],
+  "switches": ["a_sw", "b_sw", "c_sw"],
+  "steps": 2,
+  "output_states": {"sum":  [1, 1, 0, 0, 1, 1, 0, 0],
+                    "cout": [0, 0, 1, 1, 0, 0, 1, 1]}
+}

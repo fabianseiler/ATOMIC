@@ -36,7 +36,7 @@ class ControlLogicGenerator:
             self.output_mem = [self.create_empty_csv(f"{self.output_path}{memristor}.csv")
                                for memristor in self.memristors]
 
-            if self.topology == "Serial":
+            if self.topology == "Serial" or self.topology == "Serial-Mult":
                 self.output_sw = [self.create_empty_csv(f"{self.output_path}{memristor}_sw.csv")
                                   for memristor in self.memristors]
 
@@ -71,7 +71,7 @@ class ControlLogicGenerator:
         with open(f"algorithms/{self.algo}", "r") as f:
             lines = f.readlines()
 
-            if self.topology == "Serial":
+            if self.topology == "Serial" or self.topology == "Serial-Mult":
                 lines_clean = [line.split(" ")[0] for line in lines]
             elif self.topology == "Semi-Serial" or self.topology == "Semi-Parallel":
                 lines_sectioned = [line.split("|") for line in lines]
@@ -103,7 +103,7 @@ class ControlLogicGenerator:
             self.logger.L.error(f"Failed to evaluate PWM outputs at {self.__class__.__name__} due to: {e}")
 
         try:
-            if self.topology == "Serial":
+            if self.topology == "Serial" or self.topology == "Serial-Mult":
                 # Add final lines to zero out the simulation after the steps
                 for i, _ in enumerate(self.pwm_mem):
                     self.pwm_mem[i].append(f"{self.step_size * self.count + 0.001}u,0")
@@ -343,7 +343,7 @@ class ControlLogicGenerator:
         :param cmd: command line from the algorithm
         """
 
-        if self.topology == "Serial":
+        if self.topology == "Serial" or self.topology == "Serial-Mult":
             self.write_timestep_serial(cmd)
 
         elif self.topology == "Semi-Serial":

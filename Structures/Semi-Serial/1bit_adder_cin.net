@@ -1,4 +1,4 @@
-* C:\Users\Shype\Desktop\Paper in work\[In Work] MASAM\Structures\Semi-Serial\1bit_adder_cin.asc
+* C:\Users\Shype\Desktop\Paper in work\$DONE\[ESSC 2024] ATOMIC\Structures\Semi-Serial\1bit_adder_cin.asc
 R1 N003 0 {R_g}
 V1 N001 0 PWL file=a.csv
 V11 N006 0 PWL file=w1.csv

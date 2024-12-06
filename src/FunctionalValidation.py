@@ -103,7 +103,7 @@ class FunctionalValidation:
                 self.logger.L.warning(f"Memristor {mem_num} is not in the list")
                 raise ValueError(f"Incorrect memristor number: {mem_num}")
 
-            self.state[:, mem_num] = np.zeros((1, 8))
+            self.state[:, mem_num] = np.zeros((1, self.vec_len))
         msg = "".join([f"{self.get_memristor(mem_num)}," for mem_num in mem_nums])[:-1]
         self.state_num.append(f"F[{msg}]")
 
@@ -138,7 +138,7 @@ class FunctionalValidation:
             lines = f.readlines()
 
             # If topology is Serial choose one operation per cycle and evaluate
-            if self.topology == "Serial":
+            if self.topology == "Serial" or "Serial-Mult":
                 for lnr, line in enumerate(lines):
                     if line[0] == 'F':
                         if line[2] == ',':
@@ -182,7 +182,7 @@ class FunctionalValidation:
                         self.print_states()
 
             # ADD NEW TOPOLOGIES HERE
-            # elif.topology == "New topology":
+            # elif self.topology == "New topology":
 
         # Check if the operation leads to valid results
         self.check_if_valid()
@@ -200,6 +200,7 @@ class FunctionalValidation:
                     print(f"Output {self.output_states_names[j]} is correctly stored in {self.get_memristor(i)}")
                     is_valid = True
             if not is_valid:
+                print(f"Output {outs} was not found in any memristive state")
                 self.logger.L.warning(f"Output {outs} was not found in any memristive state")
 
     def get_memristor(self, num: int) -> str:

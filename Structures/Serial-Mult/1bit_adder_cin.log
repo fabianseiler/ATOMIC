@@ -1,0 +1,90 @@
+Circuit: * C:\Users\Shype\Desktop\Paper in work\$DONE\[ESSC 2024] ATOMIC\Structures\Serial-Mult\1bit_adder_cin.asc
+
+v1: Removing PWL point (1e-09,0)
+v1: Removing PWL point (0.00015,0)
+v3: Removing PWL point (1e-09,0)
+v3: Removing PWL point (0.00012,0)
+v2: Removing PWL point (1e-09,-100)
+v2: Removing PWL point (0.00015,-100)
+v4: Removing PWL point (1e-09,-100)
+v4: Removing PWL point (0.00012,-100)
+v11: Removing PWL point (9e-05,1)
+v11: Removing PWL point (0.00015,0)
+v11: Removing PWL point (0.00039,0)
+v12: Removing PWL point (9e-05,100)
+v12: Removing PWL point (0.00015,-100)
+v12: Removing PWL point (0.00033,100)
+v12: Removing PWL point (0.00039,-100)
+v13: Removing PWL point (1e-09,0)
+v13: Removing PWL point (9e-05,0)
+v13: Removing PWL point (0.00015,1)
+v13: Removing PWL point (0.00021,0)
+v13: Removing PWL point (0.00036,0)
+v13: Removing PWL point (0.00048,0)
+v14: Removing PWL point (1e-09,-100)
+v14: Removing PWL point (9e-05,-100)
+v14: Removing PWL point (0.00015,100)
+v14: Removing PWL point (0.00021,-100)
+v14: Removing PWL point (0.0003,100)
+v14: Removing PWL point (0.00036,-100)
+v14: Removing PWL point (0.00048,-100)
+v5: Removing PWL point (1e-09,0)
+v5: Removing PWL point (0.00021,0)
+v6: Removing PWL point (1e-09,-100)
+v6: Removing PWL point (0.00021,-100)
+v15: Removing PWL point (1e-09,0)
+v15: Removing PWL point (0.0003,0)
+v15: Removing PWL point (0.00045,1)
+v15: Removing PWL point (0.00051,0)
+v16: Removing PWL point (1e-09,-100)
+v16: Removing PWL point (0.0003,-100)
+v16: Removing PWL point (0.00039,100)
+v16: Removing PWL point (0.00051,-100)
+v7: Removing PWL point (1e-09,0)
+v7: Removing PWL point (0.00018,0)
+v8: Removing PWL point (1e-09,-100)
+v8: Removing PWL point (0.00018,-100)
+v17: Removing PWL point (1e-09,0)
+v17: Removing PWL point (0.00042,0)
+v18: Removing PWL point (1e-09,-100)
+v18: Removing PWL point (0.00036,100)
+v18: Removing PWL point (0.00042,-100)
+v18: Removing PWL point (0.00048,100)
+v9: Removing PWL point (1e-09,0)
+v9: Removing PWL point (0.00021,0)
+v10: Removing PWL point (1e-09,-100)
+v10: Removing PWL point (0.00021,-100)
+WARNING: Less than two connections to node b.  This node is used by e:xb:1.
+WARNING: Less than two connections to node w1.  This node is used by e:xw1:1.
+WARNING: Less than two connections to node a.  This node is used by e:xa:1.
+WARNING: Less than two connections to node w2.  This node is used by e:xw2:1.
+WARNING: Less than two connections to node c.  This node is used by e:xc:1.
+WARNING: Less than two connections to node w3.  This node is used by e:xw3:1.
+WARNING: Less than two connections to node d.  This node is used by e:xc1:1.
+WARNING: Less than two connections to node w4.  This node is used by e:xw4:1.
+WARNING: Less than two connections to node cin.  This node is used by e:xc2:1.
+Direct Newton iteration for .op point succeeded.
+
+sum: AVG(-v(n001)*i(v1) -v(n002)*i(v3) -v(n003)*i(v5) -v(n004)*i(v7) -v(n005)*i(v9) -v(n006)*i(v11) -v(n007)*i(v13) -v(n008)*i(v15))=3.25376e-06 FROM 0 TO 0.00024
+w2: AVG(-v(n005)*i(v9))=8.04651e-08 FROM 0 TO 0.00024
+w3: AVG(-v(n006)*i(v11))=1.36535e-06 FROM 0 TO 0.00024
+
+
+Date: Fri Dec  6 15:36:38 2024
+Total elapsed time: 0.098 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 2398
+traniter = 2395
+tranpoints = 1178
+accept = 1169
+rejected = 9
+matrix size = 136
+fillins = 27
+solver = Normal
+Avg thread counts: 2.2/3.5/3.5/2.2
+Matrix Compiler1: 5.03 KB object code size  0.6/0.3/[0.3]
+Matrix Compiler2: 8.59 KB object code size  0.4/0.4/[0.3]
+

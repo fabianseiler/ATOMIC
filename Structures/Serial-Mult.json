@@ -1,0 +1,6 @@
+{
+  "memristors": ["a", "b", "c", "d", "cin", "w1", "w2", "w3", "w4"],
+  "switches": ["a_sw", "b_sw", "c_sw", "d_sw", "cin_sw", "w1_sw", "w2_sw", "w3_sw", "w4_sw"],
+  "voltages_mem": ["V1", "V3", "V5", "V7", "V9", "V11", "V13", "V15", "V17"],
+  "voltages_sw": ["V2", "V4", "V6", "V8", "V10", "V12", "V14", "V16", "V18"]
+}
