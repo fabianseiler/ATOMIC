@@ -406,9 +406,9 @@ class Plotter:
                 else:
                     f.write(f"Average Energy consumption: {self.energy[1]}\n "
                             f"Energy over Combination: {self.energy[0]}")
-            if os.path.exists(f"./OUTPUT_FILES/State_History.txt"):
-                os.remove(f"./OUTPUT_FILES/State_History.txt")
-            shutil.copy("./outputs/State_History.txt", "./OUTPUT_FILES/State_History.txt")
+            if os.path.exists(f"./OUTPUT_FILES/{name}/State_History.txt"):
+                os.remove(f"./OUTPUT_FILES/{name}/State_History.txt")
+            shutil.copy("./outputs/State_History.txt", f"./OUTPUT_FILES/{name}/State_History.txt")
         except Exception as e:
             self.logger.L.error(f"Saving algorithm files failed due to: {e}")
 
