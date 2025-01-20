@@ -1,4 +1,5 @@
 .idea/
+.venv/
 __pycache__/
 OUTPUT_FILES/*
 !OUTPUT_FILES/
@@ -6,6 +7,8 @@ temp/*
 !temp/
 outputs/*
 !outputs/
+Structures/**/*.log
+Structures/**/*.raw
 algorithms/optimized_serial.txt
 configs/Serial_exact.json
 Simulation.log
