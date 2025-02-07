@@ -348,7 +348,7 @@ class Plotter:
             plt.show()
 
     @staticmethod
-    def get_dev_list(max_dev: int = 50) -> [int]:
+    def get_dev_list(max_dev: int = 50) -> [int]: # type: ignore
         """
         Customized function that returns a list of specific deviation values
         :param max_dev: maximum deviation
@@ -368,7 +368,7 @@ class Plotter:
                 dev_list.append(max_dev)
             return dev_list
 
-    def get_expected_logic(self, comb: int) -> [[int, int]]:
+    def get_expected_logic(self, comb: int) -> [[int, int]]: # type: ignore
         """
         Fetches the expected logic states and returns the expected and simulated logic states
         :param comb: input combination
@@ -376,7 +376,7 @@ class Plotter:
         """
         return [[elem, self.expected_logic[elem][comb]] for elem in self.expected_logic]
 
-    def find_indices(self, mem) -> [int]:
+    def find_indices(self, mem) -> [int]: # type: ignore
         """
         Finds indices of elements in mem
         :param mem:
