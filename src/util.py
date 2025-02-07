@@ -81,7 +81,7 @@ def r_off(d, pos=1, R_off=1000) -> str:
     return simplify_number_string(f"{r}k")
 
 
-def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) -> [[str], [str]]:
+def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) -> [[str], [str]]: # type: ignore
     """
     Returns two lists with 9 resistance combinations
     :param dev: deviation of the resistance
@@ -104,26 +104,33 @@ def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) ->
     return R_on_c, R_off_c
 
 
-def copy_pwm_files(config: dict, cycle_time) -> None:
+def copy_pwm_files(config: dict, cycle_time: int) -> None:
     """
     Overwrite the PWM files for the given topology
     :param config: config file
     :param cycle_time: cycle time from IMPLY_parameters
     """
-    # Iterate over files
+
     for file in os.listdir(f"""./Structures/{config["topology"]}"""):
-        # If file is a CSV and was used in the current algorithm => overwrite current files in folder
         if file.endswith(".csv"):
-            if os.path.exists(f"outputs/PWM_output/{file}"):
-                os.remove(f"""./Structures/{config["topology"]}/{file}""")
-                shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
-            else:
-                # If files are unused rewrite the content to not use them
-                with open(f"""./Structures/{config["topology"]}/{file}""", "w") as f:
-                    if 'sw' in f.name.split('/')[-1]:
-                        f.write(f"""0,-100\n {cycle_time * (config["steps"] + 1)},-100""")
-                    else:
-                        f.write(f"""0,0\n {cycle_time * (config["steps"] + 1)},0""")
+            os.remove(f"""./Structures/{config["topology"]}/{file}""")
+    for file in os.listdir("outputs/PWM_output"):
+        shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
+
+    # # Iterate over files
+    # for file in os.listdir(f"""./Structures/{config["topology"]}"""):
+    #     # If file is a CSV and was used in the current algorithm => overwrite current files in folder
+    #     if file.endswith(".csv"):
+    #         if os.path.exists(f"outputs/PWM_output/{file}"):
+    #             os.remove(f"""./Structures/{config["topology"]}/{file}""")
+    #             shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
+    #         else:
+    #             # If files are unused rewrite the content to not use them
+    #             with open(f"""./Structures/{config["topology"]}/{file}""", "w") as f:
+    #                 if 'sw' in f.name.split('/')[-1]:
+    #                     f.write(f"""0,-100\n {cycle_time * (config["steps"] + 1)},-100""")
+    #                 else:
+    #                     f.write(f"""0,0\n {cycle_time * (config["steps"] + 1)},0""")
 
 
 class Logger:
