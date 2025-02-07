@@ -10,6 +10,8 @@ import re
 import os
 import shutil
 
+number_suffixes = ["a", "f", "p", "n", "u", "m", "", "k", "M", "G", "T", "P", "E"] 
+
 
 def open_csv(string: str, printS: bool = False) -> str:
     with open(string, 'r') as file:
@@ -102,6 +104,68 @@ def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) ->
                r_off(dev, 0, R_off), f"{R_off}k", r_off(dev, 1, R_off),
                r_off(dev, 0, R_off), f"{R_off}k", r_off(dev, 1), R_off]
     return R_on_c, R_off_c
+
+def format_spice_number(number: str | int) -> str:
+    """
+    Format a number in SPICE format
+    :param number: number to format
+    :return: Formatted number
+    """
+    suffix = ""
+    if type(number) is str and number[-1] in number_suffixes:
+        suffix = number[-1]
+        number = float(number[:-1])
+    else:
+        number = float(number)
+
+    # index of the suffix in the number_suffixes list
+    sfidx = number_suffixes.index(suffix)
+    if abs(number) < 1 or number % 1 > 0.0001: # floating point error
+        return f"{int(number*1000)}{number_suffixes[sfidx - 1]}"
+    if abs(number) > 1000 and number % 1000 == 0:
+        return f"{int(number/1000)}{number_suffixes[sfidx + 1]}"
+    return f"{int(number)}{number_suffixes[sfidx]}"
+
+def deviate_spice_number(number: int | str, perc_dev: int) -> str:
+    """
+    Deviate a number in SPICE format
+    :param number: number to deviate
+    :param perc_dev: deviation in percent
+    :return: Deviated number
+    """
+    suffix = ""
+    if type(number) is str and number[-1] in number_suffixes:
+        suffix = number[-1]
+        number = float(number[:-1])
+    else:
+        number = float(number)
+    
+    number = number * (1 + perc_dev / 100)
+
+    return format_spice_number(f"{number}{suffix}")
+    
+
+def comb9(perc_dev: int, first: str | int, second: str | int) -> [[str], [str]]: # type: ignore
+    """
+    Returns two lists with 9 combinations of first and second deviated by perc_dev in percent
+    :param perc_dev: deviation in percent
+    :param first: first value
+    :param second: second value
+    :return: lists with varyied combinations of first and second
+    """
+    if type(first) is int:
+        first = str(first)
+    if type(second) is int:
+        second = str(second)
+
+    # Create two lists with all combinations
+    first_c = [deviate_spice_number(first, -perc_dev), deviate_spice_number(first, -perc_dev), deviate_spice_number(first, -perc_dev),
+              format_spice_number(first), format_spice_number(first), format_spice_number(first),
+              deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev)]
+    second_c = [deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev),
+               deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev),
+               deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev)]
+    return first_c, second_c
 
 
 def copy_pwm_files(config: dict, cycle_time: int) -> None:

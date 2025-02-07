@@ -7,7 +7,7 @@ import os
 import shutil
 import numpy as np
 from PyLTSpice import SpiceEditor, RawRead, LTspice, SimCommander
-from src.util import open_csv, extract_energy_from_log, resistance_comb9, Logger
+from src.util import comb9, open_csv, extract_energy_from_log, resistance_comb9, Logger
 from tqdm import tqdm
 
 
@@ -210,16 +210,16 @@ class Simulator:
         self.logger.L.info(f'Energy over Combinations: {energy}')
         return energy, sum(energy)/len(energy)
 
-    def evaluate_deviation(self, dev: int = 20, save: bool = True) -> None:
+    def evaluate_deviation_resistance(self, dev: int = 20, save: bool = True) -> None:
         """
-        Evaluates the deviation of the current simulation.
+        Evaluates the deviation of R_on and R_off for the current simulation.
         :param dev: deviation to be evaluated
         :param save: If the results should be saved
         :return: Average energy consumption of the current algorithm
         """
         valid_res = []
-        print(f"Calculating deviation {dev}:")
-        self.logger.L.info(f'Started calculating deviation: {dev}')
+        print(f"Calculating resistance deviation {dev}:")
+        self.logger.L.info(f'Started calculating resistance deviation: {dev}')
 
         # Iterate over the input combinations
         for inputs in tqdm(range(2**len(self.config["inputs"]))):
@@ -271,3 +271,58 @@ class Simulator:
                                f'\"outputs/deviation_results/dev_{dev}\"')
 
 
+    def evaluate_deviation_voltage(self, dev: int = 20, save: bool = True) -> None:
+        """
+        Evaluates the deviation of v_on and v_off for the current simulation.
+        :param dev: deviation to be evaluated
+        :param save: If the results should be saved
+        :return: Average energy consumption of the current algorithm
+        """
+        valid_res = []
+        print(f"Calculating voltage deviation {dev}:")
+        self.logger.L.info(f'Started calculating voltage deviation: {dev}')
+
+        # Iterate over the input combinations
+        for inputs in tqdm(range(2**len(self.config["inputs"]))):
+
+            name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
+            R_on, R_off = self.vteam_parameters["R_off"], self.vteam_parameters["R_on"]
+            
+            v_on_c, v_off_c = comb9(dev, self.vteam_parameters["v_on"], self.vteam_parameters["v_off"])
+
+            comb = []
+
+            param_values = {f"w_{mem}": f"{int(name[i]) * 3}n" for i, mem in enumerate(self.inputs)} # input memristors
+            param_values.update({f"w_{mem}": f"0n" for mem in self.work_memristors}) # work memristors
+
+            # Iterate over the different deviation combinations
+            if dev > 0:
+                for v_on, v_off in zip(v_on_c, v_off_c):
+                    param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+                    self.run_simulation(param_values)
+
+                    # Save waveforms
+                    if save:
+                        os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
+                        comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/v_{v_on}_{v_off}.txt"))
+
+            # If the simulation is done without any deviation
+            elif dev == 0:
+                R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
+                v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
+                param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+                self.run_simulation(param_values)
+
+                # Save waveforms
+                if save:
+                    os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
+                    comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/v_{v_on}_{v_off}.txt"))
+
+            valid_res.append(comb)
+
+        if save:
+            os.makedirs(f"./outputs/deviation_results/", exist_ok=True)
+            with open(f"./outputs/deviation_results/dev_v_{dev}", 'wb') as fp:
+                pickle.dump(valid_res, fp)
+            self.logger.L.info(f'Results of experiments with deviation: {dev} saved in '
+                               f'\"outputs/deviation_results/dev_v_{dev}\"')
