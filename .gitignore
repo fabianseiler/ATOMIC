@@ -10,6 +10,7 @@ outputs/*
 Structures/**/*.log
 Structures/**/*.net
 Structures/**/*.raw
+Structures/**/*.csv
 algorithms/optimized_serial.txt
 configs/Serial_exact.json
 Simulation.log
