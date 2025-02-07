@@ -8,6 +8,7 @@ temp/*
 outputs/*
 !outputs/
 Structures/**/*.log
+Structures/**/*.net
 Structures/**/*.raw
 algorithms/optimized_serial.txt
 configs/Serial_exact.json
