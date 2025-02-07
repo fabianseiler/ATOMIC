@@ -63,7 +63,7 @@ class ControlLogicGenerator:
         except Exception as e:
             self.logger.L.error(f"Creation of PWM files failed at {self.__class__.__name__} due to: {e}")
 
-    def read_algo(self) -> [[str]]:
+    def read_algo(self) -> [[str]]: # type: ignore
         """
         Reads the algorithm and returns a cleaned up list with the commands for each section
         :return: [[str]]
@@ -263,7 +263,7 @@ class ControlLogicGenerator:
                 self.pwm_sw[idx2].append(f"{self.step_size * (self.count + 1)}u,-100")
 
     @staticmethod
-    def memristor_used(mem_idx: int, digits: []) -> bool:
+    def memristor_used(mem_idx: int, digits: []) -> bool: # type: ignore
         """
         Checks if the memristor is used
         :param mem_idx: index of the memristor
