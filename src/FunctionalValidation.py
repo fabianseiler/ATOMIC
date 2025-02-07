@@ -138,7 +138,7 @@ class FunctionalValidation:
             lines = f.readlines()
 
             # If topology is Serial choose one operation per cycle and evaluate
-            if self.topology == "Serial" or "Serial-Mult":
+            if self.topology == "Serial" or self.topology == "Serial-Mult":
                 for lnr, line in enumerate(lines):
                     if line[0] == 'F':
                         if line[2] == ',':
