@@ -81,7 +81,7 @@ def r_off(d, pos=1, R_off=1000) -> str:
     return simplify_number_string(f"{r}k")
 
 
-def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) -> [[str], [str]]:
+def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) -> [[str], [str]]: # type: ignore
     """
     Returns two lists with 9 resistance combinations
     :param dev: deviation of the resistance
@@ -104,7 +104,7 @@ def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) ->
     return R_on_c, R_off_c
 
 
-def copy_pwm_files(config: dict, cycle_time) -> None:
+def copy_pwm_files(config: dict, cycle_time: int) -> None:
     """
     Overwrite the PWM files for the given topology
     :param config: config file
