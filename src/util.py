@@ -110,20 +110,27 @@ def copy_pwm_files(config: dict, cycle_time: int) -> None:
     :param config: config file
     :param cycle_time: cycle time from IMPLY_parameters
     """
-    # Iterate over files
+
     for file in os.listdir(f"""./Structures/{config["topology"]}"""):
-        # If file is a CSV and was used in the current algorithm => overwrite current files in folder
         if file.endswith(".csv"):
-            if os.path.exists(f"outputs/PWM_output/{file}"):
-                os.remove(f"""./Structures/{config["topology"]}/{file}""")
-                shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
-            else:
-                # If files are unused rewrite the content to not use them
-                with open(f"""./Structures/{config["topology"]}/{file}""", "w") as f:
-                    if 'sw' in f.name.split('/')[-1]:
-                        f.write(f"""0,-100\n {cycle_time * (config["steps"] + 1)},-100""")
-                    else:
-                        f.write(f"""0,0\n {cycle_time * (config["steps"] + 1)},0""")
+            os.remove(f"""./Structures/{config["topology"]}/{file}""")
+    for file in os.listdir("outputs/PWM_output"):
+        shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
+
+    # # Iterate over files
+    # for file in os.listdir(f"""./Structures/{config["topology"]}"""):
+    #     # If file is a CSV and was used in the current algorithm => overwrite current files in folder
+    #     if file.endswith(".csv"):
+    #         if os.path.exists(f"outputs/PWM_output/{file}"):
+    #             os.remove(f"""./Structures/{config["topology"]}/{file}""")
+    #             shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
+    #         else:
+    #             # If files are unused rewrite the content to not use them
+    #             with open(f"""./Structures/{config["topology"]}/{file}""", "w") as f:
+    #                 if 'sw' in f.name.split('/')[-1]:
+    #                     f.write(f"""0,-100\n {cycle_time * (config["steps"] + 1)},-100""")
+    #                 else:
+    #                     f.write(f"""0,0\n {cycle_time * (config["steps"] + 1)},0""")
 
 
 class Logger:
