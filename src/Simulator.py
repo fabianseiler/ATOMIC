@@ -26,6 +26,8 @@ class Simulator:
 
         self.topology = config["topology"]
         self.memristors = config["memristors"]
+        self.inputs = config["inputs"]
+        self.work_memristors = config["work"]
         self.switches = config["switches"]
 
         with open(f"./Structures/{self.topology}.json", "r") as f:
@@ -60,7 +62,7 @@ class Simulator:
             shutil.rmtree("./temp/")
         os.mkdir("./temp")
 
-    def set_parameters(self, param_values: list) -> None:
+    def set_parameters(self, param_values: dict) -> None:
         """
         This functions rewrites the netlist of the initialized SpiceEditor, given the parameter values.
         :param param_values: list of parameter values [memristor values, R_on, R_off]
@@ -81,16 +83,19 @@ class Simulator:
                                              value=open_csv(f"./Structures/{self.topology}/{switch}.csv"))
 
         # Set the parameters
-        for k, mem in enumerate(self.memristors):
-            self.netlist.set_parameter(f"w_{mem}", param_values[k])
-        self.netlist.set_parameters(R_on=param_values[-2], R_off=param_values[-1])
+        # for k, mem in enumerate(self.memristors):
+        #     self.netlist.set_parameter(f"w_{mem}", param_values[k])
+        # self.netlist.set_parameters(R_on=param_values[-2], R_off=param_values[-1])
+        
+        for key, value in param_values.items():
+            self.netlist.set_parameter(key, value)
 
         # Save the updated netlist
         netlist_path = f"./temp/netlist.net"
         self.netlist.write_netlist(netlist_path)
         self.netlist_path = netlist_path
 
-    def run_simulation(self, param_values: list, energy_sim: bool = False) -> None:
+    def run_simulation(self, param_values: dict, energy_sim: bool = False) -> None:
         """
         This function runs the simulations of the SpiceEditor with given parameter values.
         :param param_values: List of parameter values [memristor values, R_on, R_off]
@@ -114,7 +119,7 @@ class Simulator:
         except Exception as e:
             self.logger.L.error(f'Simulation failed with parameters={param_values} due to: {e}')
 
-    def read_raw(self) -> ([str], [np.ndarray]):
+    def read_raw(self) -> ([str], [np.ndarray]): # type: ignore
         """
         Reads the data from the raw file resulting from the simulation and stores it.
         :return: Header and output array with simulated data.
@@ -172,7 +177,7 @@ class Simulator:
             if component[:2] == 'XX' and (component[2:] not in self.memristors):
                 self.netlist.remove_component(component)
 
-    def calculate_energy(self) -> ([float], float):
+    def calculate_energy(self) -> ([float], float): # type: ignore
         """
         Calculates the average energy consumption of the current simulation.
         :return: List of energy consumption per combination, and average energy consumption.
@@ -182,10 +187,18 @@ class Simulator:
         self.logger.L.info('Started calculating energy consumption')
         energy = []
         R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
-        for inputs in tqdm(range(2 ** len(self.config["inputs"]))):
-            name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
+        v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
+        for inputs in tqdm(range(2 ** len(self.inputs))):
+            name = bin(inputs)[2:].zfill(len(self.inputs))
 
-            param_values = ([f"{int(mem) * 3}n" for mem in name] + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+            # param_values = ([f"{int(mem) * 3}n" for mem in name] + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+
+            # Parameter dictionary for the VTEAM parameters
+            param_values = {f"w_{mem}": f"{int(name[i]) * 3}n" for i, mem in enumerate(self.inputs)} # input memristors
+            param_values.update({f"w_{mem}": f"0n" for mem in self.work_memristors}) # work memristors
+            param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+
+
             # param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
             #                + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
             self.run_simulation(param_values, energy_sim=True)
@@ -213,15 +226,21 @@ class Simulator:
 
             name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
             r_on_c, r_off_c = resistance_comb9(dev, self.vteam_parameters["R_off"], self.vteam_parameters["R_on"])
+            
+            v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
 
             comb = []
+
+            param_values = {f"w_{mem}": f"{int(name[i]) * 3}n" for i, mem in enumerate(self.inputs)} # input memristors
+            param_values.update({f"w_{mem}": f"0n" for mem in self.work_memristors}) # work memristors
 
             # Iterate over the different deviation combinations
             if dev > 0:
                 for R_on, R_off in zip(r_on_c, r_off_c):
 
-                    param_values = ([f"{int(i) * 3}n" for i in name]
-                                    + [f'0n' for _ in self.memristors[len(self.config["inputs"]) - 1:]] + [R_on, R_off])
+                    # param_values = ([f"{int(i) * 3}n" for i in name]
+                    #                 + [f'0n' for _ in self.memristors[len(self.config["inputs"]) - 1:]] + [R_on, R_off])
+                    param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
                     self.run_simulation(param_values)
 
                     # Save waveforms
@@ -232,8 +251,9 @@ class Simulator:
             # If the simulation is done without any deviation
             elif dev == 0:
                 R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
-                param_values = ([f"{int(i)*3}n" for i in name]
-                                + [f'0n' for _ in self.memristors[len(self.config["inputs"])-1:]] + [R_on, R_off])
+                # param_values = ([f"{int(i) * 3}n" for i in name]
+                    #                 + [f'0n' for _ in self.memristors[len(self.config["inputs"]) - 1:]] + [R_on, R_off])
+                param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
                 self.run_simulation(param_values)
 
                 # Save waveforms
