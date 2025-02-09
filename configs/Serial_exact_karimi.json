@@ -4,7 +4,7 @@
   "memristors": ["a", "b", "c", "w1", "w2"],
   "inputs": ["a", "b", "c"],
   "work": ["w1", "w2"],
-  "outputs": ["a", "c"],
+  "outputs": ["b", "c"],
   "switches": ["a_sw", "b_sw", "c_sw", "w1_sw", "w2_sw", "w3_sw"],
   "steps": 23,
   "output_states": {"sum":  [0, 1, 1, 0, 1, 0, 0, 1],
