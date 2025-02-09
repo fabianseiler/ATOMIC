@@ -133,14 +133,19 @@ def deviate_spice_number(number: int | str, perc_dev: int) -> str:
     :param perc_dev: deviation in percent
     :return: Deviated number
     """
-    suffix = ""
-    if type(number) is str and number[-1] in number_suffixes:
-        suffix = number[-1]
+
+    number = format_spice_number(number)
+    suffix = number[-1] if number[-1] in number_suffixes else ""
+
+    if suffix:
         number = float(number[:-1])
     else:
         number = float(number)
     
     number = number * (1 + perc_dev / 100)
+
+    # round to 3 decimal places
+    number = round(number, 3)
 
     return format_spice_number(f"{number}{suffix}")
     
@@ -164,6 +169,28 @@ def comb9(perc_dev: int, first: str | int, second: str | int) -> [[str], [str]]:
               deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev)]
     second_c = [deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev),
                deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev),
+               deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev)]
+    return first_c, second_c
+
+def comb8(perc_dev: int, first: str | int, second: str | int) -> [[str], [str]]: # type: ignore
+    """
+    Returns two lists with 8 combinations of first and second deviated by perc_dev in percent (no zero deviation)
+    :param perc_dev: deviation in percent
+    :param first: first value
+    :param second: second value
+    :return: lists with varyied combinations of first and second
+    """
+    if type(first) is int:
+        first = str(first)
+    if type(second) is int:
+        second = str(second)
+
+    # Create two lists with all combinations
+    first_c = [deviate_spice_number(first, -perc_dev), deviate_spice_number(first, -perc_dev), deviate_spice_number(first, -perc_dev),
+              format_spice_number(first), format_spice_number(first),
+              deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev)]
+    second_c = [deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev),
+               deviate_spice_number(second, -perc_dev), deviate_spice_number(second, perc_dev),
                deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev)]
     return first_c, second_c
 
@@ -226,3 +253,14 @@ class Logger:
             # Add the handlers to the logger
             #self.L.addHandler(ch)
             self.L.addHandler(fh)
+
+
+if __name__ == "__main__":
+    print(deviate_spice_number("-10m", 10))
+    print(deviate_spice_number("-10m", 1))
+    print(deviate_spice_number("-10m", -10))
+    print(deviate_spice_number("-10m", -1))
+    print(deviate_spice_number("700m", 10))
+    print(deviate_spice_number("700m", 1))
+    print(deviate_spice_number("700m", -10))
+    print(deviate_spice_number("700m", -1))

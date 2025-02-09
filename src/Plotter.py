@@ -18,7 +18,7 @@ class Plotter:
     This class builds upon the Simulator class and is responsible for the extraction and visualization of the data.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, calculate_energy : bool = True):
 
         self.logger = Logger()
         self.logger.L.info(f"Initializing {self.__class__.__name__}")
@@ -47,7 +47,8 @@ class Plotter:
             os.makedirs("./outputs/Images/")
 
         # Calculate the energy
-        self.energy = self.Simulator.calculate_energy()
+        if calculate_energy:
+            self.energy = self.Simulator.calculate_energy()
 
     def plot_waveforms_with_deviation(self, comb: str, dev: int, recompute: bool = False,
                                       show: bool = False, fig_type: str = 'pdf', plots_per_subfigure: int = 3) -> None:
@@ -70,7 +71,7 @@ class Plotter:
                 shutil.rmtree("./outputs/Waveforms/")
             if os.path.exists("./outputs/deviation_results/"):
                 shutil.rmtree("./outputs/deviation_results/")
-            self.Simulator.evaluate_deviation(dev, save=True)
+            self.Simulator.evaluate_deviation_resistance(dev, save=True)
 
         waveforms = [[] for _ in range(len(self.Simulator.memristors)+1)]
 
@@ -172,7 +173,7 @@ class Plotter:
                 axs[idx].grid(True)
 
                 if idx == num_subplots - 1:
-                    axs[idx].set_xlabel("Time in $\mu$s", fontsize=24, labelpad=0)
+                    axs[idx].set_xlabel(r"Time in $\mu$s", fontsize=24, labelpad=0)
 
             plt.tight_layout()
             fig_type = str(fig_type)
@@ -184,7 +185,7 @@ class Plotter:
         except Exception as e:
             self.logger.L.error(f"Plotting waveforms at deviation={dev}, combination={comb} failed due to: {e}")
 
-    def plot_deviation_scatter(self, max_dev: int = 50, recompute: bool = False,
+    def plot_deviation_scatter(self, dev_range: list[int] = [0,5,10,20,30,40,50], recompute: bool = False,
                                show: bool = False, fig_type: str = 'pdf') -> None:
         """
         For every input combination plot the output states over increasing deviations
@@ -193,17 +194,17 @@ class Plotter:
         :param show: If the deviation experiments should be shown
         :param fig_type: Type of plot
         """
-        fig, ax = plt.subplots(1, len(self.expected_logic), figsize=(max(3*max_dev/10, 12), 4))
+        fig, ax = plt.subplots(1, len(self.expected_logic), figsize=(max(3*len(dev_range)/10, 12), 4))
 
         # If the results are recomputed
         if recompute:
-            self.logger.L.info(f"Started recomputing deviation experiments up to a deviation of {max_dev}")
-            for d, dev in enumerate(self.get_dev_list(max_dev)):
-                self.Simulator.evaluate_deviation(dev, True)
+            self.logger.L.info(f"Started recomputing deviation experiments up to a deviation of {dev_range[-1]}")
+            for d, dev in enumerate(dev_range):
+                self.Simulator.evaluate_deviation_resistance(dev, True)
 
         try:
             # Iterate over the deviations configure above
-            for d, dev in enumerate(self.get_dev_list(max_dev)):
+            for d, dev in enumerate(dev_range):
                 with open(f"./outputs/deviation_results/dev_{dev}", 'rb') as fp:
                     values = pickle.load(fp)
 
@@ -228,8 +229,8 @@ class Plotter:
             ax[idx].plot([-1, 20], [0.33, 0.33], linestyle='--', color="orange", label="Thresh LOW", alpha=0.5)
             ax[idx].plot([-1, 20], [0.66, 0.66], linestyle='--', color="orange", label="Thresh HIGH", alpha=0.5)
             ax[idx].set_ylim([0, 1])
-            ax[idx].set_xlim([-0.25, len(self.get_dev_list(max_dev))-0.75])
-            ax[idx].set_xticks(range(len(self.get_dev_list(max_dev))), labels=self.get_dev_list(max_dev))
+            ax[idx].set_xlim([-0.25, len(dev_range)-0.75])
+            ax[idx].set_xticks(range(len(dev_range)), labels=dev_range)
             ax[idx].set_yticks([0, 1], labels=["HRS", "LRS"], rotation=45)
             ax[idx].set_xlabel("$R_{on}$ & $R_{off}$ Deviation in %", fontsize=20)
             ax[idx].grid(axis='y')
@@ -252,13 +253,13 @@ class Plotter:
         :param fig_type: Type of plot
         :param save_dev_range: If the range of the deviation experiments should be stored
         """
-        fig = plt.figure(figsize=(max(2*max_dev/10, 5), 5))
+        fig = plt.figure(figsize=(max(2*len(dev)/10, 5), 5))
 
         # If the results are recomputed
         if recompute:
             self.logger.L.info(f"Started recomputing deviation experiments up to a deviation range of {max_dev}")
             for d, dev in enumerate(self.get_dev_list(max_dev)):
-                self.Simulator.evaluate_deviation(dev, True)
+                self.Simulator.evaluate_deviation_resistance(dev, True)
 
         range_logic1 = [[], []]
         range_logic0 = [[], []]
@@ -414,3 +415,15 @@ class Plotter:
 
         print(f"Files for {name} were saved successfully!")
         self.logger.L.info(f"Files for {name} were saved successfully!")
+
+    def run_deviation_experiments(self, dev_r_range: list[int], dev_v_range: list[int]) -> None:
+        """
+        Run deviation experiments for resistance and voltage
+        :param dev_r_range: range of resistance deviations
+        :param dev_v_range: range of voltage deviations
+        """
+        for dev_r in dev_r_range:
+            for dev_v in dev_v_range:
+                self.logger.L.info(f"Started deviation experiments for resistance {dev_r} and voltage {dev_v}")
+                self.Simulator.evaluate_deviation_resistance_voltage(dev_r, dev_v)
+        self.logger.L.info(f"Deviation experiments completed for resistance and voltage")
