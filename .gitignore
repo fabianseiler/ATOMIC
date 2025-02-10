@@ -13,4 +13,5 @@ Structures/**/*.raw
 Structures/**/*.csv
 algorithms/optimized_serial.txt
 configs/Serial_exact.json
+deviation_results/
 Simulation.log

@@ -186,7 +186,7 @@ class Plotter:
             self.logger.L.error(f"Plotting waveforms at deviation={dev}, combination={comb} failed due to: {e}")
 
     def plot_deviation_scatter(self, dev_range: list[int] = [0,5,10,20,30,40,50], recompute: bool = False,
-                               show: bool = False, fig_type: str = 'pdf') -> None:
+                               show: bool = False, fig_type: str = 'pdf', dev_voltage: bool = False) -> None:
         """
         For every input combination plot the output states over increasing deviations
         :param max_dev: maximum deviation
@@ -200,7 +200,10 @@ class Plotter:
         if recompute:
             self.logger.L.info(f"Started recomputing deviation experiments up to a deviation of {dev_range[-1]}")
             for d, dev in enumerate(dev_range):
-                self.Simulator.evaluate_deviation_resistance(dev, True)
+                if dev_voltage:
+                    self.Simulator.evaluate_deviation_voltage(dev, True)
+                else:
+                    self.Simulator.evaluate_deviation_resistance(dev, True)
 
         try:
             # Iterate over the deviations configure above
