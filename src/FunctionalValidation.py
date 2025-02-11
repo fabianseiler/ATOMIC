@@ -59,7 +59,7 @@ class FunctionalValidation:
         except Exception as e:
             self.logger.L.error(f"Initialization of {self.__class__.__name__} failed: {e}")
 
-    def generate_input(self, index: int) -> [int]:
+    def generate_input(self, index: int) -> [int]: # type: ignore
         """
         Function that generates input combinations depending on the input index
         """
@@ -87,13 +87,13 @@ class FunctionalValidation:
             file.write(string)
         self.logger.L.info(f"Applied Operations: {self.get_state_number()}")
 
-    def get_state_number(self) -> [str]:
+    def get_state_number(self) -> [str]: # type: ignore
         """
         Return the current state number
         """
         return self.state_num
 
-    def false_op(self, mem_nums: [int]) -> None:
+    def false_op(self, mem_nums: [int]) -> None: # type: ignore
         """
         Simulation of FALSE operation for all memristors in the mem_nums list
         :param mem_nums: list of target memristors
@@ -138,7 +138,7 @@ class FunctionalValidation:
             lines = f.readlines()
 
             # If topology is Serial choose one operation per cycle and evaluate
-            if self.topology == "Serial" or "Serial-Mult":
+            if self.topology == "Serial" or self.topology == "Serial-Mult":
                 for lnr, line in enumerate(lines):
                     if line[0] == 'F':
                         if line[2] == ',':

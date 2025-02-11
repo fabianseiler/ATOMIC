@@ -19,17 +19,22 @@ class ControlLogicGenerator:
         self.logger.L.info(f"Initializing {self.__class__.__name__}")
 
         self.algo = config["algorithm"]
+        self.algo_name = self.algo.split(".")[0]
         # self.step_size = config["cycle_time"]
         self.memristors = config["memristors"]
         self.count = 0
         self.topology = config["topology"]
-        self.output_path = f"./outputs/PWM_output/"
+        self.output_path = f"./outputs/{self.algo_name}/PWM_output/"
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path)
 
         with open("./Structures/IMPLY_parameters.json", "r") as f:
             self.params = json.load(f)
         self.step_size = self.params["t_pulse"]
+
+        with open (f"./Structures/{self.topology}.json", "r") as f:
+            self.topology_params = json.load(f)
+        
 
         # Create save files
         try:
@@ -60,10 +65,21 @@ class ControlLogicGenerator:
             self.pwm_mem = [["0u,0"] for _ in self.output_mem]
             self.pwm_sw = [["0u,-100"] for _ in self.output_sw]
 
+
+            # Create PWM files for the excess components (defined in asc file but not used in the algorithm)
+            self.output_excess = []
+            for mem in self.topology_params["memristors"]:
+                if mem not in self.memristors:
+                    self.output_excess.append(self.create_empty_csv(f"{self.output_path}{mem}.csv"))
+            for sw in self.topology_params["switches"]:
+                if sw.split("_")[0] not in self.memristors + ["S1", "S2", "S3"]:
+                    self.output_excess.append(self.create_empty_csv(f"{self.output_path}{sw}.csv"))
+
+            
         except Exception as e:
             self.logger.L.error(f"Creation of PWM files failed at {self.__class__.__name__} due to: {e}")
 
-    def read_algo(self) -> [[str]]:
+    def read_algo(self) -> [[str]]: # type: ignore
         """
         Reads the algorithm and returns a cleaned up list with the commands for each section
         :return: [[str]]
@@ -166,6 +182,14 @@ class ControlLogicGenerator:
 
             # ADD NEW TOPOLOGIES HERE:
             # elif self.topology == "New topology":
+    
+            # Write the content for the excess components
+            for comp in self.output_excess:
+                with open(comp, "a") as f:
+                    if 'sw' in f.name.split('/')[-1]:
+                        f.write(f"""0,-100\n{self.step_size * (self.count + 1)}u,-100""")
+                    else:
+                        f.write(f"""0,0\n{self.step_size * (self.count + 1)}u,0""")
 
         except Exception as e:
             self.logger.L.error(f"Writing PWM outputs to files failed at {self.__class__.__name__} due to: {e}")
@@ -263,7 +287,7 @@ class ControlLogicGenerator:
                 self.pwm_sw[idx2].append(f"{self.step_size * (self.count + 1)}u,-100")
 
     @staticmethod
-    def memristor_used(mem_idx: int, digits: []) -> bool:
+    def memristor_used(mem_idx: int, digits: []) -> bool: # type: ignore
         """
         Checks if the memristor is used
         :param mem_idx: index of the memristor

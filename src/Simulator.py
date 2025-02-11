@@ -1,5 +1,6 @@
 """
 created by Fabian Seiler at 12.06.2024
+Modified by Moritz Hinkel @ 11.02.2025
 """
 import json
 import pickle
@@ -7,7 +8,7 @@ import os
 import shutil
 import numpy as np
 from PyLTSpice import SpiceEditor, RawRead, LTspice, SimCommander
-from src.util import open_csv, extract_energy_from_log, resistance_comb9, Logger
+from src.util import comb8, comb9, open_csv, extract_energy_from_log, resistance_comb9, Logger
 from tqdm import tqdm
 
 
@@ -21,11 +22,15 @@ class Simulator:
 
         self.config = config
 
+        self.algorithm_name = config["algorithm"][:-4]
+
         self.logger = Logger()
         self.logger.L.info(f'Initializing {self.__class__.__name__}')
 
         self.topology = config["topology"]
         self.memristors = config["memristors"]
+        self.inputs = config["inputs"]
+        self.work_memristors = config["work"]
         self.switches = config["switches"]
 
         with open(f"./Structures/{self.topology}.json", "r") as f:
@@ -60,7 +65,7 @@ class Simulator:
             shutil.rmtree("./temp/")
         os.mkdir("./temp")
 
-    def set_parameters(self, param_values: list) -> None:
+    def set_parameters(self, param_values: dict) -> None:
         """
         This functions rewrites the netlist of the initialized SpiceEditor, given the parameter values.
         :param param_values: list of parameter values [memristor values, R_on, R_off]
@@ -81,16 +86,19 @@ class Simulator:
                                              value=open_csv(f"./Structures/{self.topology}/{switch}.csv"))
 
         # Set the parameters
-        for k, mem in enumerate(self.memristors):
-            self.netlist.set_parameter(f"w_{mem}", param_values[k])
-        self.netlist.set_parameters(R_on=param_values[-2], R_off=param_values[-1])
+        # for k, mem in enumerate(self.memristors):
+        #     self.netlist.set_parameter(f"w_{mem}", param_values[k])
+        # self.netlist.set_parameters(R_on=param_values[-2], R_off=param_values[-1])
+        
+        for key, value in param_values.items():
+            self.netlist.set_parameter(key, value)
 
         # Save the updated netlist
         netlist_path = f"./temp/netlist.net"
         self.netlist.write_netlist(netlist_path)
         self.netlist_path = netlist_path
 
-    def run_simulation(self, param_values: list, energy_sim: bool = False) -> None:
+    def run_simulation(self, param_values: dict, energy_sim: bool = False) -> None:
         """
         This function runs the simulations of the SpiceEditor with given parameter values.
         :param param_values: List of parameter values [memristor values, R_on, R_off]
@@ -114,7 +122,7 @@ class Simulator:
         except Exception as e:
             self.logger.L.error(f'Simulation failed with parameters={param_values} due to: {e}')
 
-    def read_raw(self) -> ([str], [np.ndarray]):
+    def read_raw(self) -> ([str], [np.ndarray]): # type: ignore
         """
         Reads the data from the raw file resulting from the simulation and stores it.
         :return: Header and output array with simulated data.
@@ -150,6 +158,7 @@ class Simulator:
                 f.write(' '.join(map(str, row)) + '\n')
 
         # Return the last row for further evaluation
+        # [time, a, b, c, w1, w2]
         return outputs[1:, -1]
 
     def read_energy(self):
@@ -172,7 +181,7 @@ class Simulator:
             if component[:2] == 'XX' and (component[2:] not in self.memristors):
                 self.netlist.remove_component(component)
 
-    def calculate_energy(self) -> ([float], float):
+    def calculate_energy(self) -> ([float], float): # type: ignore
         """
         Calculates the average energy consumption of the current simulation.
         :return: List of energy consumption per combination, and average energy consumption.
@@ -182,10 +191,18 @@ class Simulator:
         self.logger.L.info('Started calculating energy consumption')
         energy = []
         R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
-        for inputs in tqdm(range(2 ** len(self.config["inputs"]))):
-            name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
+        v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
+        for inputs in tqdm(range(2 ** len(self.inputs))):
+            name = bin(inputs)[2:].zfill(len(self.inputs))
 
-            param_values = ([f"{int(mem) * 3}n" for mem in name] + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+            # param_values = ([f"{int(mem) * 3}n" for mem in name] + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
+
+            # Parameter dictionary for the VTEAM parameters
+            param_values = {f"w_{mem}": f"{int(name[i]) * 3}n" for i, mem in enumerate(self.inputs)} # input memristors
+            param_values.update({f"w_{mem}": f"0n" for mem in self.work_memristors}) # work memristors
+            param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+
+
             # param_values = ([f"{int(name[0]) * 3}n", f"{int(name[1]) * 3}n", f"{int(name[2]) * 3}n"]
             #                + [f'0n' for _ in self.memristors[2:]] + [R_on, R_off])
             self.run_simulation(param_values, energy_sim=True)
@@ -197,57 +214,209 @@ class Simulator:
         self.logger.L.info(f'Energy over Combinations: {energy}')
         return energy, sum(energy)/len(energy)
 
-    def evaluate_deviation(self, dev: int = 20, save: bool = True) -> None:
+    def evaluate_deviation_resistance(self, dev: int = 20, save: bool = True) -> None:
         """
-        Evaluates the deviation of the current simulation.
+        Evaluates the deviation of R_on and R_off for the current simulation.
         :param dev: deviation to be evaluated
         :param save: If the results should be saved
         :return: Average energy consumption of the current algorithm
         """
         valid_res = []
-        print(f"Calculating deviation {dev}:")
-        self.logger.L.info(f'Started calculating deviation: {dev}')
+        print(f"Calculating resistance deviation {dev}:")
+        self.logger.L.info(f'Started calculating resistance deviation: {dev}')
 
         # Iterate over the input combinations
         for inputs in tqdm(range(2**len(self.config["inputs"]))):
 
             name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
             r_on_c, r_off_c = resistance_comb9(dev, self.vteam_parameters["R_off"], self.vteam_parameters["R_on"])
+            
+            v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
 
             comb = []
+
+            param_values = {f"w_{mem}": f"{int(name[i]) * 3}n" for i, mem in enumerate(self.inputs)} # input memristors
+            param_values.update({f"w_{mem}": f"0n" for mem in self.work_memristors}) # work memristors
 
             # Iterate over the different deviation combinations
             if dev > 0:
                 for R_on, R_off in zip(r_on_c, r_off_c):
 
-                    param_values = ([f"{int(i) * 3}n" for i in name]
-                                    + [f'0n' for _ in self.memristors[len(self.config["inputs"]) - 1:]] + [R_on, R_off])
+                    # param_values = ([f"{int(i) * 3}n" for i in name]
+                    #                 + [f'0n' for _ in self.memristors[len(self.config["inputs"]) - 1:]] + [R_on, R_off])
+                    param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
                     self.run_simulation(param_values)
 
                     # Save waveforms
                     if save:
-                        os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
-                        comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
+                        os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}", exist_ok=True)
+                        comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
 
             # If the simulation is done without any deviation
             elif dev == 0:
                 R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
-                param_values = ([f"{int(i)*3}n" for i in name]
-                                + [f'0n' for _ in self.memristors[len(self.config["inputs"])-1:]] + [R_on, R_off])
+                # param_values = ([f"{int(i) * 3}n" for i in name]
+                    #                 + [f'0n' for _ in self.memristors[len(self.config["inputs"]) - 1:]] + [R_on, R_off])
+                param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
                 self.run_simulation(param_values)
 
                 # Save waveforms
                 if save:
-                    os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
-                    comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
+                    os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}", exist_ok=True)
+                    comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
 
             valid_res.append(comb)
 
         if save:
-            os.makedirs(f"./outputs/deviation_results/", exist_ok=True)
-            with open(f"./outputs/deviation_results/dev_{dev}", 'wb') as fp:
+            os.makedirs(f"./outputs/{self.algorithm_name}/deviation_results/", exist_ok=True)
+            with open(f"./outputs/{self.algorithm_name}/deviation_results/dev_{dev}", 'wb') as fp:
                 pickle.dump(valid_res, fp)
             self.logger.L.info(f'Results of experiments with deviation: {dev} saved in '
-                               f'\"outputs/deviation_results/dev_{dev}\"')
+                               f'\"outputs/{self.algorithm_name}/deviation_results/dev_{dev}\"')
+
+    def evaluate_deviation_voltage(self, dev: int = 20, save: bool = True) -> None:
+        """
+        Evaluates the deviation of v_on and v_off for the current simulation.
+        :param dev: deviation to be evaluated
+        :param save: If the results should be saved
+        :return: Average energy consumption of the current algorithm
+        """
+        valid_res = []
+        print(f"Calculating voltage deviation {dev}:")
+        self.logger.L.info(f'Started calculating voltage deviation: {dev}')
+
+        # Iterate over the input combinations
+        for inputs in tqdm(range(2**len(self.config["inputs"]))):
+
+            name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
+            R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
+            v_on_c, v_off_c = comb9(dev, self.vteam_parameters["v_on"], self.vteam_parameters["v_off"])
 
 
+            comb = []
+
+            param_values = {f"w_{mem}": f"{int(name[i]) * 3}n" for i, mem in enumerate(self.inputs)} # input memristors
+            param_values.update({f"w_{mem}": f"0n" for mem in self.work_memristors}) # work memristors
+
+            # Iterate over the different deviation combinations
+            if dev > 0:
+                for v_on, v_off in zip(v_on_c, v_off_c):
+                    param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+                    self.run_simulation(param_values)
+
+                    # Save waveforms
+                    if save:
+                        os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}", exist_ok=True)
+                        comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}/{v_on}_{v_off}.txt"))
+
+            # If the simulation is done without any deviation
+            elif dev == 0:
+                R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
+                v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
+                param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+                self.run_simulation(param_values)
+
+                # Save waveforms
+                if save:
+                    os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}", exist_ok=True)
+                    comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}/{v_on}_{v_off}.txt"))
+
+            valid_res.append(comb)
+
+        if save:
+            os.makedirs(f"./outputs/{self.algorithm_name}/deviation_results/", exist_ok=True)
+            with open(f"./outputs/{self.algorithm_name}/deviation_results/dev_{dev}", 'wb') as fp:
+                pickle.dump(valid_res, fp)
+            self.logger.L.info(f'Results of experiments with deviation: {dev} saved in '
+                               f'\"outputs/{self.algorithm_name}/deviation_results/dev_{dev}\"')
+    
+    def get_combination_from_result_index(self, index: int, dev_r: int, dev_v: int) -> str:
+        r_on, r_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
+        v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
+
+        if dev_r == 0 and dev_v == 0:
+            return f'r_{r_on}_{r_off}_v_{v_on}_{v_off}'
+        elif dev_r == 0 and dev_v != 0:
+            v_on_c, v_off_c = comb8(dev_v, v_on, v_off)
+            return f'r_{r_on}_{r_off}_v_{v_on_c[index]}_{v_off_c[index]}'
+        elif dev_r != 0 and dev_v == 0:
+            r_on_c, r_off_c = comb8(dev_r, r_on, r_off)
+            return f'r_{r_on_c[index]}_{r_off_c[index]}_v_{v_on}_{v_off}'
+        else:
+            r_on_c, r_off_c = comb8(dev_r, r_on, r_off)
+            v_on_c, v_off_c = comb8(dev_v, v_on, v_off)
+            return f'r_{r_on_c[index%8]}_{r_off_c[index%8]}_v_{v_on_c[index//8]}_{v_off_c[index//8]}'
+
+    def evaluate_deviation_resistance_voltage(self, dev_r: int = 20, dev_v: int = 1) -> None:
+        """
+        Evaluates the deviation of R_on, R_off, v_on, and v_off for the current simulation.
+        :param dev: deviation to be evaluated
+        :param save: If the results should be saved
+        :return: Average energy consumption of the current algorithm
+        """
+        valid_res = []
+        print(f"Calculating resistance ({dev_r}%) and voltage ({dev_v}%) deviation")
+        self.logger.L.info(f'Started  resistance ({dev_r}%) and voltage ({dev_v}%) deviation')
+
+        # Iterate over the input combinations
+        for inputs in tqdm(range(2**len(self.config["inputs"]))):
+
+            name = bin(inputs)[2:].zfill(len(self.config["inputs"]))
+            
+            r_on_c, r_off_c = comb8(dev_r, self.vteam_parameters["R_on"], self.vteam_parameters["R_off"])
+            v_on_c, v_off_c = comb8(dev_v, self.vteam_parameters["v_on"], self.vteam_parameters["v_off"])
+
+            comb = []
+
+            param_values = {f"w_{mem}": f"{int(name[i]) * 3}n" for i, mem in enumerate(self.inputs)} # input memristors
+            param_values.update({f"w_{mem}": f"0n" for mem in self.work_memristors}) # work memristors
+
+            # Iterate over the different deviation combinations
+            os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}", exist_ok=True)
+
+            if dev_r > 0 and dev_v > 0:
+                for v_on, v_off in zip(v_on_c, v_off_c):
+                    for R_on, R_off in zip(r_on_c, r_off_c):
+                        param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+                        self.run_simulation(param_values)
+
+                        # Save waveforms
+                        comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
+            
+            # Only deviation in resistance
+            elif dev_r > 0 and dev_v == 0:
+                v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
+                for R_on, R_off in zip(r_on_c, r_off_c):
+                    param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+                    self.run_simulation(param_values)
+
+                    # Save waveforms
+                    comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
+            
+            # Only deviation in voltage
+            elif dev_r == 0 and dev_v > 0:
+                R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
+                for v_on, v_off in zip(v_on_c, v_off_c):
+                    param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+                    self.run_simulation(param_values)
+
+                    # Save waveforms
+                    comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
+
+            # If the simulation is done without any deviation
+            elif dev_r == 0 and dev_v == 0:
+                R_on, R_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
+                v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
+                param_values.update({"R_on": f"{R_on}", "R_off": f"{R_off}", "v_on": f"{v_on}", "v_off": f"{v_off}"})
+
+                self.run_simulation(param_values)
+
+                comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
+
+            valid_res.append(comb)
+
+        os.makedirs(f"./outputs/{self.algorithm_name}/deviation_results/", exist_ok=True)
+        with open(f"./outputs/{self.algorithm_name}/deviation_results/dev_R{dev_r}_V{dev_v}", 'wb') as fp:
+            pickle.dump(valid_res, fp)
+        self.logger.L.info(f'Results of experiments with deviation: R{dev_r} V{dev_v} saved in '
+                            f'\"outputs/{self.algorithm_name}/deviation_results/dev_R{dev_r}_V{dev_v}\"')

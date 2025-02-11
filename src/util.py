@@ -1,5 +1,6 @@
 """
 Created by Fabian Seiler at 23.07.24
+Modified by Moritz Hinkel @ 11.02.2025
 
 Consists of useful utility functions for the other classes + Logger class
 """
@@ -9,6 +10,8 @@ import csv
 import re
 import os
 import shutil
+
+number_suffixes = ["a", "f", "p", "n", "u", "m", "", "k", "M", "G", "T", "P", "E"] 
 
 
 def open_csv(string: str, printS: bool = False) -> str:
@@ -81,7 +84,7 @@ def r_off(d, pos=1, R_off=1000) -> str:
     return simplify_number_string(f"{r}k")
 
 
-def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) -> [[str], [str]]:
+def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) -> [[str], [str]]: # type: ignore
     """
     Returns two lists with 9 resistance combinations
     :param dev: deviation of the resistance
@@ -103,27 +106,125 @@ def resistance_comb9(dev: int, R_off: int | str = 1000, R_on: int | str = 10) ->
                r_off(dev, 0, R_off), f"{R_off}k", r_off(dev, 1), R_off]
     return R_on_c, R_off_c
 
+def format_spice_number(number: str | int) -> str:
+    """
+    Format a number in SPICE format
+    :param number: number to format
+    :return: Formatted number
+    """
+    suffix = ""
+    if type(number) is str and number[-1] in number_suffixes:
+        suffix = number[-1]
+        number = float(number[:-1])
+    else:
+        number = float(number)
 
-def copy_pwm_files(config: dict, cycle_time) -> None:
+    # index of the suffix in the number_suffixes list
+    sfidx = number_suffixes.index(suffix)
+    if abs(number) < 1 or number % 1 > 0.0001: # floating point error
+        return f"{int(number*1000)}{number_suffixes[sfidx - 1]}"
+    if abs(number) > 1000 and number % 1000 == 0:
+        return f"{int(number/1000)}{number_suffixes[sfidx + 1]}"
+    return f"{int(number)}{number_suffixes[sfidx]}"
+
+def deviate_spice_number(number: int | str, perc_dev: int) -> str:
+    """
+    Deviate a number in SPICE format
+    :param number: number to deviate
+    :param perc_dev: deviation in percent
+    :return: Deviated number
+    """
+
+    number = format_spice_number(number)
+    suffix = number[-1] if number[-1] in number_suffixes else ""
+
+    if suffix:
+        number = float(number[:-1])
+    else:
+        number = float(number)
+    
+    number = number * (1 + perc_dev / 100)
+
+    # round to 3 decimal places
+    number = round(number, 3)
+
+    return format_spice_number(f"{number}{suffix}")
+    
+
+def comb9(perc_dev: int, first: str | int, second: str | int) -> [[str], [str]]: # type: ignore
+    """
+    Returns two lists with 9 combinations of first and second deviated by perc_dev in percent
+    :param perc_dev: deviation in percent
+    :param first: first value
+    :param second: second value
+    :return: lists with varyied combinations of first and second
+    """
+    if type(first) is int:
+        first = str(first)
+    if type(second) is int:
+        second = str(second)
+
+    # Create two lists with all combinations
+    first_c = [deviate_spice_number(first, -perc_dev), deviate_spice_number(first, -perc_dev), deviate_spice_number(first, -perc_dev),
+              format_spice_number(first), format_spice_number(first), format_spice_number(first),
+              deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev)]
+    second_c = [deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev),
+               deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev),
+               deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev)]
+    return first_c, second_c
+
+def comb8(perc_dev: int, first: str | int, second: str | int) -> [[str], [str]]: # type: ignore
+    """
+    Returns two lists with 8 combinations of first and second deviated by perc_dev in percent (no zero deviation)
+    :param perc_dev: deviation in percent
+    :param first: first value
+    :param second: second value
+    :return: lists with varyied combinations of first and second
+    """
+    if type(first) is int:
+        first = str(first)
+    if type(second) is int:
+        second = str(second)
+
+    # Create two lists with all combinations
+    first_c = [deviate_spice_number(first, -perc_dev), deviate_spice_number(first, -perc_dev), deviate_spice_number(first, -perc_dev),
+              format_spice_number(first), format_spice_number(first),
+              deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev), deviate_spice_number(first, perc_dev)]
+    second_c = [deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev),
+               deviate_spice_number(second, -perc_dev), deviate_spice_number(second, perc_dev),
+               deviate_spice_number(second, -perc_dev), format_spice_number(second), deviate_spice_number(second, perc_dev)]
+    return first_c, second_c
+
+
+def copy_pwm_files(config: dict, cycle_time: int) -> None:
     """
     Overwrite the PWM files for the given topology
     :param config: config file
     :param cycle_time: cycle time from IMPLY_parameters
     """
-    # Iterate over files
+
+    algorithm = config["algorithm"].split(".")[0]
+
     for file in os.listdir(f"""./Structures/{config["topology"]}"""):
-        # If file is a CSV and was used in the current algorithm => overwrite current files in folder
         if file.endswith(".csv"):
-            if os.path.exists(f"outputs/PWM_output/{file}"):
-                os.remove(f"""./Structures/{config["topology"]}/{file}""")
-                shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
-            else:
-                # If files are unused rewrite the content to not use them
-                with open(f"""./Structures/{config["topology"]}/{file}""", "w") as f:
-                    if 'sw' in f.name.split('/')[-1]:
-                        f.write(f"""0,-100\n {cycle_time * (config["steps"] + 1)},-100""")
-                    else:
-                        f.write(f"""0,0\n {cycle_time * (config["steps"] + 1)},0""")
+            os.remove(f"""./Structures/{config["topology"]}/{file}""")
+    for file in os.listdir(f"outputs/{algorithm}/PWM_output"):
+        shutil.copy(f"outputs/{algorithm}/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
+
+    # # Iterate over files
+    # for file in os.listdir(f"""./Structures/{config["topology"]}"""):
+    #     # If file is a CSV and was used in the current algorithm => overwrite current files in folder
+    #     if file.endswith(".csv"):
+    #         if os.path.exists(f"outputs/PWM_output/{file}"):
+    #             os.remove(f"""./Structures/{config["topology"]}/{file}""")
+    #             shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
+    #         else:
+    #             # If files are unused rewrite the content to not use them
+    #             with open(f"""./Structures/{config["topology"]}/{file}""", "w") as f:
+    #                 if 'sw' in f.name.split('/')[-1]:
+    #                     f.write(f"""0,-100\n {cycle_time * (config["steps"] + 1)},-100""")
+    #                 else:
+    #                     f.write(f"""0,0\n {cycle_time * (config["steps"] + 1)},0""")
 
 
 class Logger:
@@ -155,3 +256,14 @@ class Logger:
             # Add the handlers to the logger
             #self.L.addHandler(ch)
             self.L.addHandler(fh)
+
+
+if __name__ == "__main__":
+    print(deviate_spice_number("-10m", 10))
+    print(deviate_spice_number("-10m", 1))
+    print(deviate_spice_number("-10m", -10))
+    print(deviate_spice_number("-10m", -1))
+    print(deviate_spice_number("700m", 10))
+    print(deviate_spice_number("700m", 1))
+    print(deviate_spice_number("700m", -10))
+    print(deviate_spice_number("700m", -1))
