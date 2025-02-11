@@ -1,5 +1,6 @@
 """
 Created by Fabian Seiler at 23.07.24
+Modified by Moritz Hinkel @ 11.02.2025
 
 Consists of useful utility functions for the other classes + Logger class
 """
@@ -202,11 +203,13 @@ def copy_pwm_files(config: dict, cycle_time: int) -> None:
     :param cycle_time: cycle time from IMPLY_parameters
     """
 
+    algorithm = config["algorithm"].split(".")[0]
+
     for file in os.listdir(f"""./Structures/{config["topology"]}"""):
         if file.endswith(".csv"):
             os.remove(f"""./Structures/{config["topology"]}/{file}""")
-    for file in os.listdir("outputs/PWM_output"):
-        shutil.copy(f"outputs/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
+    for file in os.listdir(f"outputs/{algorithm}/PWM_output"):
+        shutil.copy(f"outputs/{algorithm}/PWM_output/{file}", f"""./Structures/{config["topology"]}/{file}""")
 
     # # Iterate over files
     # for file in os.listdir(f"""./Structures/{config["topology"]}"""):

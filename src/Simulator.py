@@ -1,5 +1,6 @@
 """
 created by Fabian Seiler at 12.06.2024
+Modified by Moritz Hinkel @ 11.02.2025
 """
 import json
 import pickle
@@ -20,6 +21,8 @@ class Simulator:
     def __init__(self, config):
 
         self.config = config
+
+        self.algorithm_name = config["algorithm"][:-4]
 
         self.logger = Logger()
         self.logger.L.info(f'Initializing {self.__class__.__name__}')
@@ -246,8 +249,8 @@ class Simulator:
 
                     # Save waveforms
                     if save:
-                        os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
-                        comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
+                        os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}", exist_ok=True)
+                        comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
 
             # If the simulation is done without any deviation
             elif dev == 0:
@@ -259,17 +262,17 @@ class Simulator:
 
                 # Save waveforms
                 if save:
-                    os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
-                    comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
+                    os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}", exist_ok=True)
+                    comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}/{R_on}_{R_off}.txt"))
 
             valid_res.append(comb)
 
         if save:
-            os.makedirs(f"./outputs/deviation_results/", exist_ok=True)
-            with open(f"./outputs/deviation_results/dev_{dev}", 'wb') as fp:
+            os.makedirs(f"./outputs/{self.algorithm_name}/deviation_results/", exist_ok=True)
+            with open(f"./outputs/{self.algorithm_name}/deviation_results/dev_{dev}", 'wb') as fp:
                 pickle.dump(valid_res, fp)
             self.logger.L.info(f'Results of experiments with deviation: {dev} saved in '
-                               f'\"outputs/deviation_results/dev_{dev}\"')
+                               f'\"outputs/{self.algorithm_name}/deviation_results/dev_{dev}\"')
 
     def evaluate_deviation_voltage(self, dev: int = 20, save: bool = True) -> None:
         """
@@ -303,8 +306,8 @@ class Simulator:
 
                     # Save waveforms
                     if save:
-                        os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
-                        comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/{v_on}_{v_off}.txt"))
+                        os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}", exist_ok=True)
+                        comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}/{v_on}_{v_off}.txt"))
 
             # If the simulation is done without any deviation
             elif dev == 0:
@@ -315,17 +318,34 @@ class Simulator:
 
                 # Save waveforms
                 if save:
-                    os.makedirs(f"./outputs/Waveforms/{name}/{dev}", exist_ok=True)
-                    comb.append(self.save_raw(f"./outputs/Waveforms/{name}/{dev}/{v_on}_{v_off}.txt"))
+                    os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}", exist_ok=True)
+                    comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/{dev}/{v_on}_{v_off}.txt"))
 
             valid_res.append(comb)
 
         if save:
-            os.makedirs(f"./outputs/deviation_results/", exist_ok=True)
-            with open(f"./outputs/deviation_results/dev_{dev}", 'wb') as fp:
+            os.makedirs(f"./outputs/{self.algorithm_name}/deviation_results/", exist_ok=True)
+            with open(f"./outputs/{self.algorithm_name}/deviation_results/dev_{dev}", 'wb') as fp:
                 pickle.dump(valid_res, fp)
             self.logger.L.info(f'Results of experiments with deviation: {dev} saved in '
-                               f'\"outputs/deviation_results/dev_{dev}\"')
+                               f'\"outputs/{self.algorithm_name}/deviation_results/dev_{dev}\"')
+    
+    def get_combination_from_result_index(self, index: int, dev_r: int, dev_v: int) -> str:
+        r_on, r_off = self.vteam_parameters["R_on"], self.vteam_parameters["R_off"]
+        v_on, v_off = self.vteam_parameters["v_on"], self.vteam_parameters["v_off"]
+
+        if dev_r == 0 and dev_v == 0:
+            return f'r_{r_on}_{r_off}_v_{v_on}_{v_off}'
+        elif dev_r == 0 and dev_v != 0:
+            v_on_c, v_off_c = comb8(dev_v, v_on, v_off)
+            return f'r_{r_on}_{r_off}_v_{v_on_c[index]}_{v_off_c[index]}'
+        elif dev_r != 0 and dev_v == 0:
+            r_on_c, r_off_c = comb8(dev_r, r_on, r_off)
+            return f'r_{r_on_c[index]}_{r_off_c[index]}_v_{v_on}_{v_off}'
+        else:
+            r_on_c, r_off_c = comb8(dev_r, r_on, r_off)
+            v_on_c, v_off_c = comb8(dev_v, v_on, v_off)
+            return f'r_{r_on_c[index%8]}_{r_off_c[index%8]}_v_{v_on_c[index//8]}_{v_off_c[index//8]}'
 
     def evaluate_deviation_resistance_voltage(self, dev_r: int = 20, dev_v: int = 1) -> None:
         """
@@ -352,7 +372,7 @@ class Simulator:
             param_values.update({f"w_{mem}": f"0n" for mem in self.work_memristors}) # work memristors
 
             # Iterate over the different deviation combinations
-            os.makedirs(f"./outputs/Waveforms/{self.config["algorithm"][:-4]}/{name}/R{dev_r}/V{dev_v}", exist_ok=True)
+            os.makedirs(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}", exist_ok=True)
 
             if dev_r > 0 and dev_v > 0:
                 for v_on, v_off in zip(v_on_c, v_off_c):
@@ -361,7 +381,7 @@ class Simulator:
                         self.run_simulation(param_values)
 
                         # Save waveforms
-                        comb.append(self.save_raw(f"./outputs/Waveforms/{self.config["algorithm"][:-4]}/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
+                        comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
             
             # Only deviation in resistance
             elif dev_r > 0 and dev_v == 0:
@@ -371,7 +391,7 @@ class Simulator:
                     self.run_simulation(param_values)
 
                     # Save waveforms
-                    comb.append(self.save_raw(f"./outputs/Waveforms/{self.config["algorithm"][:-4]}/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
+                    comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
             
             # Only deviation in voltage
             elif dev_r == 0 and dev_v > 0:
@@ -381,7 +401,7 @@ class Simulator:
                     self.run_simulation(param_values)
 
                     # Save waveforms
-                    comb.append(self.save_raw(f"./outputs/Waveforms/{self.config["algorithm"][:-4]}/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
+                    comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
 
             # If the simulation is done without any deviation
             elif dev_r == 0 and dev_v == 0:
@@ -391,12 +411,12 @@ class Simulator:
 
                 self.run_simulation(param_values)
 
-                comb.append(self.save_raw(f"./outputs/Waveforms/{self.config["algorithm"][:-4]}/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
+                comb.append(self.save_raw(f"./outputs/{self.algorithm_name}/Waveforms/{name}/R{dev_r}/V{dev_v}/r_{R_on}_{R_off}_v_{v_on}_{v_off}.txt"))
 
             valid_res.append(comb)
 
-        os.makedirs(f"./outputs/deviation_results/", exist_ok=True)
-        with open(f"./outputs/deviation_results/dev_R{dev_r}_V{dev_v}", 'wb') as fp:
+        os.makedirs(f"./outputs/{self.algorithm_name}/deviation_results/", exist_ok=True)
+        with open(f"./outputs/{self.algorithm_name}/deviation_results/dev_R{dev_r}_V{dev_v}", 'wb') as fp:
             pickle.dump(valid_res, fp)
         self.logger.L.info(f'Results of experiments with deviation: R{dev_r} V{dev_v} saved in '
-                            f'\"outputs/deviation_results/dev_R{dev_r}_V{dev_v}\"')
+                            f'\"outputs/{self.algorithm_name}/deviation_results/dev_R{dev_r}_V{dev_v}\"')

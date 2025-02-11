@@ -1,8 +1,11 @@
 """
 created by Fabian Seiler at 23.07.24
+Modified by Moritz Hinkel @ 11.02.2025
 """
 import math
+import pathlib
 import pickle
+import re
 import numpy as np
 from matplotlib import gridspec
 from src.Simulator import Simulator
@@ -23,6 +26,9 @@ class Plotter:
         self.logger = Logger()
         self.logger.L.info(f"Initializing {self.__class__.__name__}")
         self.Simulator = Simulator(config)
+        self.config = config
+
+        self.algorithm_name = config["algorithm"][:-4]
 
         # Plotting Settings
         self.plots_per_subfigure = 3
@@ -40,11 +46,11 @@ class Plotter:
         except Exception as e:
             self.logger.L.error(f"Loading of expected logic values failed at {self.__class__.__name__}: {e}")
 
-        if not os.path.exists("./outputs/Images/"):
-            os.makedirs("./outputs/Images/")
+        if not os.path.exists(f"./outputs/{self.algorithm_name}/Images/"):
+            os.makedirs(f"./outputs/{self.algorithm_name}/Images/")
         else:
-            shutil.rmtree("./outputs/Images/")
-            os.makedirs("./outputs/Images/")
+            shutil.rmtree(f"./outputs/{self.algorithm_name}/Images/")
+            os.makedirs(f"./outputs/{self.algorithm_name}/Images/")
 
         # Calculate the energy
         if calculate_energy:
@@ -67,18 +73,18 @@ class Plotter:
         if recompute:
             self.logger.L.info(f"Started recomputing deviation {dev}")
 
-            if os.path.exists("./outputs/Waveforms/"):
-                shutil.rmtree("./outputs/Waveforms/")
-            if os.path.exists("./outputs/deviation_results/"):
-                shutil.rmtree("./outputs/deviation_results/")
+            if os.path.exists(f"./outputs/{self.algorithm_name}/Waveforms/"):
+                shutil.rmtree(f"./outputs/{self.algorithm_name}/Waveforms/")
+            if os.path.exists(f"./outputs/{self.algorithm_name}/deviation_results/"):
+                shutil.rmtree(f"./outputs/{self.algorithm_name}/deviation_results/")
             self.Simulator.evaluate_deviation_resistance(dev, save=True)
 
         waveforms = [[] for _ in range(len(self.Simulator.memristors)+1)]
 
         try:
             # Load all the waveforms of the combination
-            for k, file in enumerate(os.listdir(f"./outputs/Waveforms/{comb}/{dev}")):
-                data = np.genfromtxt(f"./outputs/Waveforms/{comb}/{dev}/" + file, delimiter=' ', names=True)
+            for k, file in enumerate(os.listdir(f"./outputs/{self.algorithm_name}/Waveforms/{comb}/{dev}")):
+                data = np.genfromtxt(f"./outputs/{self.algorithm_name}/Waveforms/{comb}/{dev}/" + file, delimiter=' ', names=True)
 
                 # Save the exact waveform for later
                 if file == f"""{self.Simulator.vteam_parameters["R_on"]}_{self.Simulator.vteam_parameters["R_off"]}.txt""":
@@ -177,7 +183,7 @@ class Plotter:
 
             plt.tight_layout()
             fig_type = str(fig_type)
-            plt.savefig(f"./outputs/Images/Comb_{comb}_{dev}.{fig_type}", bbox_inches='tight',
+            plt.savefig(f"./outputs/{self.algorithm_name}/Images/Comb_{comb}_{dev}.{fig_type}", bbox_inches='tight',
                         pad_inches=0.01, format=fig_type)
             if show:
                 plt.show()
@@ -189,12 +195,17 @@ class Plotter:
                                show: bool = False, fig_type: str = 'pdf', dev_voltage: bool = False) -> None:
         """
         For every input combination plot the output states over increasing deviations
-        :param max_dev: maximum deviation
+        :param dev_range: list of deviation values in % for resistance or voltage
         :param recompute: If the deviation experiments need to be recomputed
         :param show: If the deviation experiments should be shown
         :param fig_type: Type of plot
+        :param dev_voltage: If the deviation experiments are for voltage or resistance
         """
-        fig, ax = plt.subplots(1, len(self.expected_logic), figsize=(max(3*len(dev_range)/10, 12), 4))
+
+        _, ax = plt.subplots(1, len(self.expected_logic), figsize=(max(3*len(dev_range)/10, 12), 4))
+
+        if len(self.expected_logic) == 1:
+            ax = [ax]
 
         # If the results are recomputed
         if recompute:
@@ -208,7 +219,7 @@ class Plotter:
         try:
             # Iterate over the deviations configure above
             for d, dev in enumerate(dev_range):
-                with open(f"./outputs/deviation_results/dev_{dev}", 'rb') as fp:
+                with open(f"./outputs/{self.algorithm_name}/deviation_results/dev_{dev}", 'rb') as fp:
                     values = pickle.load(fp)
 
                 for i, comb in enumerate(values):
@@ -241,41 +252,44 @@ class Plotter:
 
         plt.tight_layout()
         fig_type = str(fig_type)
-        plt.savefig(f"./outputs/Images/OutputDeviation_Scatter.{fig_type}", bbox_inches='tight',
+        plt.savefig(f"./outputs/{self.algorithm_name}/Images/OutputDeviation_Scatter.{fig_type}", bbox_inches='tight',
                     pad_inches=0.01, format=fig_type)
         if show:
             plt.show()
 
-    def plot_deviation_range(self, max_dev: int = 50, recompute: bool = False,
-                             show: bool = False, fig_type: str = 'pdf', save_dev_range: bool = False) -> None:
+    def plot_deviation_range(self, dev_range: list[int] = [0,5,10,20,30,40,50], recompute: bool = False,
+                             show: bool = False, fig_type: str = 'pdf', save_dev_range: bool = False, dev_voltage: bool = False) -> None:
         """
         Plot the range of output states for every output state
-        :param max_dev: maximum deviation
+        :param dev_range: list of deviation values in % for resistance or voltage
         :param recompute: If the deviation experiments need to be recomputed
         :param show: If the deviation experiments should be shown
         :param fig_type: Type of plot
         :param save_dev_range: If the range of the deviation experiments should be stored
         """
-        fig = plt.figure(figsize=(max(2*len(dev)/10, 5), 5))
+        fig = plt.figure(figsize=(max(2*len(dev_range)/10, 5), 5))
 
         # If the results are recomputed
         if recompute:
-            self.logger.L.info(f"Started recomputing deviation experiments up to a deviation range of {max_dev}")
-            for d, dev in enumerate(self.get_dev_list(max_dev)):
-                self.Simulator.evaluate_deviation_resistance(dev, True)
+            self.logger.L.info(f"Started recomputing deviation experiments up to a deviation range of {dev_range[-1]}")
+            for d, dev in enumerate(dev_range):
+                if dev_voltage:
+                    self.Simulator.evaluate_deviation_voltage(dev, True)
+                else:
+                    self.Simulator.evaluate_deviation_resistance(dev, True)
 
         range_logic1 = [[], []]
         range_logic0 = [[], []]
 
         try:
             # Iterate over the deviations configure above
-            for d, dev in enumerate(self.get_dev_list(max_dev)):
+            for d, dev in enumerate(dev_range):
 
                 logic1_states = [[] for _ in range(len(self.expected_logic))]
                 logic0_states = [[] for _ in range(len(self.expected_logic))]
 
                 try:
-                    with open(f"./outputs/deviation_results/dev_{dev}", 'rb') as fp:
+                    with open(f"./outputs/{self.algorithm_name}/deviation_results/dev_{dev}", 'rb') as fp:
                         values = pickle.load(fp)
                 except FileNotFoundError:
                     raise FileNotFoundError(f"File \"dev_{dev}\" does not exist")
@@ -304,7 +318,7 @@ class Plotter:
 
             r0, r1 = np.array(range_logic0), np.array(range_logic1)
             if save_dev_range:
-                text = "Deviation," + "".join([f"{str(d)}," for d in self.get_dev_list(max_dev)]) + "\n"
+                text = "Deviation," + "".join([f"{str(d)}," for d in dev_range]) + "\n"
                 for idx, out in enumerate(self.expected_logic):
                     data_str = (f"Output: {out}\n"
                                 f"Logic 0 (min), " + ", ".join(map(str, r0[idx, :, 0])) + "\n"
@@ -313,7 +327,7 @@ class Plotter:
                                 f"Logic 1 (max), " + ", ".join(map(str, r1[idx, :, 1])) + "\n")
                     text += data_str
 
-                with open(f"./outputs/deviation_results/deviation_range.csv", "w") as fp:
+                with open(f"./outputs/{self.algorithm_name}/deviation_results/deviation_range.csv", "w") as fp:
                     fp.write(text[:-1])
 
         except Exception as e:
@@ -324,9 +338,9 @@ class Plotter:
             for outs in range(len(self.expected_logic)):
                 label = [key for key in self.expected_logic][outs]
 
-                plt.fill_between(np.linspace(0, len(self.get_dev_list(max_dev))+1, len(self.get_dev_list(max_dev))),
+                plt.fill_between(np.linspace(0, len(dev_range)+1, len(dev_range)),
                                  r0[0, :, outs], r0[1, :, outs], interpolate=True, color=self.colors[outs], alpha=0.3, label=label)
-                plt.fill_between(np.linspace(0, len(self.get_dev_list(max_dev))+1, len(self.get_dev_list(max_dev))),
+                plt.fill_between(np.linspace(0, len(dev_range)+1, len(dev_range)),
                                  r1[0, :, outs], r1[1, :, outs], interpolate=True, color=self.colors[outs], alpha=0.3)
         except Exception as e:
             self.logger.L.error(f"Plotting of deviation range failed due to: {e}")
@@ -335,9 +349,9 @@ class Plotter:
         plt.plot([-1, 20], [0.33, 0.33], linestyle='--', color="orange")
         plt.plot([-1, 20], [0.66, 0.66], linestyle='--', color="orange")
         plt.ylim([-0.01, 1.01])
-        plt.xlim([-0.25, len(self.get_dev_list(max_dev)) + 1.25])
-        plt.xticks(np.linspace(0, len(self.get_dev_list(max_dev))+1, len(self.get_dev_list(max_dev))),
-                   labels=self.get_dev_list(max_dev), fontsize=20)
+        plt.xlim([-0.25, len(dev_range) + 1.25])
+        plt.xticks(np.linspace(0, len(dev_range)+1, len(dev_range)),
+                   labels=dev_range, fontsize=20)
         plt.yticks([0, 1], labels=["HRS", "LRS"], rotation=45, fontsize=20)
         plt.xlabel("$R_{on}$ & $R_{off}$ Deviation in %", fontsize=24)
         plt.grid(False)
@@ -346,7 +360,7 @@ class Plotter:
 
         plt.tight_layout()
         fig_type = str(fig_type)
-        plt.savefig(f'./outputs/Images/StateDeviations.{fig_type}', bbox_inches='tight',
+        plt.savefig(f'./outputs/{self.algorithm_name}/Images/StateDeviations.{fig_type}', bbox_inches='tight',
                     pad_inches=0.1, format=fig_type)
         if show:
             plt.show()
@@ -358,7 +372,7 @@ class Plotter:
         :param max_dev: maximum deviation
         :return: list of deviation values
         """
-        if max_dev < 5:
+        if max_dev <= 5:
             return [0, max_dev]
         elif max_dev <= 10:
             return [0, 5, max_dev]
@@ -401,8 +415,8 @@ class Plotter:
             if os.path.exists(f"./OUTPUT_FILES/{name}"):
                 shutil.rmtree(f"./OUTPUT_FILES/{name}")
                 os.makedirs(f"./OUTPUT_FILES/{name}", exist_ok=True)
-            shutil.copytree("./outputs/deviation_results", f"./OUTPUT_FILES/{name}/deviation_results")
-            shutil.copytree("./outputs/Images", f"./OUTPUT_FILES/{name}/Images")
+            shutil.copytree(f"./outputs/{name}/deviation_results", f"./OUTPUT_FILES/{name}/deviation_results")
+            shutil.copytree(f"./outputs/{name}/Images", f"./OUTPUT_FILES/{name}/Images")
 
             with open(f"./OUTPUT_FILES/{name}/energy_consumption.txt", "w") as f:
                 if not self.energy:
@@ -412,7 +426,7 @@ class Plotter:
                             f"Energy over Combination: {self.energy[0]}")
             if os.path.exists(f"./OUTPUT_FILES/{name}/State_History.txt"):
                 os.remove(f"./OUTPUT_FILES/{name}/State_History.txt")
-            shutil.copy("./outputs/State_History.txt", f"./OUTPUT_FILES/{name}/State_History.txt")
+            shutil.copy(f"./outputs/{name}/State_History.txt", f"./OUTPUT_FILES/{name}/State_History.txt")
         except Exception as e:
             self.logger.L.error(f"Saving algorithm files failed due to: {e}")
 
@@ -430,3 +444,58 @@ class Plotter:
                 self.logger.L.info(f"Started deviation experiments for resistance {dev_r} and voltage {dev_v}")
                 self.Simulator.evaluate_deviation_resistance_voltage(dev_r, dev_v)
         self.logger.L.info(f"Deviation experiments completed for resistance and voltage")
+    
+    def get_passmatrices_for_deviation(self, algorithm: str) -> np.ndarray:
+
+        memristor_names = self.config['memristors']
+        num_inputs = len(self.config['inputs'])
+        output_names = self.config['outputs']
+        output_indices = [memristor_names.index(name) for name in output_names]
+        output_values = [value for value in self.config['output_states'].values()]
+
+        deviation_results_dir = pathlib.Path(f'./outputs/{algorithm}') / 'deviation_results'
+
+
+        dev_r = []
+        dev_v = []
+
+        for file in deviation_results_dir.glob('*'):
+            # get the deviation values from the filename with regex
+            match = re.match(r'dev_R(\d+)_V(\d+)', file.name)
+            r, v = match.groups()
+            if int(r) not in dev_r:
+                dev_r.append(int(r))
+            if int(v) not in dev_v:
+                dev_v.append(int(v))
+        
+        passmatrix = np.zeros((len(dev_r), len(dev_v)))
+
+        # print(f'\n -------- Algorithm: {algo} -------- \n')
+
+        for r in dev_r:
+            for v in dev_v:
+                file = deviation_results_dir / f'dev_R{r}_V{v}'
+
+                passing = True
+                with open(file, 'rb') as f:
+                    data = pickle.load(f)
+
+                # print(f'Algorithm: {algo}, Deviation R: {r}, Deviation V: {v}')
+
+                for input_index, results in enumerate(data):
+                    # name = bin(input_index)[2:].zfill(num_inputs)
+                    for res_index, res in enumerate(results): # either 1, 8 or 64 results
+                        for i, output_index in enumerate(output_indices):
+                            if abs(res[output_index] - output_values[i][input_index]) > 0.33:
+                                # print(f'Input {name} failed at {self.Simulator.get_combination_from_result_index(res_index, r, v)}')
+                                # print(f'Output {output_names[i]}: {res[output_index]} Expected: {output_values[i][input_index]}')
+                                passing = False
+                                break
+                        if not passing:
+                            break
+                    if not passing:
+                        break
+                # print('Passed' if passing else 'Failed')
+                passmatrix[dev_r.index(r), dev_v.index(v)] = 1 if passing else 0
+                # print('------------------------')
+        return passmatrix

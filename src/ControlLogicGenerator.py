@@ -19,11 +19,12 @@ class ControlLogicGenerator:
         self.logger.L.info(f"Initializing {self.__class__.__name__}")
 
         self.algo = config["algorithm"]
+        self.algo_name = self.algo.split(".")[0]
         # self.step_size = config["cycle_time"]
         self.memristors = config["memristors"]
         self.count = 0
         self.topology = config["topology"]
-        self.output_path = f"./outputs/PWM_output/"
+        self.output_path = f"./outputs/{self.algo_name}/PWM_output/"
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path)
 
@@ -71,7 +72,7 @@ class ControlLogicGenerator:
                 if mem not in self.memristors:
                     self.output_excess.append(self.create_empty_csv(f"{self.output_path}{mem}.csv"))
             for sw in self.topology_params["switches"]:
-                if sw.split("_")[0] not in self.memristors:
+                if sw.split("_")[0] not in self.memristors + ["S1", "S2", "S3"]:
                     self.output_excess.append(self.create_empty_csv(f"{self.output_path}{sw}.csv"))
 
             
@@ -186,9 +187,9 @@ class ControlLogicGenerator:
             for comp in self.output_excess:
                 with open(comp, "a") as f:
                     if 'sw' in f.name.split('/')[-1]:
-                        f.write(f"""0,-100\n {self.step_size * (self.count + 1)},-100""")
+                        f.write(f"""0,-100\n{self.step_size * (self.count + 1)}u,-100""")
                     else:
-                        f.write(f"""0,0\n {self.step_size * (self.count + 1)},0""")
+                        f.write(f"""0,0\n{self.step_size * (self.count + 1)}u,0""")
 
         except Exception as e:
             self.logger.L.error(f"Writing PWM outputs to files failed at {self.__class__.__name__} due to: {e}")
