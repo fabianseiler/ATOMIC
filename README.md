@@ -180,6 +180,9 @@ To evaluate all previously configured algorithms, run the command
 ```python evaluate_soa.py``` which reads in every .json file from ``configs`` and evaluates ``Pipeline.py``.
 
 
+### Evaluate Deviation Experiments
+To evaluate the robustnes of specific algorithms we provided the script ``Deviation_Experiments.py``, which validates the algorithm on circuit-level for specific deviation ranges. For this we considered the resistive state and voltage threshold deviation as they are the most common in memristive devices.
+
 ## Acknowledgements
 This Project was built upon the [PyLTSpice framework](https://github.com/nunobrum/PyLTSpice), which allows for an easy and diverse 
 interface to interact with SPICE objects. Special thanks to the creator Nuno Brum, 
@@ -190,22 +193,27 @@ for his great work and detailed [documentation](https://pyltspice.readthedocs.io
 * Repo Owner: [fabian.seiler\@tuwien.ac.at](mailto:fabian.seiler@tuwien.ac.at?subject=ATOMIC-SAV)
 
 ## More Information
-For more detailed information regarding the project structure we refer the reader to:
-
-``` 
-@misc{seiler2024atomic,
-    title={ATOMIC: Automatic Tool for Memristive IMPLY-based Circuit-level Simulation and Validation}, 
-    author={Fabian Seiler and Nima TaheriNejad},
-    year={2024},
-    eprint={2410.15893},
-    archivePrefix={arXiv},
-    primaryClass={cs.ET},
-    url={https://arxiv.org/abs/2410.15893} 
-}
+This project was accepted at [SMACD 2025](https://eclectx.org/Publications/C63.pdf) and can be cited as:
+```
+@INPROCEEDINGS{seiler2025ATOMIC,
+  author={Seiler, Fabian and Hinkel, Peter M. and Jantsch, Axel and TaheriNejad, Nima},
+  booktitle={2025 21st International Conference on Synthesis, Modeling, Analysis and Simulation Methods and Applications to Circuit Design (SMACD)}, 
+  title={ATOMIC: Automatic Tool for Memristive IMPLY based Circuit-level Simulation and Validation}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={1-4},
+  keywords={Circuit-level simulation, computer aided design, electronic design automation},
+  doi={}
+  }
 ```
 
-## Citation
-If you find this project useful, please consider starring ⭐ and citing our recent journals for which we implemented this project.
+For more information regarding the project structure we refer the reader to the corresponding [technical document](https://arxiv.org/abs/2410.15893):
+
+
+
+## Related Work
+This project was developed to support our recent journals, which can be found and cited under:
 
 ```
 @article{seiler2024NoCarry,
