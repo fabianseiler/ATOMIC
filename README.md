@@ -29,9 +29,9 @@ for more information on how to install LTSpice.
 
 ### Python Dependencies
 To install the required python libraries and setup the project on Windows run: \
-```python.exe -m pip install --upgrade pip``` \
+```python.exe -m pip install --upgrade pip``` or ```python3 -m pip install --upgrade pip``` \
 ```python -m venv .venv``` \
-```.\venv\Scripts\activate.bat``` or ```.\venv\Scripts\activate.ps1 ``` \
+```.\venv\Scripts\activate.bat``` or ```.\venv\Scripts\activate.ps1 ``` or ```source .venv/bin/activate (Mac)```\
 ```pip install -r requirements.txt``` 
 
 ## How to use
