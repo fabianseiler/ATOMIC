@@ -10,6 +10,8 @@ import csv
 import re
 import os
 import shutil
+import sys 
+import string
 
 number_suffixes = ["a", "f", "p", "n", "u", "m", "", "k", "M", "G", "T", "P", "E"] 
 
@@ -39,13 +41,21 @@ def extract_energy_from_log(file_path: str) -> float | None:
 
     # Open the file and read line by line
     with open(file_path, 'r') as file:
-        for line in file:
-            match = pattern.search(line)
-            if match:
+        if sys.platform == 'darwin': 
+            for raw_line in file:
+                line = ''.join(c for c in raw_line if c in string.printable) 
+                match = pattern.search(line)
                 # Extract the number after "="
-                number = match.group(1)
-                return number
-
+                if match:
+                    number = match.group(1)
+                    return number
+        else: 
+            for line in file:
+                match = pattern.search(line)
+                if match:
+                    # Extract the number after "="
+                    number = match.group(1)
+                    return number
     return None
 
 

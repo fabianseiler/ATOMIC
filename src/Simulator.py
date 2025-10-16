@@ -10,6 +10,7 @@ import numpy as np
 from PyLTSpice import SpiceEditor, RawRead, LTspice, SimCommander
 from src.util import comb8, comb9, open_csv, extract_energy_from_log, resistance_comb9, Logger
 from tqdm import tqdm
+import sys
 
 
 class Simulator:
@@ -41,13 +42,28 @@ class Simulator:
         indices = [self.topology_data["switches"].index(item) for item in self.switches]
         self.voltages_sw = [self.topology_data["voltages_sw"][index] for index in indices]
 
-        # Open SPICE editor
+        # Open SPICE editor / load netlist
+        self.netlist = None 
         try:
-            netlist = LTspice.create_netlist(f"./Structures/{self.topology}/1bit_adder_cin.asc")
-            self.netlist = SpiceEditor(netlist)
-            # self.netlist = SpiceEditor(f"./Structures/{self.topology}/1bit_adder_cin.net")
+            if sys.platform == "darwin":
+                source_netlist = f"./Structures/{self.topology}/1bit_adder_cin.net"
+
+                if not os.path.exists(source_netlist):
+                    raise FileNotFoundError(
+                        f"Netlist not found: {source_netlist}\n"
+                        f"On macOS you must export the .net file manually from LTSpice."
+                    )
+
+                self.netlist = SpiceEditor(source_netlist)
+                print(f"########### NETLIST: {self.netlist} ###################")
+            else:
+                netlist_file = LTspice.create_netlist(f"./Structures/{self.topology}/1bit_adder_cin.asc")
+                self.netlist = SpiceEditor(netlist_file)
+
         except Exception as e:
-            self.logger.L.error(f'Could not create SpiceEditor due to: {e}')
+            self.logger.L.error(f"Could not create SpiceEditor: {e}")
+            self.netlist = None
+            raise RuntimeError("Failed to initialize SpiceEditor. Check LTSpice setup and netlist files.") from e
 
         self.netlist_path = None
 
