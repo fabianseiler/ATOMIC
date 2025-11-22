@@ -1,0 +1,98 @@
+* PATH\ATOMIC\Structures\Semi-Serial\1bit_adder_cin.asc
+R1 N003 0 {R_g}
+V1 N001 0 PWL file=a.csv
+V11 N006 0 PWL file=w1.csv
+R2 N018 0 {R_g}
+V3 N010 0 PWL file=b.csv
+V14 N007 0 PWL file=w2.csv
+V8 N005 0 PWL file=c.csv
+S1 N002 N001 a_sw 0 MYSW
+V2 a_sw 0 PWL file=a_sw.csv
+S2 N017 N010 b_sw 0 MYSW
+V4 b_sw 0 PWL file=b_sw.csv
+V17 N008 0 PWL file=w3.csv
+V10 c_sw2 0 PWL file=c_sw2.csv
+V13 w1_sw2 0 PWL file=w1_sw2.csv
+V12 w1_sw1 0 PWL file=w1_sw1.csv
+V15 w2_sw1 0 PWL file=w2_sw1.csv
+V16 w2_sw2 0 PWL file=w2_sw2.csv
+V19 w3_sw2 0 PWL file=w3_sw2.csv
+V18 w3_sw1 0 PWL file=w3_sw1.csv
+V21 w4_sw1 0 PWL file=w4_sw1.csv
+V22 w4_sw2 0 PWL file=w4_sw2.csv
+S6 N018 N012 c_sw2 0 MYSW
+S7 N013 N003 w1_sw1 0 MYSW
+S8 N018 N013 w1_sw2 0 MYSW
+S9 N014 N003 w2_sw1 0 MYSW
+S10 N018 N014 w2_sw2 0 MYSW
+S11 N015 N003 w3_sw1 0 MYSW
+S12 N018 N015 w3_sw2 0 MYSW
+S13 N016 N003 w4_sw1 0 MYSW
+S14 N018 N016 w4_sw2 0 MYSW
+V20 N009 0 PWL file=w4.csv
+V9 c_sw1 0 PWL file=c_sw1.csv
+S5 N012 N003 c_sw1 0 MYSW
+XXa a N002 N003 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+XXb b N017 N018 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+XXc c N005 N012 vteam_knowm params: w_init={w_c} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+XXw1 w1 N006 N013 vteam_knowm params: w_init={w_w1} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+XXw2 w2 N007 N014 vteam_knowm params: w_init={w_w2} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+XXw3 w3 N008 N015 vteam_knowm params: w_init={w_w3} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+XXw4 w4 N009 N016 vteam_knowm params: w_init={w_w4} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+V5 N004 0 PWL file=cin.csv
+V7 cin_sw2 0 PWL file=cin_sw2.csv
+S4 N018 N011 cin_sw2 0 MYSW
+V6 cin_sw1 0 PWL file=cin_sw1.csv
+S3 N011 N003 cin_sw1 0 MYSW
+XXcin cin N004 N011 vteam_knowm params: w_init={w_cin} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+
+* block symbol definitions
+.subckt vteam_knowm s Vp Vn
+B1 0 w I=G_on(V(Vp,Vn))*f_on(V(w))
+B2 0 w I=G_off(V(Vp,Vn))*f_off(V(w))
+C1 w 0 1
+D1 w N003 idealD
+D2 N004 w idealD
+V1 N003 0 {w_off}
+V2 N004 0 {w_on}
+R1 N001 0 {R_on}
+Fv N002 Vn Bm -1
+Bm N001 0 V=vs(V(Vp,Vn),V(w))
+E1 s 0 w 0 {1/w_off}
+R2 Vp N002 1µ
+.param k_off=0.01 v_off=700m alpha_off=3 R_off=1000k w_off=3n
+.param k_on=-0.5n v_on=-10m alpha_on=3 R_on=10k w_on=0
+.param w_c=100p a_off=3n a_on=0n
+.func f_off(w) {exp(-exp( (w-a_off)/w_c))}
+.func f_on(w) {exp(-exp( -(w-a_on)/w_c))}
+.func G_off(v) {k_off*pow( (v/v_off-1),alpha_off)*u(v-v_off)}
+.func G_on(v) {k_on*pow( (v/v_on-1) ,alpha_on)*u(v_on-v)}
+.func vs(v,w) {v/(1+(lambda-1)*(w_off-w)/(w_off-w_on))}
+.param lambda=(R_off/R_on)
+.ic V(w)={w_init}
+.model idealD D(Ron=1f Roff=100G Vfwd=0.1f)
+.param w_init=0.01n
+.func vs1(v,w) {v*  exp( -ln(lambda)*(w_off-w)/(w_off-w_on) ) }
+.ends vteam_knowm
+
+.model D D
+.lib C:\Users\Shype\AppData\Local\LTspice\lib\cmp\standard.dio
+.model MYSW SW(Ron=1n Roff=1000meg Vt=.5)
+.param R_g=40k
+.tran {tstop}
+.param w_a=0n
+.param w_b=0n
+.param w_c=0n
+.param w_cin=0n
+.param w_w1=0n
+.param w_w2=0n
+.param w_w3=0n
+.param w_w4=0n
+.meas sum AVG -V(n001)*I(V1)  -V(n010)*I(V3)  -V(n004)*I(V5)  -V(n005)*I(V8)  -V(n006)*I(V11)  -V(n007)*I(V14)  -V(n008)*I(V17)  -V(n009)*I(V20)
+.param R_on=10k
+.param R_off=1000k
+.param tstop=600us
+.param v_on=-10m
+.param v_off=700m
+.backanno
+.end

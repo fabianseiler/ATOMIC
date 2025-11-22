@@ -1,0 +1,77 @@
+* PATH\ATOMIC\Structures\Serial\1bit_adder_cin.asc
+R1 N013 0 {R_g}
+V1 N001 0 PWL file=a.csv
+V3 N002 0 PWL file=b.csv
+S1 N012 N001 a_sw 0 MYSW
+V2 a_sw 0 PWL file=a_sw.csv
+S2 N007 N002 b_sw 0 MYSW
+V4 b_sw 0 PWL file=b_sw.csv
+XXb b N007 N013 vteam_knowm params: w_init={w_b} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+V7 N004 0 PWL file=w1.csv
+S4 N009 N004 w1_sw 0 MYSW
+V8 w1_sw 0 PWL file=w1_sw.csv
+XXw1 w1 N009 N013 vteam_knowm params: w_init={w_w1} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+XXa a N012 N013 vteam_knowm params: w_init={w_a} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+V9 N005 0 PWL file=w2.csv
+S5 N010 N005 w2_sw 0 MYSW
+V10 w2_sw 0 PWL file=w2_sw.csv
+XXw2 w2 N010 N013 vteam_knowm params: w_init={w_w2} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+V5 N003 0 PWL file=c.csv
+S3 N008 N003 c_sw 0 MYSW
+V6 c_sw 0 PWL file=c_sw.csv
+XXc c N008 N013 vteam_knowm params: w_init={w_c} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+V11 N006 0 PWL file=w3.csv
+S6 N011 N006 w3_sw 0 MYSW
+V12 w3_sw 0 PWL file=w3_sw.csv
+XXw3 w3 N011 N013 vteam_knowm params: w_init={w_w3} R_on={R_on} R_off={R_off} v_on={v_on} v_off={v_off}
+
+* block symbol definitions
+.subckt vteam_knowm s Vp Vn
+B1 0 w I=G_on(V(Vp,Vn))*f_on(V(w))
+B2 0 w I=G_off(V(Vp,Vn))*f_off(V(w))
+C1 w 0 1
+D1 w N003 idealD
+D2 N004 w idealD
+V1 N003 0 {w_off}
+V2 N004 0 {w_on}
+R1 N001 0 {R_on}
+Fv N002 Vn Bm -1
+Bm N001 0 V=vs(V(Vp,Vn),V(w))
+E1 s 0 w 0 {1/w_off}
+R2 Vp N002 1µ
+.param k_off=0.01 v_off=700m alpha_off=3 R_off=1000k w_off=3n
+.param k_on=-0.5n v_on=-10m alpha_on=3 R_on=10k w_on=0
+.param w_c=107p a_off=3n a_on=0n
+.func f_off(w) {exp(-exp( (w-a_off)/w_c))}
+.func f_on(w) {exp(-exp( -(w-a_on)/w_c))}
+.func G_off(v) {k_off*pow( (v/v_off-1),alpha_off)*u(v-v_off)}
+.func G_on(v) {k_on*pow( (v/v_on-1) ,alpha_on)*u(v_on-v)}
+.func vs(v,w) {v/(1+(lambda-1)*(w_off-w)/(w_off-w_on))}
+.param lambda=(R_off/R_on)
+.ic V(w)={w_init}
+.model idealD D(Ron=1f Roff=100G Vfwd=0.1f)
+.param w_init=0.01n
+.func vs1(v,w) {v*  exp( -ln(lambda)*(w_off-w)/(w_off-w_on) ) }
+.ends vteam_knowm
+
+.model D D
+.lib C:\Users\Shype\AppData\Local\LTspice\lib\cmp\standard.dio
+.model MYSW SW(Ron=1n Roff=1000meg Vt=.5)
+.param R_g=40k
+.tran {tstop}
+.param w_a=0n
+.param w_b=0n
+.param w_c=0n
+.param w_w1=0n
+.param w_w2=0n
+.param w_w3=0n
+.param R_on=10k
+.param R_off=1000k
+.meas sum AVG -V(n001)*I(V1) -V(n002)*I(V3) -V(n003)*I(V5) -V(n004)*I(V7) -V(n005)*I(V9) -V(n006)*I(V11)
+.param tstop=240u
+.meas w2 AVG -V(n005)*I(V9)
+.meas w3 AVG -V(n006)*I(V11)
+.param v_on=-10m
+.param v_off=700m
+.backanno
+.end

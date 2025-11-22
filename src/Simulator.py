@@ -11,6 +11,7 @@ from PyLTSpice import SpiceEditor, RawRead, LTspice, SimCommander
 from src.util import comb8, comb9, open_csv, extract_energy_from_log, resistance_comb9, Logger
 from tqdm import tqdm
 import sys
+from pathlib import Path
 
 
 class Simulator:
@@ -47,6 +48,17 @@ class Simulator:
         try:
             if sys.platform == "darwin":
                 source_netlist = f"./Structures/{self.topology}/1bit_adder_cin.net"
+
+                # Build the correct .asc path for macOS (POSIX style)
+                local_path = Path(".").resolve()
+                updated_ref_path = local_path / "Structures" / self.topology / "1bit_adder_cin.asc"
+
+                # Change the initial line of the .net file
+                with open(source_netlist, "r") as f:
+                    lines = f.readlines()
+                lines[0] = str(updated_ref_path) + "\n"
+                with open(source_netlist, "w") as f:
+                    f.writelines(lines)
 
                 if not os.path.exists(source_netlist):
                     raise FileNotFoundError(
