@@ -46,18 +46,19 @@ class Simulator:
         # Open SPICE editor / load netlist
         self.netlist = None 
         try:
-            if sys.platform == "darwin":
+            if sys.platform == "darwin" or sys.platform == "linux":
                 source_netlist = f"./Structures/{self.topology}/1bit_adder_cin.net"
 
                 # Build the correct .asc path for macOS (POSIX style)
                 local_path = Path(".").resolve()
                 updated_ref_path = local_path / "Structures" / self.topology / "1bit_adder_cin.asc"
+                updated_ref_path = updated_ref_path.resolve()
 
                 # Change the initial line of the .net file
-                with open(source_netlist, "r") as f:
+                with open(source_netlist, "r", encoding="latin-1") as f:
                     lines = f.readlines()
-                lines[0] = str(updated_ref_path) + "\n"
-                with open(source_netlist, "w") as f:
+                lines[0] = "* " + str(updated_ref_path) + "\n"
+                with open(source_netlist, "w", encoding="latin-1") as f:
                     f.writelines(lines)
 
                 if not os.path.exists(source_netlist):

@@ -1,4 +1,4 @@
-* PATH\ATOMIC\Structures\Serial\1bit_adder_cin.asc
+* C:\Users\Shype\Desktop\ATOMIC\Structures\Serial\1bit_adder_cin.asc
 R1 N013 0 {R_g}
 V1 N001 0 PWL file=a.csv
 V3 N002 0 PWL file=b.csv
