@@ -47,7 +47,13 @@ class Simulator:
         self.netlist = None 
         try:
             if sys.platform == "darwin" or sys.platform == "linux":
-                source_netlist = f"./Structures/{self.topology}/1bit_adder_cin.net"
+                base = Path(__file__).resolve().parent.parent
+                source_netlist = base / "Structures" / self.topology / "1bit_adder_cin.net"
+
+                if not source_netlist.exists():
+                    raise FileNotFoundError(f"Netlist not found at: {source_netlist}. Base path of initialization: {base}")
+
+                #source_netlist = f"./Structures/{self.topology}/1bit_adder_cin.net"
 
                 # Build the correct .asc path for macOS (POSIX style)
                 local_path = Path(".").resolve()
@@ -61,6 +67,7 @@ class Simulator:
                 with open(source_netlist, "w", encoding="latin-1") as f:
                     f.writelines(lines)
 
+                # Throw an error if the file is not loaded correctly
                 if not os.path.exists(source_netlist):
                     raise FileNotFoundError(
                         f"Netlist not found: {source_netlist}\n"
