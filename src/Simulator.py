@@ -155,6 +155,7 @@ class Simulator:
             runner = SimCommander(netlist_file=self.netlist_path, simulator=LTspice)
             runner.run()
             runner.wait_completion()
+            self.logger.L.info(f"Simulation completed with parameters: {param_values}")
         except Exception as e:
             self.logger.L.error(f'Simulation failed with parameters={param_values} due to: {e}')
 
